@@ -1,0 +1,3 @@
+module Common
+  # Your code goes here...
+end
