@@ -38,29 +38,12 @@ class DbManager
   end
 
   def self.vd_site_id(db_name)
-    #only work version ( nasty and wrong ), do not use 
-    rgxp = Regexp.new(/[a-zA-Z0-9_-]*-vd/)
+    rgxp = Regexp.new("[a-zA-Z0-9_-]*-vd#{db_suffix}$")
     return nil unless rgxp === db_name
-
-    rgxp = Regexp.new(/[a-zA-Z0-9_-]*-vd-cucumber/)
-    return nil if rgxp === db_name
-
-    rgxp = Regexp.new(/[a-zA-Z0-9_-]*-vd-production/)
-    return db_name[0,db_name.length-14] if rgxp === db_name
-
-    rgxp = Regexp.new(/[a-zA-Z0-9_-]*-vd-development/)
-    return db_name[0,db_name.length-15] if rgxp === db_name
-
-    rgxp = Regexp.new(/[a-zA-Z0-9_-]*-vd-test_env/)
-    return db_name[0,db_name.length-12] if rgxp === db_name
-
-    rgxp = Regexp.new(/[a-zA-Z0-9_-]*-vd-test/)
-    return db_name[0,db_name.length-8] if rgxp === db_name
-
-    rgxp = Regexp.new(/[a-zA-Z0-9_-]*-vd/)
-    return db_name[0,db_name.length-3] if rgxp === db_name
+    length = db_suffix.length+3
+    return db_name[0,db_name.length-length]
   end
-
+ 
   private
 
 
