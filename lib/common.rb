@@ -1,3 +1,8 @@
-module Common
-  # Your code goes here...
-end
+require 'common/logging'
+require 'common/db_connection'
+require 'common/db_manager'
+require 'common/messaging' 
+require 'common/jobs'
+
+
+
