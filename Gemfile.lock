@@ -34,14 +34,16 @@ GEM
       bson (>= 1.0.4)
     plucky (0.3.4)
       mongo (~> 1.0.7)
-    rspec (2.1.0)
-      rspec-core (~> 2.1.0)
-      rspec-expectations (~> 2.1.0)
-      rspec-mocks (~> 2.1.0)
-    rspec-core (2.1.0)
-    rspec-expectations (2.1.0)
-      diff-lcs (~> 1.1.2)
-    rspec-mocks (2.1.0)
+    rspec (2.0.1)
+      rspec-core (~> 2.0.1)
+      rspec-expectations (~> 2.0.1)
+      rspec-mocks (~> 2.0.1)
+    rspec-core (2.0.1)
+    rspec-expectations (2.0.1)
+      diff-lcs (>= 1.1.2)
+    rspec-mocks (2.0.1)
+      rspec-core (~> 2.0.1)
+      rspec-expectations (~> 2.0.1)
     ruby-debug-base19 (0.11.24)
       columnize (>= 0.3.1)
       linecache19 (>= 0.5.11)
@@ -64,6 +66,6 @@ DEPENDENCIES
   common!
   mongo (= 1.0.7)
   mongo_mapper!
-  rspec
+  rspec (= 2.0.1)
   ruby-debug19
   watchr

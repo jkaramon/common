@@ -43,7 +43,18 @@ class DbManager
     length = db_suffix.length+3
     return db_name[0,db_name.length-length]
   end
- 
+
+  def self.vd_site_db?(db_name)
+    vd_site_id(db_name).present?
+  end
+
+
+  def self.each_vd_site(&block)
+    MongoMapper.connection.database_names.each do |db_name|
+      block.call(vd_site_id(db_name)) if is_vd_site_db?(db_name)
+    end
+  end
+  
   private
 
 
