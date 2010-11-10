@@ -1,7 +1,6 @@
 require 'mongo_mapper'
 
 class DbManager
-  include ::Logging 
   @env = defined?(Rails) ? Rails.env : 'development' 
 
   # Sets database for site specific entities
@@ -13,9 +12,7 @@ class DbManager
   # Drops vd databases for the current environment on current connection. Use with caution!!!
   def self.drop_vd_env_databases!
     each_db do |db_name| 
-      info "Listing Database '#{db_name}'"
       if  db_name =~ /-vd-#{Rails.env}$/
-        info "Dropping database '#{db_name}'"
         MongoMapper.connection.drop_database(db_name)  
       end
     end
@@ -23,7 +20,6 @@ class DbManager
 
   #drop database with db_name
   def self.drop_database(db_name)
-    info "Dropping database '#{db_name}'"
     MongoMapper.connection.drop_database(db_name)
   end
 
@@ -44,18 +40,20 @@ class DbManager
     return db_name[0,db_name.length-length]
   end
 
-  def self.vd_site_db?(db_name)
-    vd_site_id(db_name).present?
-  end
-
+ 
 
   def self.each_vd_site(&block)
     MongoMapper.connection.database_names.each do |db_name|
-      block.call(vd_site_id(db_name)) if is_vd_site_db?(db_name)
+      block.call(vd_site_id(db_name)) if vd_site_db?(db_name)
     end
   end
   
   private
+  
+  
+  def self.vd_site_db?(db_name)
+    vd_site_id(db_name).present?
+  end
 
 
   def self.each_db(&block)
