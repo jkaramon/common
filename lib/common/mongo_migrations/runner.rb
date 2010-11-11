@@ -35,7 +35,8 @@ module MongoMigrations
 
 
 
-    def migrate
+    def migrate(apply_scripts = true)
+      @apply_scripts = apply_scripts
       scripts_to_process = @scripts.find_all { |s| s[:version] > last_version }   
       scripts_to_process.sort! {|x,y| x[:version] <=> y[:version] }
 
@@ -63,6 +64,7 @@ module MongoMigrations
 
 
     def run_migration_step
+      
       if last_migration_failed?
         info "Migration cannot be processed because last run failed"
       end
@@ -72,7 +74,12 @@ module MongoMigrations
     def run_script
       mr = start_migration_run
       begin
-        self.instance_eval @script[:script] 
+        if @apply_scripts
+          self.instance_eval @script[:script] 
+        else
+          info "Migration is run in replay mode. No script will be processed but version will be updated to the latest migration script"
+        end
+        
         mr.success!
       rescue Exception => err
         @failed_run = mr

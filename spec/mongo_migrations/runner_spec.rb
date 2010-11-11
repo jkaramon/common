@@ -73,6 +73,19 @@ describe MongoMigrations::Runner do
 
   end
 
+  describe "should process replay only mode" do
+    before(:all) do
+      drop_db
+      @script_dir = File.join(@base_dir, 'error')
+      @runner = MongoMigrations::Runner.new(@script_dir)
+    end
+
+    it "should process migration scriptsin replay mode" do
+      @runner.migrate false
+    end
+
+  end
+  
 
 
   def drop_db
