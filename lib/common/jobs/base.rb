@@ -30,7 +30,7 @@ module Jobs
       info  "#{job_name.humanize} job finished successfuly"
       tracker.set_success!
     rescue => err
-      error_message = "Error while processing #{job_name.humanize} job\n#{err.message}\nBacktrace:\n#{err.backtrace.join("\n")}"
+      error_message = "Error while processing #{job_name.humanize} job #{format_exception(err)}"
       error error_message
       tracker.set_error!(error_message)
     end
