@@ -27,7 +27,12 @@ class DbManager
   def self.show_dbs
     each_db {|db_name| puts db_name }
   end
-
+  
+  def self.site_db_exists?(site_id)
+    return false if site_id.blank?
+    db_name = vd_db_name(site_id)
+    MongoMapper.connection.database_names.include?(db_name)
+  end
 
   def self.vd_db_name(site_id)
     return "#{site_id}-vd#{db_suffix}"
