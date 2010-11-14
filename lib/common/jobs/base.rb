@@ -7,6 +7,7 @@ module Jobs
   # Inherited classes should define job implementation in method perform  
   class Base
     include Logging
+    include ErrorNotifier
     attr_accessor :tracker
     
     def initialize(options = {})
@@ -30,9 +31,15 @@ module Jobs
       info  "#{job_name.humanize} job finished successfuly"
       tracker.set_success!
     rescue => err
-      error_message = "Error while processing #{job_name.humanize} job #{format_exception(err)}"
+      log_error(err)
+    end
+    
+    def log_error(exc)
+      error_note = "Error while processing #{job_name.humanize} job."
+      error_message = "#{error_note} #{format_exception(exc)}"
       error error_message
       tracker.set_error!(error_message)
+      notify_error(exc, :note => error_note)
     end
 
     
@@ -45,7 +52,8 @@ module Jobs
       super(message)
       tracker.error(message) if tracker
     end
-
+    
+    
  
     def job_name
       self.class.to_s

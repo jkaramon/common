@@ -1,3 +1,4 @@
+require 'common/error_notifier'
 require 'common/logging'
 require 'common/db_connection'
 require 'common/db_manager'

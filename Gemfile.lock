@@ -12,6 +12,7 @@ PATH
   remote: .
   specs:
     common (0.0.1)
+      hoptoad_notifier
 
 GEM
   remote: http://rubygems.org/
@@ -27,6 +28,9 @@ GEM
     builder (2.1.2)
     columnize (0.3.1)
     diff-lcs (1.1.2)
+    hoptoad_notifier (2.3.12)
+      activesupport
+      builder
     i18n (0.4.2)
     linecache19 (0.5.11)
       ruby_core_source (>= 0.1.4)
@@ -54,7 +58,6 @@ GEM
       ruby-debug-base19 (>= 0.11.19)
     ruby_core_source (0.1.4)
       archive-tar-minitar (>= 0.5.2)
-    watchr (0.7)
 
 PLATFORMS
   ruby
@@ -64,8 +67,8 @@ DEPENDENCIES
   bson_ext (= 1.0.4)
   bundler (>= 1.0.0)
   common!
+  hoptoad_notifier
   mongo (= 1.0.7)
   mongo_mapper!
   rspec (= 2.0.1)
   ruby-debug19
-  watchr

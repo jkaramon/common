@@ -27,9 +27,7 @@ module Jobs
           info  "Processing finished successfuly"
           tracker.set_success!
         rescue => err
-          error_message = "Error while processing #{message.inspect}\nError:\n#{err.message}\nBacktrace:\n#{err.backtrace.join("\n")}"
-          error error_message
-          tracker.set_error!(error_message)
+          log_error(err)
         end
       end
         info "Total processed mesages: #{processed_messages}"

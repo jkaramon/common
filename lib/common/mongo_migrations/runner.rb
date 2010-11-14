@@ -1,6 +1,7 @@
 module MongoMigrations
   class Runner
     include Logging
+    include ErrorNotifier
     attr_reader :script_folder
     attr_reader :scripts
     attr_reader :current_version
@@ -82,6 +83,7 @@ module MongoMigrations
         
         mr.success!
       rescue Exception => err
+        notify_error(err)
         @failed_run = mr
         mr.fail!(err)
       end

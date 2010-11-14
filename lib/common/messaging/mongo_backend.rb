@@ -34,12 +34,17 @@ module Messaging
       collection.remove
     end
     
-    private 
+    alias :clear :delete
+    
+
+    
 
 
     def database
       @database ||= MongoMapper.connection.db("messaging#{env_suffix}")
     end
+    
+    private
 
     def env_suffix
       return "-gem-development" unless defined?(Rails)

@@ -34,27 +34,38 @@ class DbManager
     MongoMapper.connection.database_names.include?(db_name)
   end
 
+  # returns database name from site_id
   def self.vd_db_name(site_id)
     return "#{site_id}-vd#{db_suffix}"
   end
 
+  # returns site_id from database name. 
+  # Returns nil, if not valid
   def self.vd_site_id(db_name)
-    rgxp = Regexp.new("[a-zA-Z0-9_-]*-vd#{db_suffix}$")
-    return nil unless rgxp === db_name
+    return nil unless vd_db?(db_name)
     length = db_suffix.length+3
     return db_name[0,db_name.length-length]
   end
 
  
 
-  def self.each_vd_site(&block)
+  
+  
+  # iterates throught all vd databases.
+  # Block has two arguments:
+  # db_name - name of the site db
+  # site_id - associated site_id  
+  def self.each_vd_db(&block)
     MongoMapper.connection.database_names.each do |db_name|
-      block.call(vd_site_id(db_name)) if vd_site_db?(db_name)
+      block.call(db_name, vd_site_id(db_name)) if vd_site_db?(db_name)
     end
   end
   
   private
   
+  def self.vd_db?(db_name)
+    /[a-zA-Z0-9_-]*-vd#{db_suffix}$/ =~ db_name
+  end
   
   def self.vd_site_db?(db_name)
     vd_site_id(db_name).present?
