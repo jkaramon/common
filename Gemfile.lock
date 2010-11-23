@@ -11,8 +11,9 @@ GIT
 PATH
   remote: .
   specs:
-    common (0.0.1)
+    common (0.0.2)
       hoptoad_notifier
+      servolux
 
 GEM
   remote: http://rubygems.org/
@@ -58,6 +59,7 @@ GEM
       ruby-debug-base19 (>= 0.11.19)
     ruby_core_source (0.1.4)
       archive-tar-minitar (>= 0.5.2)
+    servolux (0.9.5)
 
 PLATFORMS
   ruby
@@ -72,3 +74,4 @@ DEPENDENCIES
   mongo_mapper!
   rspec (= 2.0.1)
   ruby-debug19
+  servolux

@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = []
   s.email       = []
   s.homepage    = "http://rubygems.org/gems/common"
-  s.summary     = "TODO: Write a gem summary"
-  s.description = "TODO: Write a gem description"
+  s.summary     = "A private gem to support vd and acm applications."
+  s.description = "Common libraries supporting vd and acm apps."
 
   s.required_rubygems_version = ">= 1.3.6"
   s.rubyforge_project         = "common"
@@ -19,6 +19,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency "ruby-debug19"
   
   s.add_dependency "hoptoad_notifier"
+  s.add_dependency "servolux"
+
 
 
   s.files        = `git ls-files`.split("\n")

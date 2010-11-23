@@ -11,7 +11,8 @@ module Jobs
     attr_accessor :tracker
     
     def initialize(options = {})
-      @logger = options[:logger]  
+      @logger = options[:logger] 
+      @tracker = options[:tracker]
     end
 
     def self.execute(options = {})

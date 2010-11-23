@@ -5,6 +5,7 @@ require 'common/db_manager'
 require 'common/messaging' 
 require 'common/mongo_migrations' 
 require 'common/jobs'
+require 'common/app_servers'
 
 
 
