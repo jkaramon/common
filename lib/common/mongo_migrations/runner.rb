@@ -40,12 +40,10 @@ module MongoMigrations
       @apply_scripts = apply_scripts
       scripts_to_process = @scripts.find_all { |s| s[:version] > last_version }   
       scripts_to_process.sort! {|x,y| x[:version] <=> y[:version] }
-      
       scripts_to_process.each do |script|
-        @last_migration = MigrationRun.last
         @script = script
         mr = run_migration_step
-        return false if mr.status.to_s != 'success'
+        return false if mr.nil? || mr.status.to_s == 'error'
       end
       true
     end

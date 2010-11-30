@@ -65,13 +65,31 @@ describe MongoMigrations::Runner do
       drop_db
       @script_dir = File.join(@base_dir, 'error')
       @runner = MongoMigrations::Runner.new(@script_dir)
-    end
-
-    it "should process migration scripts" do
       @runner.migrate
     end
 
+    it "should process only first two scripts" do
+      MongoMigrations::MigrationRun.count.should==2
+    end
+    it "second migration should fail " do
+      MongoMigrations::MigrationRun.where(:status => 'error').count.should==1
+    end
+
+    it "first migration should be successful" do
+      MongoMigrations::MigrationRun.where(:status => 'success').count.should==1
+    end
+
+    it "run after unresolved migration should not process anything" do
+      @runner.migrate
+      MongoMigrations::MigrationRun.count.should==2
+    end
+
+
+
+
   end
+
+
 
   describe "should process replay only mode" do
     before(:all) do
@@ -80,8 +98,9 @@ describe MongoMigrations::Runner do
       @runner = MongoMigrations::Runner.new(@script_dir)
     end
 
-    it "should process migration scriptsin replay mode" do
+    it "should process migration scripts in replay mode and set ignored status" do
       @runner.migrate false
+      MongoMigrations::MigrationRun.where(:status => 'ignored').count.should==3
     end
 
   end
@@ -96,6 +115,7 @@ describe MongoMigrations::Runner do
     it "should process each migration only one time" do
       @runner.migrate
       MongoMigrations::MigrationRun.count.should==2
+      MongoMigrations::MigrationRun.last.version.should==2
       @runner.migrate
       MongoMigrations::MigrationRun.count.should==2
     end
