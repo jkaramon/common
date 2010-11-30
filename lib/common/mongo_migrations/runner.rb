@@ -40,7 +40,7 @@ module MongoMigrations
       @apply_scripts = apply_scripts
       scripts_to_process = @scripts.find_all { |s| s[:version] > last_version }   
       scripts_to_process.sort! {|x,y| x[:version] <=> y[:version] }
-
+      
       scripts_to_process.each do |script|
         @last_migration = MigrationRun.last
         @script = script
@@ -51,23 +51,25 @@ module MongoMigrations
     end
 
     def last_version
-      return 0 if @last_migration.nil?
-      @last_migration.version
+      return 0 if last_migration.nil?
+      last_migration.version
     end
 
-    def last_migration_failed?
-      if @last_migration.nil?
-        return false
-      end
-      @last_migration.status == 'error'
+    def last_migration
+      MigrationRun.last
+    end
+
+    def any_migration_unresolved?
+      MigrationRun.any_unresolved?
     end
 
 
 
     def run_migration_step
-      
-      if last_migration_failed?
-        info "Migration cannot be processed because last run failed"
+
+      if any_migration_unresolved?
+        info "Migration cannot be processed because some of the previous runs are unresolved"
+        return
       end
       run_script
     end
@@ -77,11 +79,12 @@ module MongoMigrations
       begin
         if @apply_scripts
           self.instance_eval @script[:script] 
+          mr.success!
         else
           info "Migration is run in replay mode. No script will be processed but version will be updated to the latest migration script"
+          mr.ignore!
         end
-        
-        mr.success!
+
       rescue Exception => err
         notify_error(err)
         @failed_run = mr
@@ -92,9 +95,9 @@ module MongoMigrations
 
     def start_migration_run
       mr = MigrationRun.new(
-      :version => @script[:version],
-      :db_name => MongoMapper.database.name,
-      :script => @script
+        :version => @script[:version],
+        :db_name => MongoMapper.database.name,
+        :script => @script
       )
       mr.start!
       mr

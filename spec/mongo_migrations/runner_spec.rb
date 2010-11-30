@@ -85,10 +85,25 @@ describe MongoMigrations::Runner do
     end
 
   end
-  
+
+  describe "should be applied only one time" do
+    before(:all) do
+      drop_db
+      @script_dir = File.join(@base_dir, 'happy')
+      @runner = MongoMigrations::Runner.new(@script_dir)
+    end
+
+    it "should process each migration only one time" do
+      @runner.migrate
+      MongoMigrations::MigrationRun.count.should==2
+      @runner.migrate
+      MongoMigrations::MigrationRun.count.should==2
+    end
+
+  end
 
 
   def drop_db
-     MongoMapper.connection.drop_database(MongoMapper.database.name)
+    MongoMapper.connection.drop_database(MongoMapper.database.name)
   end
 end

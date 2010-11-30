@@ -17,6 +17,11 @@ module MongoMigrations
       where(:status => 'success').sort(:version).last
     end
 
+     def self.any_unresolved?
+      where(:status => 'error').count > 0
+    end
+
+
     def self.resolve(db)
       db.collection(self.collection_name).update({:status => 'error'}, { '$set' => { status: "error_resolved" } })
     end
@@ -33,6 +38,13 @@ module MongoMigrations
       save!
       info "Migration run processed sucessfuly" 
     end
+
+    def ignore!
+      self.status = :ignored
+      save!
+      info "Migration run was ignored" 
+    end
+
 
     def fail!(exception)
       self.status = :error
