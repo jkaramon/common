@@ -6,7 +6,7 @@ module LayoutHelper
   def title(page_title, additional_text = nil, show_title = true)
     raw_title t("views.titles.#{page_title.to_s}"), additional_text, show_title
   end
-  
+
   def raw_title(page_title, additional_text = nil, show_title = true)
     page_title = "#{page_title} - #{additional_text}" if additional_text 
     app_title = t('app.name')
@@ -14,9 +14,9 @@ module LayoutHelper
     @show_title = show_title
     @content_for_page_title = content_tag(:h1, page_title) if show_title
   end
-  
-  
-  
+
+
+
   def body_css(*args)
     content_for(:body_css) { args.join(" ") }
   end
@@ -67,12 +67,12 @@ module LayoutHelper
     params[:controller].split('/').last
   end
 
-   # current model name (TicketSource, Impact, ....)
+  # current model name (TicketSource, Impact, ....)
   def model_name
     collection_path.singularize
   end
 
-   # current model class (TicketSource, Impact, ....)
+  # current model class (TicketSource, Impact, ....)
   def model_class
     model_name.classify.constantize
   end
@@ -98,16 +98,17 @@ module LayoutHelper
   def show_title?
     @show_title
   end
-  
+
   def theme(theme)
     stylesheet_link_tag "lib/jquery-ui/#{theme}/jquery-ui-1.7.2.custom"
   end
-  
+
   def stylesheet(*args)
     content_for(:head) { stylesheet_link_tag(*args) }
   end
-  
+
   def javascript(*args)
     content_for(:head) { javascript_include_tag(*args) }
   end
 end
+
