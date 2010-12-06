@@ -7,5 +7,6 @@ require 'common/mongo_migrations'
 require 'common/jobs'
 require 'common/app_servers'
 
+require 'common/railtie' if defined?(Rails)
 
 
