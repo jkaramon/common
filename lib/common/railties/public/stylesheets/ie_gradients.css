@@ -1,0 +1,40 @@
+#content_center .page_title {  
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr=#f9e8ad, endColorstr=#f0ce5a);
+}
+
+input[type='button'], input[type='submit'], .button {
+  background-color: #454545;
+  /*filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr=#7f7f7f, endColorstr=#252525);*/
+}
+
+a.button:visited {
+  /*filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr=#7f7f7f, endColorstr=#252525);*/
+  background-color: #454545;
+}
+
+a.link_as_button {
+  /*filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr=#7f7f7f, endColorstr=#252525);*/
+  background-color: #454545;
+}
+
+a.link_as_button:visited {
+  /*filter: progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr=#7f7f7f, endColorstr=#252525);*/
+  background-color: #454545;
+}
+
+body#sessions div.wrapper input[type='submit'] {
+  background-color: #F0CE5A; 
+}
+
+html body#sessions {
+  background-image: none;
+}
+
+body#sessions div.wrapper div.app_logo{
+  background-image: url('../images/ie_login_logo.png');
+}
+
+body#application #content_center div.wrapper{
+  /*border: none;*/
+
+}

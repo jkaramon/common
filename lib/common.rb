@@ -1,3 +1,4 @@
+require 'common/ext'
 require 'common/error_notifier'
 require 'common/logging'
 require 'common/db_connection'
@@ -6,7 +7,16 @@ require 'common/messaging'
 require 'common/mongo_migrations' 
 require 'common/jobs'
 require 'common/app_servers'
+require 'common/mongo_mapper'
 
 require 'common/railtie' if defined?(Rails)
 
-
+require 'common/custom_form_builder'
+require 'common/patches'
+require 'common/ext'
+require 'common/app_config_loader'
+require 'common/grid_list'
+require 'common/db_seed'
+require 'common/simple_uuid'
+require 'common/middlewares'
+require 'common/rules'
