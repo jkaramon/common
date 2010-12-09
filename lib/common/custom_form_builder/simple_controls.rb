@@ -287,13 +287,13 @@ module CustomFormBuilder
     end
     
     def datetime_enabled(method, options)
-      Time::DATE_FORMATS[:date_format] = I18n.t('date.formats.datepicker_format')
+      Time::DATE_FORMATS[:datepicker_format] = I18n.t('time.formats.datepicker_format')
 
       object_name = object.class.to_s.underscore.to_sym
       value = ActionView::Helpers::InstanceTag.value(object, method)
       time_value = value.nil? ? "" : value.to_s(:time)
 
-      date_value = value.nil? ? "" : value.to_s(:date_format)
+      date_value = value.nil? ? "" : value.to_s(:datepicker_format)
       
       options[:input_html] ||= {}
       time_field_options = options.merge(:value => time_value, :class => 'time_picker')
@@ -310,11 +310,11 @@ module CustomFormBuilder
     end
 
     def date_enabled(method, options)
-      Time::DATE_FORMATS[:date_format] = I18n.t('date.formats.datepicker_format')
+      Time::DATE_FORMATS[:datepicker_format] = I18n.t('time.formats.datepicker_format')
 
       object_name = object.class.to_s.underscore.to_sym
       value = ActionView::Helpers::InstanceTag.value(object, method)
-      date_value = value.nil? ? "" : value.to_s(:short_date)
+      date_value = value.nil? ? "" : value.to_s(:datepicker_format)
       options[:input_html] ||= {}
       options[:class] ||= 'date_picker'
       options[:value] ||= date_value
@@ -411,3 +411,4 @@ module CustomFormBuilder
 
   end
 end
+

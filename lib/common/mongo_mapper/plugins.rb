@@ -7,6 +7,7 @@ require_relative 'plugins/localization'
 require_relative 'plugins/nested_attributes'
 require_relative 'plugins/search_builder'
 require_relative 'plugins/state_terminated'
+require_relative 'plugins/archivable'
 
 # install common plugins
 module DocumentPluginAddition

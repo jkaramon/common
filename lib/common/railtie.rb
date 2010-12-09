@@ -36,13 +36,7 @@ module Common
       Formtastic::SemanticFormBuilder.i18n_lookups_by_default = true
     end
 
-    initializer 'common.hoptoad' do
-      HoptoadNotifier.configure do |config|
-        config.api_key = 'd1eab893296bfe267a1703a15ff87e17'
-        config.js_notifier = false
-      end
-    end
-
+   
     initializer 'common.action_mailer' do
       # Email settings
       ActionMailer::Base.delivery_method = :test

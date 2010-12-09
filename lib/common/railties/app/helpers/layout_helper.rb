@@ -33,26 +33,7 @@ module LayoutHelper
     content_tag(:a, t('contact_support'), {:href => "mailto:support@vanilladesk.com?subject=#{t('vanilladesk_support')}"})
   end
 
-  def app_js
-    <<-JAVASCRIPT
-      var js_paths = {
-        root: '/javascripts/',
-        lib: '/javascripts/lib/'
-      };
-
-      var App = {
-        current_locale: '#{current_locale}',
-        current_subdomain: '#{current_subdomain}',
-        absolute_url: function(url) { 
-          return '/{prefix}/{url}'.format({ 
-            prefix: this.current_subdomain, 
-            url: url
-          }).replace('\/\/', '/'); 
-        }
-      };
-    JAVASCRIPT
-  end
-
+  
   def codelist_js
     codelist = {
       :path => collection_path,

@@ -11,26 +11,27 @@ module Rack
     end  
 
     def call env
-      # Valid url is /i18n-<i18n key>-<locale>.<format> where
+      # Valid url is /i18n-<locale>.js where
       # i18n key - yaml branch named "locale.key"
       # locale - locale as is
-      # format - js or json
-      if data_array = env['PATH_INFO'].scan(/^\/i18n-(\w{1,3})[.](js[on]*)$/)[0]
-        locale, type = data_array
-       
+      if data_array = env['PATH_INFO'].scan(/^\/i18n-(\w{1,3})[.]js$/)[0]
+        locale = data_array.first
         # Get yaml 
-        json = YAML::load(::File.open("#{Rails.root}/config/locales/js/#{locale}.yml"))[locale]['js'].to_json
+        loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/#{locale}.yml"))[locale]['js']
+        formats_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/formats-#{locale}.yml"))[locale]['js']
 
+        json = loc_data.merge(formats_data).to_json
+  
         return @app.call env if json == 'null' # Branch not found
-        content_type, response = type == 'js' ?
-        ['application/javascript', "var i18n = #{json};"] :
-        ['application/json', json]
-
+        content_type = 'application/javascript'
+        response =  "var i18n = #{json};"
         [200, {'Content-Type' => content_type}, [response]]
       else
         @app.call env
       end
     end
+
+
       
   end
 end
