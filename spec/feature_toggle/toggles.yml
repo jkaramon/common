@@ -1,0 +1,6 @@
+new_feature: 
+  description: 'My new feature'
+  hide_in: 'production devcached' 
+second_feature: 
+  description: 'My second feature'
+  hide_in: 'devcached ci'
