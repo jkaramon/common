@@ -4,10 +4,12 @@ module Jobs
     class BaseTracker
 
       attr_accessor :name
+      attr_reader :status, :status_description
 
       def initialize(name)
         @name = name
         @doc = tracker_doc_template
+        @status = @doc[:status]
       end
 
       def track!
@@ -52,11 +54,14 @@ module Jobs
       end
 
       def set_success!
-        collection.update( me_selector, {"$set" => {"status" => "ok"} } )
+        @status = :ok
+        collection.update( me_selector, {"$set" => {"status" => @status.to_s} } )
       end
 
       def set_error!(err)
-        collection.update( me_selector, {"$set" => {"status" => "error", "status_description" => err} } )
+        @status = :error
+        @status_description = err
+        collection.update( me_selector, {"$set" => {"status" => @status.to_s, "status_description" => err} } )
       end
 
 
