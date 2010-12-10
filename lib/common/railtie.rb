@@ -21,7 +21,7 @@ module Common
     config.before_initialize do
       ::AppConfig = AppConfigLoader.load("#{Rails.root}/config/app_config.yml")
       ::SecureConfig = AppConfigLoader.load("#{Rails.root}/config/secure_config.yml")
-      ::FT = Toggler.load_config("#{Rails.root}/config/toggles.yml")
+      ::FT = FeatureToggle::Toggler.load_config("#{Rails.root}/config/toggles.yml")
       DbConnection.set
     end
 
