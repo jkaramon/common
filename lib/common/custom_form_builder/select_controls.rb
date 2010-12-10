@@ -412,6 +412,7 @@ module CustomFormBuilder
     end
 
     def boolean_select_input(method, options)
+      input_name = generate_association_input_name(method)
       selected = object.send(method)
       values = ""
       bools = { -1 => ::I18n.t(:bool_unknown), 1 => ::I18n.t(:bool_yes), 0 => ::I18n.t(:bool_no) }
@@ -421,17 +422,22 @@ module CustomFormBuilder
         values += " >#{value}</option>"
       }
       self.label(method,options_for_label(options)) <<
-      template.select_tag("boolean_select", template.raw(values))
-
-#      case get_rule(method).visibility
-#      when :enabled
-#        return input(method, options)
-#      when :disabled
-#        return disabled_field(method, options)
-#      end
- 
+      template.select_tag("#{@object_name}[#{input_name}]", template.raw(values))
     end
-    
+   
+    def ticket_status_select_input(method, options)
+      input_name = generate_association_input_name(method)
+      selected = object.send(method)
+      klass = Class.const_get( options[:class] )
+      values = "<option value=''>#{::I18n.t(:all)}</option>"
+      klass.state_machine.states.each do |s|
+        values += "<option value='#{s.name}'"
+        values += " selected='selected'" if selected == s.name
+        values += " >#{::I18n.t(s.name)}</option>"
+      end
+      self.label(method,options_for_label(options)) <<
+      template.select_tag("#{@object_name}[#{input_name}]", template.raw(values))
+    end
  
     private 
     
