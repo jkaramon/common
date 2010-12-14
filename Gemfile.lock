@@ -11,7 +11,7 @@ GIT
 PATH
   remote: .
   specs:
-    common (0.0.5)
+    common (0.0.7)
       hoptoad_notifier
       servolux
 
@@ -53,7 +53,15 @@ GEM
     bson_ext (1.1.4)
     builder (2.1.2)
     cancan (1.4.0)
+    ci_reporter (1.6.3)
+      builder (>= 2.1.2)
     columnize (0.3.2)
+    cucumber (0.10.0)
+      builder (>= 2.1.2)
+      diff-lcs (~> 1.1.2)
+      gherkin (~> 2.3.2)
+      json (~> 1.4.6)
+      term-ansicolor (~> 1.0.5)
     devise (1.1.5)
       bcrypt-ruby (~> 2.1.2)
       warden (~> 1.0.2)
@@ -64,10 +72,14 @@ GEM
       actionpack (>= 2.3.0)
       activesupport (>= 2.3.0)
       i18n (>= 0.4.0)
+    gherkin (2.3.2)
+      json (~> 1.4.6)
+      term-ansicolor (~> 1.0.5)
     hoptoad_notifier (2.3.12)
       activesupport
       builder
     i18n (0.4.2)
+    json (1.4.6)
     linecache19 (0.5.11)
       ruby_core_source (>= 0.1.4)
     mail (2.2.12)
@@ -100,16 +112,14 @@ GEM
       rake (>= 0.8.4)
       thor (~> 0.14.0)
     rake (0.8.7)
-    rspec (2.0.1)
-      rspec-core (~> 2.0.1)
-      rspec-expectations (~> 2.0.1)
-      rspec-mocks (~> 2.0.1)
-    rspec-core (2.0.1)
-    rspec-expectations (2.0.1)
-      diff-lcs (>= 1.1.2)
-    rspec-mocks (2.0.1)
-      rspec-core (~> 2.0.1)
-      rspec-expectations (~> 2.0.1)
+    rspec (2.3.0)
+      rspec-core (~> 2.3.0)
+      rspec-expectations (~> 2.3.0)
+      rspec-mocks (~> 2.3.0)
+    rspec-core (2.3.0)
+    rspec-expectations (2.3.0)
+      diff-lcs (~> 1.1.2)
+    rspec-mocks (2.3.0)
     ruby-debug-base19 (0.11.24)
       columnize (>= 0.3.1)
       linecache19 (>= 0.5.11)
@@ -121,11 +131,12 @@ GEM
     ruby_core_source (0.1.4)
       archive-tar-minitar (>= 0.5.2)
     servolux (0.9.5)
+    term-ansicolor (1.0.5)
     thor (0.14.6)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
     tzinfo (0.3.23)
-    warden (1.0.2)
+    warden (1.0.3)
       rack (>= 1.0.0)
 
 PLATFORMS
@@ -136,13 +147,15 @@ DEPENDENCIES
   bson_ext
   bundler (>= 1.0.0)
   cancan (= 1.4.0)
+  ci_reporter
   common!
+  cucumber
   devise
   formtastic (= 1.1.0)
   hoptoad_notifier
   mongo
   mongo_mapper!
   rails (= 3.0.0)
-  rspec (= 2.0.1)
+  rspec
   ruby-debug19
   servolux
