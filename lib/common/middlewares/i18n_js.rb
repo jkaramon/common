@@ -16,12 +16,11 @@ module Rack
       # locale - locale as is
       if data_array = env['PATH_INFO'].scan(/^\/i18n-(\w{1,3})[.]js$/)[0]
         locale = data_array.first
-
         selected = "default"
-
-        user_id = env['rack.session']['warden.user.user.key'][1].to_s
+        user_id = env['rack.session']['warden.user.user.key']
+        
         unless user_id.nil?
-          user = User.find(user_id)
+          user = User.find(user_id[1].to_s)
           unless user.user_settings.nil?
             selected = user.user_settings.time_format
           end
