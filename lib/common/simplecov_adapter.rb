@@ -11,3 +11,8 @@ SimpleCov.adapters.define 'default' do
   add_group 'Libraries', 'lib'
 end
 
+SimpleCov.adapters.define 'gem' do
+  add_filter '/spec/'
+end
+
+

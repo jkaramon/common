@@ -1,4 +1,7 @@
 require 'rubygems'
+
+require 'common/simplecov_adapter'
+SimpleCov.start 'gem'
 require 'mongo_mapper'
 require "action_view/railtie"
 require "action_controller/railtie"
