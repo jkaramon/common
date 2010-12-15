@@ -286,15 +286,15 @@ module CustomFormBuilder
       template.text_field_tag(method, value.to_s, {:disabled => 'disabled', :class=>'disabled'})
     end
     
-    def datetime_enabled(method, options)
-      Time::DATE_FORMATS[:datepicker_format] = I18n.t('time.formats.datepicker_format')
+ def datetime_enabled(method, options)
+      Time::DATE_FORMATS[:datepicker] = I18n.t('time.formats.datepicker')
 
       object_name = object.class.to_s.underscore.to_sym
       value = ActionView::Helpers::InstanceTag.value(object, method)
       time_value = value.nil? ? "" : value.to_s(:time)
 
-      date_value = value.nil? ? "" : value.to_s(:datepicker_format)
-      
+      date_value = value.nil? ? "" : value.to_s(:datepicker)
+
       options[:input_html] ||= {}
       time_field_options = options.merge(:value => time_value, :class => 'time_picker')
       options[:class] ||= 'date_picker'
@@ -306,20 +306,20 @@ module CustomFormBuilder
       end
       self.label(method, options_for_label(options)) <<
       self.text_field(method, options) <<
-      self.text_field(method, time_field_options).gsub(/#{method}/, "#{method}_time")      
+      self.text_field(method, time_field_options).gsub(/#{method}/, "#{method}_time")
     end
 
     def date_enabled(method, options)
-      Time::DATE_FORMATS[:datepicker_format] = I18n.t('time.formats.datepicker_format')
+      Time::DATE_FORMATS[:datepicker] = I18n.t('time.formats.datepicker')
 
       object_name = object.class.to_s.underscore.to_sym
       value = ActionView::Helpers::InstanceTag.value(object, method)
-      date_value = value.nil? ? "" : value.to_s(:datepicker_format)
+      date_value = value.nil? ? "" : value.to_s(:datepicker)
       options[:input_html] ||= {}
       options[:class] ||= 'date_picker'
       options[:value] ||= date_value
       self.label(method, options_for_label(options)) <<
-      self.text_field(method, options)     
+      self.text_field(method, options)
     end
 
     def time_enabled(method, options)

@@ -1,5 +1,8 @@
 require 'rubygems'
 require 'mongo_mapper'
+require "action_view/railtie"
+require "action_controller/railtie"
+
 $:.unshift( File.dirname(__FILE__) + '/../lib' )
 require 'common'
 

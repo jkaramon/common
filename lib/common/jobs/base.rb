@@ -33,6 +33,8 @@ module Jobs
       tracker.set_success!
     rescue => err
       log_error(err)
+    ensure 
+      self
     end
     
     def log_error(exc)

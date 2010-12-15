@@ -8,7 +8,7 @@ module Rack
     def initialize app, options = {}
       @app = app
       @options = options
-    end  
+    end
 
     def call env
       # Valid url is /i18n-<locale>.js where
@@ -16,13 +16,30 @@ module Rack
       # locale - locale as is
       if data_array = env['PATH_INFO'].scan(/^\/i18n-(\w{1,3})[.]js$/)[0]
         locale = data_array.first
-        # Get yaml 
+        selected = "default"
+        user_id = env['rack.session']['warden.user.user.key']
+        
+        unless user_id.nil?
+          user = User.find(user_id[1].to_s)
+          unless user.user_settings.nil?
+            selected = user.user_settings.time_format
+          end
+        end
+
+        # Get yaml
         loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/#{locale}.yml"))[locale]['js']
+
         formats_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/formats-#{locale}.yml"))[locale]['js']
 
-        json = loc_data.merge(formats_data).to_json
-  
+        if formats_data.nil?
+          json = loc_data.to_json
+        else
+          selected_time_format = {"formats"=> {"time" => formats_data['formats']['time'][selected] }}
+          json = loc_data.merge(selected_time_format).to_json
+        end
+
         return @app.call env if json == 'null' # Branch not found
+
         content_type = 'application/javascript'
         response =  "var i18n = #{json};"
         [200, {'Content-Type' => content_type}, [response]]
@@ -31,7 +48,5 @@ module Rack
       end
     end
 
-
-      
   end
 end

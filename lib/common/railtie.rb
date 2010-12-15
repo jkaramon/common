@@ -21,8 +21,12 @@ module Common
     config.before_initialize do
       ::AppConfig = AppConfigLoader.load("#{Rails.root}/config/app_config.yml")
       ::SecureConfig = AppConfigLoader.load("#{Rails.root}/config/secure_config.yml")
+      ::FT = FeatureToggle::RailsToggler.load_config("#{Rails.root}/config/toggles.yml")
       DbConnection.set
     end
+
+    initializer "common.feature_toggler" do
+          end
 
     initializer "common.register_middlewares" do |app|
       app.middleware.use "Rack::I18nJs"

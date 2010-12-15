@@ -11,7 +11,7 @@ module Jobs
     def queue_name
       raise "Not Implemented. Implement in inheritor"
     end
-     
+
     def execute(options = {})
       queue = Messaging::Queue.new queue_name
       info "Starting #{job_name.humanize} job"
@@ -30,8 +30,9 @@ module Jobs
           log_error(err)
         end
       end
-        info "Total processed mesages: #{processed_messages}"
-        info  "#{job_name.humanize} finished successfuly"
+      info "Total processed mesages: #{processed_messages}"
+      info  "#{job_name.humanize} finished successfuly"
+      self
     end
 
   end
