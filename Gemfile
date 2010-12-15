@@ -10,8 +10,6 @@ gem "bson_ext"
 
 gem 'ci_reporter'
 gem "mongo"
-# gem "mongo_mapper", :path => "~/Projects/mongomapper" 
-# gem "mongo_mapper", :git => "git://github.com/jkaramon/mongomapper.git", :branch => "rails3"
 gem "mongo_mapper", :git => "git://github.com/jnunemaker/mongomapper.git", :branch => "rails3"
 gem "devise" 
 gem "formtastic", "1.1.0" 
