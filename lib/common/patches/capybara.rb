@@ -1,3 +1,5 @@
+require 'capybara'
+
 class Capybara::Driver::Selenium
   
   # Saves png screenshot to the filename
