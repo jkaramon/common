@@ -7,7 +7,7 @@ module MongoMapper
     module HierarchicalEntity 
 
       def self.configure(model)
-        raise "Model does not define #name metohd" unless model.respond_to?(:name)
+        raise "Model does not define #name method" unless model.respond_to?(:name)
         model.class_eval do
           key :parent_id, ObjectId
           belongs_to :parent, :class_name => model.to_s
@@ -62,11 +62,24 @@ module MongoMapper
 
         alias :display_name :full_name
 
-        # Represent tree branch as array where first element is root category
+        # Represent tree branch as array where first element is root entity
         def full_path
           return full_path = [self] if parent.nil?
           full_path = parent.full_path << self
         end
+
+        # Returns array of ascendant_ids where first element is root entity
+        def ascendant_ids
+          ascendant_and_self_ids.reject{ |id| id == self.id }
+        end
+
+        # Returns array of ascendant_ids where first element is root entity
+        # and last element is id of self
+        def ascendant_and_self_ids
+          full_path.map{ |c| c.id }
+        end
+
+
 
 
         # returns children of the current entity

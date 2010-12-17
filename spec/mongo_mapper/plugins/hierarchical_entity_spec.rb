@@ -30,7 +30,17 @@ describe MongoMapper::Plugins::HierarchicalEntity do
   end 
 
   
-  describe "Hierarchy" do
+  describe "Hierarchy
+     root  _____
+      |        |
+      v        v
+    l1_ch1   l1_ch2
+      |
+      v
+    l2_ch1
+      |
+      v
+    l3_ch1" do
 
     before(:all) do
       HierachicalModel.collection.remove
@@ -52,6 +62,14 @@ describe MongoMapper::Plugins::HierarchicalEntity do
     
     it "should have correct parent name" do
       @l1_ch1.parent_name.should == "root" 
+    end
+   
+     it "should have correct ascendant_and_self_ids array" do
+      @l3_ch1.ascendant_and_self_ids.should == [@root.id, @l1_ch1.id, @l2_ch1.id, @l3_ch1.id ]
+    end
+
+    it "should have correct ascendant_ids array" do
+      @l3_ch1.ascendant_ids.should == [@root.id, @l1_ch1.id, @l2_ch1.id ]
     end
 
 

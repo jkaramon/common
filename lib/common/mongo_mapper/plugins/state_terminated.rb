@@ -19,6 +19,8 @@ module MongoMapper
           self.state = :terminated
           save!
         end
+
+        alias :do_terminate! :do_terminate
       end
 
     end

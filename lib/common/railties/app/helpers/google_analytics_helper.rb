@@ -23,9 +23,7 @@ module GoogleAnalyticsHelper
   
   def set_domain
     return "" if AppConfig.google_analytics_domain.nil?
-    "_gaq.push(['_setDomainName', '#{AppConfig.google_analytics_domain}']);\n" <<
-    "_gaq.push(['_setAllowHash', false]);"
-    
+    "_gaq.push(['_setDomainName', '#{AppConfig.google_analytics_domain}']);\n" 
   end
   
   def add_username_var
