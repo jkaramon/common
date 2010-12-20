@@ -8,6 +8,8 @@ module Common
       each_railtie_file('tasks/*.rake') { |rake_file| load rake_file }   
     end
 
+  
+
     # Initializes  Railtie view helpers
     def init_helpers
       each_railtie_file('app/helpers/*.rb') do |helper_file| 
