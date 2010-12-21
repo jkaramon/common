@@ -7,6 +7,10 @@ namespace :hudson do
     "hudson/reports"
   end
 
+  def screenshot_path
+    "hudson/screenshots"
+  end
+
   def cucumber_report_path
     "#{report_path}/cucumber"
   end
@@ -15,23 +19,29 @@ namespace :hudson do
     "#{report_path}/rspec"
   end
 
-  def report_setup(report_path)
-    rm_rf report_path
-    mkdir_p report_path
+  def recreate_folder(path)
+    rm_rf path
+    mkdir_p path
   end
   
   desc 'Recreates cucumber report output folder'
   task :cucumber_report_setup do
-    report_setup cucumber_report_path
+    recreate_folder cucumber_report_path
   end
 
   desc 'Recreates rspec report output folder'
   task :rspec_report_setup do
-    report_setup rspec_report_path
+    recreate_folder rspec_report_path
   end
 
+  desc 'Recreates cucumber screenshot folder'
+  task :screenshot_setup do
+    recreate_folder screenshot_path 
+  end
+
+
   desc "Runs all cucumber features"
-  Cucumber::Rake::Task.new({'cucumber'  => [:cucumber_report_setup]}) do |t|
+  Cucumber::Rake::Task.new({'cucumber'  => [:screenshot_setup, :cucumber_report_setup]}) do |t|
     t.cucumber_opts = %{--profile default  --format junit --out #{cucumber_report_path}}
   end
 

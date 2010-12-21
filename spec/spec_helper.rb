@@ -1,10 +1,16 @@
 require 'rubygems'
+require 'common/simplecov_adapter'
+SimpleCov.start 'gem'
+
+$:.unshift( File.dirname(__FILE__) + '/../lib' )
+
 require 'mongo_mapper'
 require "action_view/railtie"
 require "action_controller/railtie"
 
-$:.unshift( File.dirname(__FILE__) + '/../lib' )
+
 require 'common'
+
 
 # Disable Hoptoad
 module HoptoadNotifier

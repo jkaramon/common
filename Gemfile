@@ -20,3 +20,5 @@ gem "cancan", '1.4.0'
 gem "rspec"
 gem "cucumber"
 gem "capybara",  "0.3.9"
+
+gem 'simplecov', :require => false

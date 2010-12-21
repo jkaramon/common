@@ -8,6 +8,7 @@ require_relative 'plugins/nested_attributes'
 require_relative 'plugins/search_builder'
 require_relative 'plugins/state_terminated'
 require_relative 'plugins/archivable'
+require_relative 'plugins/hierachical_entity'
 
 # install common plugins
 module DocumentPluginAddition

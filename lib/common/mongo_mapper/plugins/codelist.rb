@@ -1,4 +1,3 @@
-
 module MongoMapper
   module Plugins
     module Codelist
@@ -25,4 +24,5 @@ module MongoMapper
     end
   end
 end
+
 
