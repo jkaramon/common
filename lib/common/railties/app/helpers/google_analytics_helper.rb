@@ -32,7 +32,7 @@ module GoogleAnalyticsHelper
   end
   
   def add_company_name_var
-    return "" if current_user.try(:sd_provider).nil?
+    return "" if !current_user.respond_to?(:sd_provider) || current_user.try(:sd_provider).nil?
     add_custom_var("companyname", current_user.sd_provider.name, 2)
   end
   
