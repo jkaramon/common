@@ -17,9 +17,14 @@ module MongoMigrations
       where(:status => 'success').sort(:version).last
     end
 
-     def self.any_unresolved?
-      where(:status => 'error').count > 0
+    def self.any_unresolved?
+      unresolved.count > 0
     end
+
+    def self.unresolved
+      where(:status => 'error')
+    end
+
 
 
     def self.resolve(db)
