@@ -429,15 +429,39 @@ module CustomFormBuilder
       input_name = generate_association_input_name(method)
       selected = object.send(method)
       klass = Class.const_get( options[:class] )
-      values = "<option value=''>#{::I18n.t(:all)}</option>"
+      values = ""#"<option value=''>#{::I18n.t(:all)}</option>"
       klass.state_machine.states.each do |s|
         values += "<option value='#{s.name}'"
         values += " selected='selected'" if selected == s.name
         values += " >#{::I18n.t(s.name)}</option>"
       end
       self.label(method,options_for_label(options)) <<
-      template.select_tag("#{@object_name}[#{input_name}]", template.raw(values))
+      template.select_tag("#{@object_name}[#{input_name}]", template.raw(values), options)
     end
+
+    def priority_report_select_input(method, options)
+      input_name = generate_association_input_name(method)
+      options[:class] ||= ""
+      selected = object.send(method)
+      case get_rule(method).visibility
+        when :enabled
+          values = ""#"<option value=''>#{::I18n.t(:all)}</option>"
+          num = 1
+          while num <= Priority.priorities
+            if num != selected.to_i
+              values += "<option value='#{num}' >#{num}</option>"
+            else
+              values += "<option value='#{num}' selected='selected' class='current' >#{num}</option>"
+            end
+            num += 1
+          end
+          self.label(method,options_for_label(options)) <<
+          template.select_tag("#{@object_name}[#{input_name}]", template.raw(values), options)
+        when :disabled
+          return disabled_field(method, options)
+      end
+    end
+
  
     private 
     
