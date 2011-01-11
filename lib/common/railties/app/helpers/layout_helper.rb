@@ -62,8 +62,8 @@ module LayoutHelper
 
 
 
-  def page_js(page_js)
-    content_for(:page_js) { "require(['pages/#{page_js}']);" }
+  def page_js()
+    "pages/#{page_js}" 
   end
 
   def entity_js(item)

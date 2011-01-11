@@ -2,14 +2,21 @@ require 'rubygems'
 require 'i18n'
 
 class Translator < Thor
-  
+
   FILE_SPLIT_CHAR = ':'
   KEY_VALUE_SPLIT_CHAR = ';'
   
-  desc "export LOCALE [--basedir]", 
-    "export yaml files to CSV for translation 
-    LOCALE .. locale to export 
-    --railsdir .. Rails app root dir (defaults to current directory)"
+  desc "export LOCALE [--railsdir]", <<-DESC 
+    exports yaml files to CSV for translation
+    exported CSV file will be stored in Rails.root/translations.[LOCALE].csv
+    CSV is semicolon separated file: [key;value]
+        key   .. key contains yaml filename and locale key(separated by colon)
+        value .. localized value
+    
+    Parameters:
+      LOCALE .. locale to export [en, cz, ..]
+      --railsdir .. Rails app root dir (defaults to current directory)
+  DESC
   method_options :railsdir => :string     
   def export(locale = 'en')
     @locale = locale
@@ -23,10 +30,20 @@ class Translator < Thor
     say "Translations are stored in #{@output_file}"
   end
 
-  desc("import CSV [--basedir]",   
-       "import localized CSV file to yaml.   
-       CSV .. CSV file to import
-       --railsdir .. Rails root dir (defaults to current directory)  ")
+  desc "import CSV [--railsdir]",  <<-DESC 
+    imports localized CSV file to yaml.
+    imported yaml file will be stored in 
+    Rails.root/config/locales/translations.[LOCALE].csv
+    
+    Input CSV is semicolon separated file: [key;value]
+        key   .. key contains yaml filename and locale key(separated by colon)
+        value .. localized value 
+  
+    Parameters: 
+      CSV .. CSV file to import. Path should be realive to [railsdir]. Filename should have this pattern [LOCALE].csv
+      --railsdir .. Rails root dir (defaults to current directory)  
+  
+  DESC
   method_options :railsdir => :string     
   def import(csv)
     unless File.exists?(csv) 
