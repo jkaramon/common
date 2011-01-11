@@ -5,6 +5,7 @@ module MongoMapper
       def self.configure(model)
         model.class_eval do
           plugin MongoMapper::Plugins::StateTerminated
+          plugin MongoMapper::Plugins::ActivesOrSelf
 
           state_machine :initial => :draft do
             event :do_activate do
@@ -25,20 +26,23 @@ module MongoMapper
 
           end
 
-          scope :actives, :state => :active
         end
       end
 
       module ClassMethods
 
-        def actives_or_self(entity)
-          ret = self.actives.all
-          ret << entity unless entity.nil? || entity.state == "active"
-          ret
+        def actives
+          where(:state => :active)
         end
+        
       end
 
       module InstanceMethods
+
+        def active?
+          self.state == 'active'
+        end
+
       end
 
     end

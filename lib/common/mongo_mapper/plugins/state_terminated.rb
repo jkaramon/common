@@ -7,20 +7,23 @@ module MongoMapper
       end
 
       module ClassMethods
+
         def all(options = {})
-          arr = self.where(options).all
-          ret = arr.find_all{|item| item.state != 'terminated'}
-          ret
+          self.where(:state => {'$nin' => [:terminated]}).all(options)
         end
+        
       end
 
       module InstanceMethods
         def do_terminate
           self.state = :terminated
-          save!
+          save
         end
 
-        alias :do_terminate! :do_terminate
+        def do_terminate!
+          self.state = :terminated
+          save!
+        end
       end
 
     end
