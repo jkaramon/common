@@ -1,4 +1,5 @@
 require_relative 'plugins/basic_entity_state'
+require_relative 'plugins/actives_or_self'
 require_relative 'plugins/codelist'
 require_relative 'plugins/custom_field'
 require_relative 'plugins/custom_field_type'
