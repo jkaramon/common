@@ -54,15 +54,7 @@ module AppServers
         end
 
         loop do
-          # Clear Identity Map before running job
-          # TODO: It is not thread safe, but this is problem of the IdentityMap implementation
-          if Rails.configuration.cache_classes 
-            MongoMapper::Plugins::IdentityMap.clear 
-          else 
-            MongoMapper::Document.descendants.clear 
-            MongoMapper::Plugins::IdentityMap.models.clear 
-          end 
-
+          
           yield unless @terminating
           if @terminating
             exit

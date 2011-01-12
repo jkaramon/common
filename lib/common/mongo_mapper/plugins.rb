@@ -14,7 +14,10 @@ require_relative 'plugins/hierachical_entity'
 # install common plugins
 module DocumentPluginAddition
   def self.included(model)
-    model.plugin MongoMapper::Plugins::IdentityMap
+    
+    # Disable IdentityMap plugin because it is not thread safe
+    # and we have issues with job server
+    # model.plugin MongoMapper::Plugins::IdentityMap
     model.plugin MongoMapper::Plugins::Localization
   end
 end
