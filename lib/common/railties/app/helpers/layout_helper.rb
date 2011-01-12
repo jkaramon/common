@@ -62,10 +62,6 @@ module LayoutHelper
 
 
 
-  def page_js(page_js)
-    "pages/#{page_js}" 
-  end
-
   def entity_js(item)
     entity = {
       :id => item.id.to_s,
