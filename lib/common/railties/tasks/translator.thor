@@ -1,5 +1,7 @@
+# encoding: UTF-8
 require 'rubygems'
 require 'i18n'
+
 
 class Translator < Thor
 
@@ -40,7 +42,7 @@ class Translator < Thor
         value .. localized value 
   
     Parameters: 
-      CSV .. CSV file to import. Path should be realive to [railsdir]. Filename should have this pattern [LOCALE].csv
+      CSV .. UTF8 CSV file to import. Path should be realive to [railsdir]. Filename should have this pattern [LOCALE].csv
       --railsdir .. Rails root dir (defaults to current directory)  
   
   DESC
@@ -65,13 +67,16 @@ class Translator < Thor
     
     hash = {}
     File.open(csv).each_line do |s|
-      hash.merge!(convert_csv_line(s) )
+      deep_merge!(hash, convert_csv_line(s) )
     end
-    
+   
     hash = { @locale => hash }
-    
+
+    # We have to convert manually to yaml string because YAML.dump do not support unicode
+    data = hash.to_yaml
+    data.gsub!(/\\x([0-9a-f]{2})/i) { $1.hex.chr }
     File.open( @yaml_file, 'w' ) do |out|
-      YAML.dump( hash, out )
+      out.write(data)
     end
 
     say "File #{@yaml_file} has been successfully imported"
@@ -87,23 +92,40 @@ class Translator < Thor
   end
 
   def convert_csv_line(line)
-    hash = {}
     file, csv_hash_string = line.split(FILE_SPLIT_CHAR, 2)
     keys_string, value = csv_hash_string.split(KEY_VALUE_SPLIT_CHAR, 2)
     keys = keys_string.split('.')
-    current_hash = hash
-    previous_hash = hash
+    hash = {}
+    value.chomp!
     last_key = ""
-    
+    current_hash = previous_hash = hash
     keys.each do |key|
-      previous_hash = current_hash
-      last_key = key
       current_hash[key] = {}
-      current_hash = current_hash[key] if current_hash
+      previous_hash = current_hash
+      current_hash = current_hash[key]
+      last_key = key
     end
     previous_hash[last_key] = value
+    say "#{keys.inspect}  -> #{value}"
+    say hash.inspect
+    say "-----------------------"
     hash
   end
+
+  def construct_hash()
+
+  end
+
+  def deep_merge!(first, second)
+    second.each_pair do |k,v|
+      if first[k].is_a?(Hash) and second[k].is_a?(Hash)
+        deep_merge!(first[k], second[k])
+      else
+        first[k] = second[k]
+      end
+    end
+  end
+  
 
   def export_file(file)
     file_key = file.gsub(/#{@basedir}|.yml|.#{@locale}/, "")
