@@ -52,8 +52,8 @@ module CustomFormBuilder
           memo += template.content_tag(:option, event_type.caption, html_options )
         end 
       end    
-      content = template.content_tag(:label, ::I18n.t("activemodel.state_events_label") ) <<
-      template.content_tag(:select, template.raw(option_list), :class => :state_events_select) <<
+      content = template.content_tag(:label, ::I18n.t("activemodel.state_events_label"), :for => :state_events_select ) <<
+      template.content_tag(:select, template.raw(option_list), :class => :state_events_select, :id => :state_events_select) <<
       template.tag(:input, { :type => :hidden, :name => :state_event, :id => :state_event_field })
       template.content_tag :li, content
     end
@@ -73,8 +73,8 @@ module CustomFormBuilder
           })
         end 
       end
-      content = template.content_tag(:label, ::I18n.t("activemodel.state_events_label") ) <<
-      template.content_tag(:select, option_list, :class => :state_events_select) << 
+      content = template.content_tag(:label, ::I18n.t("activemodel.state_events_label"), :for => :state_events_select ) <<
+      template.content_tag(:select, option_list, :class => :state_events_select, :id => :state_events_select ) <<
       template.tag(:input, { :type => :hidden, :name => :state_event, :id => :state_event_field })
       template.content_tag :li, content
     end
