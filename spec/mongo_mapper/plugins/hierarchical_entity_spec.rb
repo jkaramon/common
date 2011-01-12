@@ -114,16 +114,18 @@ describe MongoMapper::Plugins::HierarchicalEntity do
         
         @root.process_self_and_descendants do |entity|
           entity.name = "change 1"
+          entity.save!
         end
-        @all.each { |entity| entity.name.should == "change 1" }
+        @all.each { |entity| entity.reload; entity.name.should == "change 1" }
       end
 
       it "process_descendants_and_self should change all names" do
         
         @root.process_descendants_and_self do |entity|
           entity.name = "change 2"
+          entity.save!
         end
-        @all.each { |entity| entity.name.should == "change 2" }
+        @all.each { |entity| entity.reload; entity.name.should == "change 2" }
       end
 
     end
