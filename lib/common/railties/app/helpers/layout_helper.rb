@@ -62,7 +62,7 @@ module LayoutHelper
 
 
 
-  def page_js()
+  def page_js(page_js)
     "pages/#{page_js}" 
   end
 

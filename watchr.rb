@@ -21,7 +21,7 @@ end
 def run_spec(file)
   puts "Running spec file(s) #{file}"
   return unless file.include?(" ") || File.exist?(file)
-  system("bundle exec rspec --drb -fp -d -c #{file}")
+  system("bundle exec rspec -d -c #{file}")
 end
 
 
