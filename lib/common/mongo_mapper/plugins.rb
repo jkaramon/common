@@ -10,6 +10,7 @@ require_relative 'plugins/search_builder'
 require_relative 'plugins/state_terminated'
 require_relative 'plugins/archivable'
 require_relative 'plugins/hierachical_entity'
+require_relative 'plugins/concurrency_check'
 
 # install common plugins
 module DocumentPluginAddition

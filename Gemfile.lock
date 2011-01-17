@@ -11,7 +11,7 @@ GIT
 PATH
   remote: .
   specs:
-    common (0.0.22)
+    common (0.0.24)
       hoptoad_notifier
       servolux
 
