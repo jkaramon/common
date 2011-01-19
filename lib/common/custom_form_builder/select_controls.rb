@@ -52,8 +52,10 @@ module CustomFormBuilder
           self.label(method,options_for_label(options)) <<
           template.select_tag("#{@object_name}[#{input_name}]", template.raw(values))
         when :disabled
+          str = ''
+          str = I18n.translate("activemodel.attributes.approval_resolution.#{options[:selected]}") unless options[:selected].nil?
           self.label(method,options_for_label(options)) <<
-          template.text_field_tag(method, I18n.translate("activemodel.attributes.approval_resolution.#{options[:selected]}"), {:class => 'disabled'})
+          template.text_field_tag(method, str, {:class => 'disabled'})
       end
     end
 
