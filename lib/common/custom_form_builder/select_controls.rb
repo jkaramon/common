@@ -462,6 +462,19 @@ module CustomFormBuilder
       end
     end
 
+    def service_target_select_input(method, options)
+      input_name = generate_association_input_name(method)
+      selected = object.send(method)
+      values = ""
+      bools = { -1 => ::I18n.t(:bool_unknown), 1 => ::I18n.t(:achieved), 0 => ::I18n.t(:exceed) }
+      bools.each { |key, value|
+        values += "<option value='#{key}'"
+        values += " selected='selected'" if selected == key
+        values += " >#{value}</option>"
+      }
+      self.label(method,options_for_label(options)) <<
+      template.select_tag("#{@object_name}[#{input_name}]", template.raw(values))
+    end
  
     private 
     
