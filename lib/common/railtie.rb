@@ -47,13 +47,12 @@ module Common
       ActionMailer::Base.raise_delivery_errors = true
 
       ActionMailer::Base.default_url_options[:host] = AppConfig.mailer[:default_url_options][:host]
-      ActionMailer::Base.perform_deliveries = false
+      ActionMailer::Base.perform_deliveries = true
 
       ActionMailer::Base.smtp_settings = SecureConfig.smtp_settings.symbolize_keys
 
       if Rails.env.production? || Rails.env.ci? || Rails.env.night?
         ActionMailer::Base.delivery_method = :smtp
-        ActionMailer::Base.perform_deliveries = true    
       end
     end
 

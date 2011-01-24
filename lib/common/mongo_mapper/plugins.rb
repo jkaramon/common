@@ -1,4 +1,5 @@
 require_relative 'plugins/basic_entity_state'
+require_relative 'plugins/actives_or_self'
 require_relative 'plugins/codelist'
 require_relative 'plugins/custom_field'
 require_relative 'plugins/custom_field_type'
@@ -9,11 +10,15 @@ require_relative 'plugins/search_builder'
 require_relative 'plugins/state_terminated'
 require_relative 'plugins/archivable'
 require_relative 'plugins/hierachical_entity'
+require_relative 'plugins/concurrency_check'
 
 # install common plugins
 module DocumentPluginAddition
   def self.included(model)
-    model.plugin MongoMapper::Plugins::IdentityMap
+    
+    # Disable IdentityMap plugin because it is not thread safe
+    # and we have issues with job server
+    # model.plugin MongoMapper::Plugins::IdentityMap
     model.plugin MongoMapper::Plugins::Localization
   end
 end

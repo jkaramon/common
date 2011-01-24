@@ -54,6 +54,7 @@ module AppServers
         end
 
         loop do
+          
           yield unless @terminating
           if @terminating
             exit

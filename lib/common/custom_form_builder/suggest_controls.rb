@@ -140,7 +140,7 @@ module CustomFormBuilder
       object.tags.each do |tag|
         option_tags << template.content_tag(:option, tag, :selected => true, :value => tag)
       end
-      label + template.content_tag(:select, option_tags, select_options)
+      label + template.content_tag(:select, template.raw(option_tags), select_options)
     end
 
   end
