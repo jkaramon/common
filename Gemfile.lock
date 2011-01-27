@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/jnunemaker/mongomapper.git
-  revision: 108510cc9b96bfbcf7f095ec037bce30cb6aa2c9
+  revision: 49821df61931aebd426f3fba4658f31dc7c13825
   branch: rails3
   specs:
     mongo_mapper (0.8.6)
@@ -11,7 +11,7 @@ GIT
 PATH
   remote: .
   specs:
-    common (0.0.24)
+    common (0.0.28)
       hoptoad_notifier
       servolux
 
@@ -49,8 +49,8 @@ GEM
     arel (1.0.1)
       activesupport (~> 3.0.0)
     bcrypt-ruby (2.1.4)
-    bson (1.1.5)
-    bson_ext (1.1.5)
+    bson (1.2.0)
+    bson_ext (1.2.0)
     builder (2.1.2)
     cancan (1.4.0)
     capybara (0.3.9)
@@ -71,7 +71,7 @@ GEM
       gherkin (~> 2.3.2)
       json (~> 1.4.6)
       term-ansicolor (~> 1.0.5)
-    culerity (0.2.14)
+    culerity (0.2.15)
     devise (1.1.5)
       bcrypt-ruby (~> 2.1.2)
       warden (~> 1.0.2)
@@ -98,17 +98,17 @@ GEM
       selenium-client (>= 1.2.17)
       selenium-rc (>= 2.1.0)
     json (1.4.6)
-    json_pure (1.4.6)
+    json_pure (1.5.1)
     linecache19 (0.5.11)
       ruby_core_source (>= 0.1.4)
-    mail (2.2.14)
+    mail (2.2.15)
       activesupport (>= 2.3.6)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
-    mongo (1.1.5)
-      bson (>= 1.1.5)
+    mongo (1.2.0)
+      bson (>= 1.2.0)
     nokogiri (1.4.4)
     plucky (0.3.6)
       mongo (~> 1.1)
@@ -167,7 +167,7 @@ GEM
     thor (0.14.6)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
-    tzinfo (0.3.23)
+    tzinfo (0.3.24)
     warden (1.0.3)
       rack (>= 1.0.0)
 

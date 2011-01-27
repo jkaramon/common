@@ -36,15 +36,14 @@ class DbManager
 
   # returns database name from site_id
   def self.vd_db_name(site_id)
-    return "#{site_id}-vd#{db_suffix}"
+    return "#{site_id}#{vd_db_suffix}"
   end
 
   # returns site_id from database name. 
   # Returns nil, if not valid
   def self.vd_site_id(db_name)
     return nil unless vd_db?(db_name)
-    length = db_suffix.length+3
-    return db_name[0,db_name.length-length]
+    return db_name.sub(/#{vd_db_suffix}/, '')
   end
 
  
@@ -64,7 +63,7 @@ class DbManager
   private
   
   def self.vd_db?(db_name)
-    /[a-zA-Z0-9_-]*-vd#{db_suffix}$/ =~ db_name
+    /[a-zA-Z0-9_-]*{vd_db_suffix}$/ =~ db_name
   end
   
   def self.vd_site_db?(db_name)
@@ -81,8 +80,8 @@ class DbManager
   end
 
 
-  def self.vd_db_name(site_id)
-    return "#{site_id}-vd#{db_suffix}"
+  def self.vd_db_suffix
+    "-vd#{db_suffix}"
   end
 
   def self.db_suffix

@@ -4,10 +4,12 @@ class TestModel
   include MongoMapper::Document
   key :name, String
   plugin MongoMapper::Plugins::ConcurrencyCheck
+  
 end
 
 describe "MongoMapper::Plugins::ConcurrencyCheck" do
   before(:all) do
+    MongoMapper.database = 'rspec-common-test' 
     @entity = TestModel.new(:name => "Name1")
     @entity.save!
   end
