@@ -5,7 +5,7 @@ module ErrorNotifier
   def notify_error(exc, additional_data = {})
     HoptoadNotifier.notify(
       :error_class   => exc.class.to_s,
-      :error_message => exc.message,
+      :error_message => "#{exc.message}\n#{exc.backtrace}",
       :parameters    => additional_data
     )
   end 
