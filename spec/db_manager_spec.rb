@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe DbManager do
   
- 
+   
   
   it "should return correct site database_name when site is defined" do
     DbManager.env = "test_env"
@@ -26,6 +26,16 @@ describe DbManager do
     DbManager.vd_db_name("mycompany").should == "mycompany-vd-development"
   end
   
+  it "should compose correct vd_db_suffix" do
+    DbManager.env = "preprod"
+    DbManager.vd_db_suffix.should == "-vd-preprod"
+  end
+
+
+  it "should evaluate site db correctly" do
+    DbManager.env = "test"
+    DbManager.vd_site_db?("rspec-vd-test").should be_true
+  end
   
   
   

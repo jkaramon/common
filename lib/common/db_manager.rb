@@ -60,16 +60,21 @@ class DbManager
     end
   end
   
-  private
+  
   
   def self.vd_db?(db_name)
-    /[a-zA-Z0-9_-]*{vd_db_suffix}$/ =~ db_name
+    /[a-zA-Z0-9_-]*#{vd_db_suffix}$/ =~ db_name
   end
   
   def self.vd_site_db?(db_name)
     vd_site_id(db_name).present?
   end
 
+  def self.vd_db_suffix
+    "-vd#{db_suffix}"
+  end
+
+  private
 
   def self.each_db(&block)
     MongoMapper.connection.database_names.each {|db_name| block.call(db_name) }
@@ -80,10 +85,7 @@ class DbManager
   end
 
 
-  def self.vd_db_suffix
-    "-vd#{db_suffix}"
-  end
-
+  
   def self.db_suffix
     return "-development" if %w{ development devcached }.include?(env)
     return "" if env=="production"
