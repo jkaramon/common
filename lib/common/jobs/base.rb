@@ -42,7 +42,7 @@ module Jobs
       error_message = "#{error_note} #{format_exception(exc)}"
       error error_message
       tracker.set_error!(error_message)
-      notify_error(exc, :note => error_note, :backtrace => format_exception(exc) )
+      notify_error(exc, :note => error_note )
     end
 
     
