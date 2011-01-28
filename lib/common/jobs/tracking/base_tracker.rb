@@ -80,6 +80,7 @@ module Jobs
       def collection_name
         "#{name}_tracker"
       end
+      
       def collection
         @collection ||= database.collection(collection_name)
       end
