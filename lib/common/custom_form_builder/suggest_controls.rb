@@ -51,7 +51,8 @@ module CustomFormBuilder
       options[:input_html] ||= {}
       options[:input_html][:class] = 'suggest_person'
       options[:input_html][:title] = suggest_title(Person)
-      options[:input_html][:class] = 'suggest_person can_create' if template.can?(:create, Person)
+      options[:input_html][:class] += ' can_view_detail' if template.current_user.has_permission_id?(:read_person)
+      options[:input_html][:class] += ' can_create' if template.can?(:create, Person)
       suggest_input(method, options)
     end
 
@@ -59,6 +60,7 @@ module CustomFormBuilder
       options[:input_html] ||= {}
       options[:input_html][:class] = 'suggest_customer'
       options[:input_html][:title] = suggest_title(Customer)
+      options[:input_html][:class] += ' can_view_detail' if template.can?(:read, Customer)
       suggest_input(method, options)
     end
     
@@ -79,6 +81,7 @@ module CustomFormBuilder
     def kb_suggest_input(method, options)
       options[:input_html] ||= {}
       options[:input_html][:class] = 'suggest_kb'
+      options[:input_html][:class] += ' can_view_detail' if template.can?(:read, Kb)
       options[:input_html][:title] = suggest_title(Kb)
       suggest_input(method, options)
     end
@@ -86,6 +89,7 @@ module CustomFormBuilder
     def configuration_item_type_input(method, options)
       options[:input_html] ||= {}
       options[:input_html][:class] = 'suggest_configuration_item_type'
+      options[:input_html][:class] += ' can_view_detail' if template.can?(:read, ConfigurationItemType)
       options[:input_html][:title] = suggest_title(ConfigurationItemType)
       suggest_input(method, options)
     end
@@ -93,6 +97,7 @@ module CustomFormBuilder
     def configuration_item_input(method, options)
       options[:input_html] ||= {}
       options[:input_html][:class] = 'suggest_configuration_item'
+      options[:input_html][:class] += ' can_view_detail' if template.can?(:read, ConfigurationItem)
       options[:input_html][:title] = suggest_title(ConfigurationItem)
       suggest_input(method, options)
     end
@@ -109,9 +114,14 @@ module CustomFormBuilder
       assoc_name = method.to_s.sub(/_id$/, '')
       options[:input_html][:value] = object.send(assoc_name).try(:full_name)
       options[:input_html][:class] = 'suggest_category'
+      options[:input_html][:class] += ' can_view_detail' if template.can?(:read, Category)
       options[:input_html][:title] = suggest_title(Category)
-      suggest(method, options, get_rule(method).visibility) <<
-      template.content_tag(:span, '', :class => 'kb_icon')
+      if template.can?(:read, Kb)
+        suggest(method, options, get_rule(method).visibility) <<
+        template.content_tag(:span, '', :class => 'kb_icon')
+      else
+        suggest(method, options, get_rule(method).visibility)
+      end
     end
 
     def actor_input(method, options)
