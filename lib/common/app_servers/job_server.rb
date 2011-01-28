@@ -26,6 +26,8 @@ module AppServers
   # 
   #
   class JobServer < ::Servolux::Server
+    include ErrorNotifier
+    include Logging
     attr_accessor :pids
 
     def initialize(name, options = {})
@@ -52,10 +54,17 @@ module AppServers
           @terminating = true
           @worker_thread.run
         end
-
+        DbConnection.set # set new connection on forked subprocess
         loop do
+          # run job block
+          begin 
+            yield unless @terminating
+          rescue => err
+            log_fatal_error(err)
+            @terminating = true
+            @worker_thread.run
+          end
           
-          yield unless @terminating
           if @terminating
             exit
           end
@@ -84,9 +93,14 @@ module AppServers
 
     private
 
-    def info(message)
-      logger.info message
+  
+    def log_fatal_error(exc)
+      note = "Fatal error while running '#{name}' server job. "
+      error_message = "#{note}\n#{format_exception(exc)}"
+      error error_message
+      notify_error(exc, :note => note )
     end
+
 
 
 
@@ -97,7 +111,7 @@ module AppServers
         wakeup = (Time.now - start) > secs
         @terminating = true unless alive?(parent_pid)
         return if wakeup or @terminating      
-        sleep 3
+        sleep 1
       end
     end
 

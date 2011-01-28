@@ -11,8 +11,8 @@ module DbConnection
     end
     hosts = mongo['hosts']
     
-    Rails.logger.debug "Trying to connect to the  '#{hosts.inspect}' "
-    MongoMapper.connection = Mongo::ReplSetConnection.new(*hosts) 
+    Rails.logger.debug "Establishing DB connection to the  '#{hosts.inspect}' "
+    MongoMapper.connection = Mongo::ReplSetConnection.new(*hosts, :logger => Rails.logger) 
         
   end
 

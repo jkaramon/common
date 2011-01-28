@@ -38,7 +38,8 @@ module Jobs
       end
 
       def log(message, severity)
-        collection.update(me_selector, { "$push" => { "log" => log_entry(message, severity) } })
+        
+        update( { "$push" => { "log" => log_entry(message, severity) } })
       end
 
       def me_selector
@@ -55,13 +56,17 @@ module Jobs
 
       def set_success!
         @status = :ok
-        collection.update( me_selector, {"$set" => {"status" => @status.to_s} } )
+        update( {"$set" => {"status" => @status.to_s} } )
       end
 
       def set_error!(err)
         @status = :error
         @status_description = err
-        collection.update( me_selector, {"$set" => {"status" => @status.to_s, "status_description" => err} } )
+        update( {"$set" => {"status" => @status.to_s, "status_description" => err} } )
+      end
+
+      def update(cmd)
+        collection.update( me_selector, cmd )
       end
 
 
