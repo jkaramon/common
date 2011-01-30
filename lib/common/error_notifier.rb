@@ -3,7 +3,7 @@ module ErrorNotifier
   # exc - error which should be send
   # additional_data - Hash to provide additional error info.
   def notify_error(exc, additional_data = {})
-    additional_data[:backtrace] ||= exception.backtrace.join("\n")
+    additional_data[:backtrace] ||= exc.backtrace.join("\n")
     HoptoadNotifier.notify(
       :error_class   => exc.class.to_s,
       :error_message => exc.message,
