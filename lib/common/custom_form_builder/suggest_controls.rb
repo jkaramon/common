@@ -51,7 +51,7 @@ module CustomFormBuilder
       options[:input_html] ||= {}
       options[:input_html][:class] = 'suggest_person'
       options[:input_html][:title] = suggest_title(Person)
-      options[:input_html][:class] += ' can_view_detail' if template.current_user.has_permission_id?(:read_person)
+      options[:input_html][:class] += ' can_view_detail' if template.can?(:read, Person)
       options[:input_html][:class] += ' can_create' if template.can?(:create, Person)
       suggest_input(method, options)
     end
