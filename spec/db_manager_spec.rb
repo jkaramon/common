@@ -26,9 +26,9 @@ describe DbManager do
     DbManager.vd_db_name("mycompany").should == "mycompany-vd-development"
   end
   
-  it "should compose correct vd_db_suffix" do
+  it "should compose correct preprod vd_db_suffix" do
     DbManager.env = "preprod"
-    DbManager.vd_db_suffix.should == "-vd-preprod"
+    DbManager.vd_db_suffix.should == "-vd"
   end
 
 

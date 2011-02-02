@@ -2,6 +2,11 @@ require 'common'
 require 'rails'
 require_relative 'railtie_helper'
 
+# Force syck parser
+require 'yaml'
+YAML::ENGINE.yamler = 'syck'
+
+
 module Common 
   class Railtie < Rails::Railtie
 
