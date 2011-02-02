@@ -46,7 +46,7 @@ module Common
       ActionMailer::Base.delivery_method = :test
       ActionMailer::Base.raise_delivery_errors = true
 
-      ActionMailer::Base.default_url_options[:host] = AppConfig.mailer[:default_url_options][:host]
+      ActionMailer::Base.default_url_options = AppConfig.mailer[:default_url_options]
       ActionMailer::Base.perform_deliveries = true
 
       ActionMailer::Base.smtp_settings = SecureConfig.smtp_settings.symbolize_keys
