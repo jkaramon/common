@@ -57,7 +57,7 @@ module Common
 
       ActionMailer::Base.smtp_settings = SecureConfig.smtp_settings.symbolize_keys
 
-      if Rails.env.production? || Rails.env.ci? || Rails.env.night?
+      if Rails.env.production? || Rails.env.ci? || Rails.env.night? || Rails.env.preprod?
         ActionMailer::Base.delivery_method = :smtp
       end
     end
@@ -70,7 +70,6 @@ module Common
 
     config.to_prepare do
       RailtieHelper.init_helpers
-
     end
 
     rake_tasks { RailtieHelper.load_tasks }
