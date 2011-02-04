@@ -11,6 +11,11 @@ module MongoMapper
         def all(options = {})
           self.where(:state => {'$nin' => [:terminated]}).all(options)
         end
+
+        def paginate(options = {})
+          options.merge!(:state => {'$nin' => [:terminated]})
+          super(options)
+        end
         
       end
 
