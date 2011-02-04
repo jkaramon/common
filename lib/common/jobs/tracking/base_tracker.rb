@@ -37,6 +37,10 @@ module Jobs
         log(message, :error)
       end
 
+      def warn(message)
+        log( message, :warn)
+      end
+
       def log(message, severity)
         
         update( { "$push" => { "log" => log_entry(message, severity) } })
