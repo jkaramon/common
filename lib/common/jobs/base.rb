@@ -55,6 +55,11 @@ module Jobs
       super(message)
       tracker.error(message) if tracker
     end
+
+    def warn(message)
+      super(message)
+      tracker.warn(message) if tracker
+    end
     
     
  
