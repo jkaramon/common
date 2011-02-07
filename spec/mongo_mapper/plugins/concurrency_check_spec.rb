@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-class TestModel
+class ConcurrencyCheckModel
   include MongoMapper::Document
   key :name, String
   plugin MongoMapper::Plugins::ConcurrencyCheck
@@ -10,13 +10,13 @@ end
 describe "MongoMapper::Plugins::ConcurrencyCheck" do
   before(:all) do
     MongoMapper.database = 'rspec-common-test' 
-    @entity = TestModel.new(:name => "Name1")
+    @entity = ConcurrencyCheckModel.new(:name => "Name1")
     @entity.save!
   end
 
   it "should check concurrency update" do
-    first = TestModel.find(@entity.id)
-    second = TestModel.find(@entity.id)
+    first = ConcurrencyCheckModel.find(@entity.id)
+    second = ConcurrencyCheckModel.find(@entity.id)
     first.name = "1 subject"
     second.name = "2 subject"
     first.save!

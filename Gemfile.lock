@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/jkaramon/state_machine.git
+  revision: d000d4122e3c24297ba082b06b072bf81ef4101c
+  specs:
+    state_machine (0.9.4)
+
+GIT
   remote: git://github.com/jnunemaker/mongomapper.git
   revision: 49821df61931aebd426f3fba4658f31dc7c13825
   branch: rails3
@@ -11,7 +17,7 @@ GIT
 PATH
   remote: .
   specs:
-    common (0.0.33)
+    common (0.0.39)
       hoptoad_notifier
       servolux
 
@@ -194,3 +200,4 @@ DEPENDENCIES
   ruby-debug19
   servolux
   simplecov
+  state_machine!

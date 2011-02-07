@@ -11,6 +11,7 @@ require_relative 'plugins/state_terminated'
 require_relative 'plugins/archivable'
 require_relative 'plugins/hierachical_entity'
 require_relative 'plugins/concurrency_check'
+require_relative 'plugins/state_history'
 
 # install common plugins
 module DocumentPluginAddition
