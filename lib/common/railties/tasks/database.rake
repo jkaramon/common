@@ -19,6 +19,8 @@ namespace :db do
       puts "ERROR - you cannot run demo seed for production environment! Run db:seed instead"
       exit 1
     end
+    # Speed-up demo seed by including IdentityMap 
+    MongoMapper::Document.append_inclusions(MongoMapper::Plugins::IdentityMap)
     seed_file = File.join(Rails.root, 'db', file)
     load(seed_file) if File.exist?(seed_file)
   end

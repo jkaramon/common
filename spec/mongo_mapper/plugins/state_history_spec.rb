@@ -5,10 +5,6 @@ class StateHistoryUser
   include MongoMapper::Document
 end
 
-class EntityWOStateMachine
-  include MongoMapper::Document
-  plugin MongoMapper::Plugins::StateHistory
-end
 
 
 class StateHistoryModel
@@ -16,6 +12,11 @@ class StateHistoryModel
   plugin MongoMapper::Plugins::StateHistory
 
   state_machine :initial => :draft do
+
+    after_transition any => any do |entity, transition|
+      entity.update_state_history(transition)
+    end
+
 
     event :do_save do
       transition [:draft, :open] => same
@@ -76,13 +77,6 @@ describe "MongoMapper::Plugins::StateHistory" do
     @entity.do_create!
     @entity.state_history_records.first.updated_by.should == @entity.current_user.id
   end
-
-  it "should not  track entity without state machine on :state attribute" do
-    @invalid_entity = EntityWOStateMachine.new
-    @invalid_entity.save!
-    @invalid_entity.respond_to?(:state_history_records).should be_false
-  end
-
 
 
 end

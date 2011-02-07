@@ -21,7 +21,6 @@ module DocumentPluginAddition
     # and we have issues with job server
     # model.plugin MongoMapper::Plugins::IdentityMap
     model.plugin MongoMapper::Plugins::Localization
-    model.plugin MongoMapper::Plugins::StateHistory
   end
 end
 module EmbeddedDocumentPluginAddition
