@@ -86,6 +86,35 @@ module CustomFormBuilder
       end
     end
 
+    def mark_workaround_buttons(problem, workaround, options = {})
+      options['data-root'] = "problems"
+      options['data-root_id'] = problem.try(:id)
+      options['data-entity_id'] = workaround.try(:id)
+      accept = workaround_button('accept', 'do_accept', options)
+      reject = workaround_button('reject', 'do_reject', options)
+
+      result = accept+reject if workaround.open?
+      result = accept if workaround.rejected?
+      result = reject if workaround.accepted?
+
+      case get_rule("mark_workaround_buttons").visibility
+      when :enabled
+        return result
+      when :disabled
+        return ""
+      end
+    end
+
+    def workaround_button(text, action, options)
+      options = {
+        :type => :button,
+        :class => "mark_workaround",
+        :value => ::I18n.t(text),
+        "data-mark"=> action
+      }.merge(options) 
+      button(options)
+    end
+    
     def group_watch_buttons(current_user, options = {})
       result = ""
       return "" if current_user.person.nil?
