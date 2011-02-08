@@ -14,6 +14,7 @@ module ActiveSupport
     end
     
     def format_message(severity, msg)
+      return "" unless msg.respond_to?(:gsub)
       msg.gsub!(/\/n/, "\n")
       "[#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}] #{severity_name(severity)}  #{msg}\n"
     end
