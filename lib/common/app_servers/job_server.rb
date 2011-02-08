@@ -31,6 +31,23 @@ module AppServers
     attr_accessor :pids
 
     def initialize(name, options = {})
+      puts "Starting new process #{name} PID: #{Process.pid}"
+      pids = `ps aux | grep ruby.*#{name} | awk '{print $2}'`
+        .split
+        .find_all {|pid| pid != Process.pid.to_s}
+      pids = pids.find_all { |pid| system("kill -0 #{pid}") }
+      pids.each do |pid|
+        puts "Terminating already running '#{name}' process (#{pid})"
+        puts `kill #{pid}`
+      end
+      sleep 10 unless pids.empty?
+      pids = pids.find_all { |pid| system("kill -0 #{pid}") }
+      pids.each do |pid|
+        puts "Killing non terminated '#{name}' process (#{pid})"
+        puts `kill -9 #{pid}`
+      end
+
+      puts "Done"
       Process.daemon
       options[:interval] = 10
       super(name, options)
