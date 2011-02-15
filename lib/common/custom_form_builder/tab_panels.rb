@@ -55,7 +55,7 @@ module CustomFormBuilder
             when :enabled 
               tab_panel_header(key, title)
             when :disabled 
-              "<li class='disabled'><a href=\"#tab_#{key}\" tabIndex=\"-1\">#{title}}</a></li>"
+              "<li class='disabled'><a href=\"#tab_#{key}\" tabIndex=\"-1\">#{title}</a></li>"
         end
       end
       template.content_tag :ul, template.raw(result)
