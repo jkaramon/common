@@ -332,6 +332,36 @@ module CustomFormBuilder
       template.select_tag("priority_select", template.raw(values))
     end
 
+    # select input for human friendly priorities
+    def priority_word_select_input(method, options)
+      priority_options = ["high", "normal", "low"]
+      select_with_array(method, options, priority_options)
+    end
+
+    def task_result_input(method, options)
+      result_options = ["", "successfull", "not_successfull"]
+      select_with_array(method, options, result_options)
+    end
+
+    def select_with_array(method, options, array)
+      input_name = generate_association_input_name(method)
+      case get_rule(method).visibility
+        when :enabled
+          selected = object.send(method)
+          values = ""
+          array.each { |value|
+            text = I18n.translate(value) if value != ""
+            values += "<option value='#{value}'"
+            values += " selected='selected'" if selected == value
+            values += " >#{text}</option>"
+          }
+          self.label(method,options_for_label(options)) <<
+          template.select_tag("#{@object_name}[#{input_name}]",template.raw(values))
+        when :disabled
+          return disabled_field(method, options)
+      end
+    end
+
     def priority_select_change_input(method, options)
       options[:class] ||= ""
       options[:class] += " summary " if options.include?(:summary)
@@ -359,7 +389,6 @@ module CustomFormBuilder
       end
     end
 
-
     def kb_area_input(method, options)
       input_name = generate_association_input_name(method)
       selected_p = ""
@@ -376,7 +405,6 @@ module CustomFormBuilder
       self.label(method, options_for_label(options)) <<
       template.select_tag("#{@object_name}[#{input_name}]",template.raw(values))
     end
-
 
     def period_select_input(method, options)
       options[:label_method] ||= :name
