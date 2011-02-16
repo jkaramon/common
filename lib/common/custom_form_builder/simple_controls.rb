@@ -3,7 +3,23 @@ module CustomFormBuilder
   # All simple input controls goes here. 
   module SimpleControls
 
-
+    # read only field rendered as label + span
+    def readonly(method, options = {})
+      
+      return "" unless object.respond_to?(method)
+      value = object.send(method)
+      return "" if (value.blank?)
+      options[:label] = true unless options.include?(:label)
+      options[:class] ||= 'disabled'
+      summary_options(options)
+      span_options = {}
+      span_options[:class] = options[:class]
+      span_options[:class] += " " + options[:input_html][:class]
+      span_options["data-summary_length"] = options[:input_html]["data-summary_length"] if options[:input_html].include?("data-summary_length")
+      label = ""
+      label = self.label(method, options_for_label(options)) if options[:label]
+      template.content_tag(:li, template.raw(label << template.content_tag(:span, value.to_s, span_options )) )
+    end
 
     def input(method, options = {})
       return "" if control_hidden?(method)
