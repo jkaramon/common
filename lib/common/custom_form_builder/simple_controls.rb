@@ -360,8 +360,9 @@ module CustomFormBuilder
       object_name = object.class.to_s.underscore.to_sym
       value = ActionView::Helpers::InstanceTag.value(object, method)
       date_value = value.nil? ? "" : value.to_s(:datepicker)
+      summary_options(options)
       options[:input_html] ||= {}
-      options[:class] ||= 'date_picker'
+      options[:class] ||= 'date_picker ' + options[:input_html][:class]
       options[:value] ||= date_value
       self.label(method, options_for_label(options)) <<
       self.text_field(method, options)
