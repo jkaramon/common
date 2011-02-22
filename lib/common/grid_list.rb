@@ -6,8 +6,10 @@ module GridList
   # rows .. returned data
   def to_json(options={})
     settings = {}.merge(options)
-    settings[:records] ||= self.count unless self.empty?
+    query = {}.merge(options)
+    settings[:records] ||= 0
     settings[:total] = ( (settings[:records] - 1 ) / settings[:per_page] ) + 1
     "{ \"total\": \"#{settings[:total]}\", \"page\": \"#{settings[:page]}\", \"records\": \"#{settings[:records]}\",\"rows\": #{super(options)}}"
   end
+
 end

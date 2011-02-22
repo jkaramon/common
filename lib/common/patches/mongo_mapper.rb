@@ -17,11 +17,16 @@ module MongoMapper
           # collection.create_index(keys_to_index, options[:unique])
         end
 
+
+       
+
       end
 
+    end
 
-    end  
-  end
+
+  end  
 end
+
 
 MongoMapper::Document.append_extensions(MongoMapper::Plugins::Patches)

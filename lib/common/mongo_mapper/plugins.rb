@@ -1,3 +1,4 @@
+require 'mongo_mapper'
 require_relative 'plugins/basic_entity_state'
 require_relative 'plugins/actives_or_self'
 require_relative 'plugins/codelist'
@@ -12,6 +13,7 @@ require_relative 'plugins/archivable'
 require_relative 'plugins/hierachical_entity'
 require_relative 'plugins/concurrency_check'
 require_relative 'plugins/state_history'
+require_relative 'plugins/extended_pagination'
 
 # install common plugins
 module DocumentPluginAddition
@@ -21,6 +23,7 @@ module DocumentPluginAddition
     # and we have issues with job server
     # model.plugin MongoMapper::Plugins::IdentityMap
     model.plugin MongoMapper::Plugins::Localization
+    model.plugin MongoMapper::Plugins::ExtendedPagination
   end
 end
 module EmbeddedDocumentPluginAddition
