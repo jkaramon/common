@@ -39,7 +39,7 @@ module LayoutHelper
       :path => collection_path,
       :dash_type => model_class.to_s.underscore,
       :type => model_class.to_s,
-      :count => model_class.count
+      :count => model_class.all.count
     }
     content_for(:page_entity_js) { "var Page = Page || {};Page.codelist = #{codelist.to_json};" }
   end
