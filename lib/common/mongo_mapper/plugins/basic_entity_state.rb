@@ -6,7 +6,8 @@ module MongoMapper
         model.class_eval do
           plugin MongoMapper::Plugins::StateTerminated
           plugin MongoMapper::Plugins::ActivesOrSelf
-
+          plugin StateMachine::Internationalization
+          
           state_machine :initial => :draft do
             event :do_activate do
               transition [:inactive] => :active
