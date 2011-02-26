@@ -10,7 +10,6 @@ module CustomFormBuilder
     end
 
     def suggest(method, options, state)
-      puts "?>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>s"
       options[:input_html] ||= {}
       wrapper_class = options[:input_html].delete(:class);
       assoc_name = method.to_s.sub(/_id$/, '')

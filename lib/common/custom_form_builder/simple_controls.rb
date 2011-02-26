@@ -2,7 +2,7 @@ module CustomFormBuilder
   ##
   # All simple input controls goes here. 
   module SimpleControls
-
+   
     # read only field rendered as label + span
     def readonly(method, options = {})
       
@@ -21,6 +21,19 @@ module CustomFormBuilder
       template.content_tag(:li, template.raw(label << template.content_tag(:span, value.to_s, span_options )) )
     end
 
+    def state_input(method, options = {})
+      return "" if control_hidden?(method)
+      options[:class] ||= ''
+      options[:class] += options[:input_html][:class]
+      summary_options(options)
+      case get_rule(method).visibility
+        when :enabled
+          return self.label(method,options_for_label(options)) << self.text_field(:state_display_name, options)
+        when :disabled
+          return self.label(method, options_for_label(options)) << disabled_content(:state_display_name, options)
+      end
+    end
+    
     def input(method, options = {})
       return "" if control_hidden?(method)
       summary_options(options)
