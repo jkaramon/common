@@ -411,6 +411,29 @@ module CustomFormBuilder
       end
     end
 
+    def simple_checkbox_input(method, options)
+      input_options =  options.delete(:input_html) || {}
+      checked_value = options.delete(:checked_value) || '1'
+      unchecked_value = options.delete(:unchecked_value) || '0'
+      checked = @object && ActionView::Helpers::InstanceTag.check_box_checked?(@object.send(:"#{method}"), checked_value)
+                           
+      input_options[:id] = input_options[:id] || generate_html_id(method, "")
+      chk = template.check_box_tag(
+        "#{@object_name}[#{method}]",
+        checked_value,
+        checked,
+        input_options
+      )                                                                                                   
+      options[:for] ||= input_options[:id]
+      lbl = self.label(method, options_for_label(options)) 
+                                                                                                                     
+      if options[:label_position]==:right
+        "#{chk} #{lbl}"
+      else
+        "#{lbl} #{chk}"
+      end
+    end
+
     def priority_input(method, options)
       return "" if control_hidden?(method)
       summary_options(options)
