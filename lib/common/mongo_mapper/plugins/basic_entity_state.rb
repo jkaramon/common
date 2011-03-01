@@ -6,8 +6,14 @@ module MongoMapper
         model.class_eval do
           plugin MongoMapper::Plugins::StateTerminated
           plugin MongoMapper::Plugins::ActivesOrSelf
-
+          plugin StateMachine::Internationalization
+          
           state_machine :initial => :draft do
+
+            before_transition :draft => any - [:draft] do |entity, transition|
+              entity.set_human_id if entity.respond_to?(:set_human_id)
+            end
+
             event :do_activate do
               transition [:inactive] => :active
             end

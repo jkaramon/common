@@ -2,7 +2,7 @@ module CustomFormBuilder
   ##
   # All simple input controls goes here. 
   module SimpleControls
-
+   
     # read only field rendered as label + span
     def readonly(method, options = {})
       
@@ -21,6 +21,19 @@ module CustomFormBuilder
       template.content_tag(:li, template.raw(label << template.content_tag(:span, value.to_s, span_options )) )
     end
 
+    def state_input(method, options = {})
+      return "" if control_hidden?(method)
+      options[:class] ||= ''
+      options[:class] += options[:input_html][:class]
+      summary_options(options)
+      case get_rule(method).visibility
+        when :enabled
+          return self.label(method,options_for_label(options)) << self.text_field(:state_display_name, options)
+        when :disabled
+          return self.label(method, options_for_label(options)) << disabled_content(:state_display_name, options)
+      end
+    end
+    
     def input(method, options = {})
       return "" if control_hidden?(method)
       summary_options(options)
@@ -391,6 +404,29 @@ module CustomFormBuilder
       input_options =  options.delete(:input_html) || {}
       lbl = self.label(method, options_for_label(options)) 
       chk = self.check_box method, input_options
+      if options[:label_position]==:right
+        "#{chk} #{lbl}"
+      else
+        "#{lbl} #{chk}"
+      end
+    end
+
+    def simple_checkbox_input(method, options)
+      input_options =  options.delete(:input_html) || {}
+      checked_value = options.delete(:checked_value) || '1'
+      unchecked_value = options.delete(:unchecked_value) || '0'
+      checked = @object && ActionView::Helpers::InstanceTag.check_box_checked?(@object.send(:"#{method}"), checked_value)
+                           
+      input_options[:id] = input_options[:id] || generate_html_id(method, "")
+      chk = template.check_box_tag(
+        "#{@object_name}[#{method}]",
+        checked_value,
+        checked,
+        input_options
+      )                                                                                                   
+      options[:for] ||= input_options[:id]
+      lbl = self.label(method, options_for_label(options)) 
+                                                                                                                     
       if options[:label_position]==:right
         "#{chk} #{lbl}"
       else
