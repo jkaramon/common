@@ -100,6 +100,7 @@ module CustomFormBuilder
         selected = @object.default_operator_group.id 
       end
       options[:include_blank] ||= false
+      options[:label_method] ||= :display_name
       select_input(method, options)
     end
     
