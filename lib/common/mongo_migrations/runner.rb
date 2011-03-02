@@ -50,7 +50,8 @@ module MongoMigrations
     end
 
     def clear_cache_db
-      return if Rails.cache.nil? or not Rails.cache.respond_to?(:clear)
+      return unless defined?(RAILS_CACHE)
+      return if  Rails.cache.nil? or not Rails.cache.respond_to?(:clear)
       Rails.cache.clear
       info "Rails cache content cleared successfully!"
     end
