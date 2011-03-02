@@ -45,6 +45,19 @@ namespace :hudson do
     t.cucumber_opts = %{--profile default  --format junit --out #{cucumber_report_path}}
   end
 
+  desc "Runs all stable cucumber features"
+  Cucumber::Rake::Task.new({'cucumber'  => [:screenshot_setup, :cucumber_report_setup]}) do |t|
+    t.cucumber_opts = %{--profile stable  --format junit --out #{cucumber_report_path}}
+  end
+
+
+   desc "Runs unstable cucumber features"
+  Cucumber::Rake::Task.new({'cucumber_unstable'  => [:screenshot_setup, :cucumber_report_setup]}) do |t|
+    t.cucumber_opts = %{--profile unstable  --format junit --out #{cucumber_report_path}}
+  end
+
+
+
  
 
   desc "Runs all rspec tests"
