@@ -4,7 +4,7 @@ class ConcurrencyCheckModel
   include MongoMapper::Document
   key :name, String
   plugin MongoMapper::Plugins::ConcurrencyCheck
-  
+
 end
 
 describe "MongoMapper::Plugins::ConcurrencyCheck" do
