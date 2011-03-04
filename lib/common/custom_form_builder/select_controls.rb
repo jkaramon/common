@@ -117,6 +117,25 @@ module CustomFormBuilder
       select_input(method, options)
     end
 
+
+     # Defines person_by_customer select input
+    # See CustomFormBuilder::SelectControls#select_input select_input for available options 
+    # and source code for the defaults.
+    # @see CustomFormBuilder::SelectControls#select_input 
+    # @see Person
+    def person_by_customer_input(method, options)
+      options[:model] ||= Person
+      select_default(method, options)
+      selected = Person.all(:id => options[:selected]).first
+      
+      customer_id = template.current_person.try(:customer).try(:id)
+      options[:collection] ||= Person.where(:customer_id => customer_id, :state => :active).sort_by{ |entity| entity.last_name  }
+      options[:include_blank] = false
+      options[:label_method] = :person_display_name
+      select_input(method, options)
+    end
+
+
     # Defines message_type select input
     # See CustomFormBuilder::SelectControls#select_input select_input for available options 
     # and source code for the defaults.

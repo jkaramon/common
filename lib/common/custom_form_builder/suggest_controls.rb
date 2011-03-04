@@ -56,6 +56,7 @@ module CustomFormBuilder
       suggest_input(method, options)
     end
 
+ 
     def customer_input(method, options)
       options[:input_html] ||= {}
       options[:input_html][:class] = 'suggest_customer'
