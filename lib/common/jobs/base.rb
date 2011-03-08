@@ -26,10 +26,7 @@ module Jobs
 
     def execute
       @tracker = Tracking::BaseTracker.new(self.class.to_s.demodulize.underscore)
-      tracker.track!
-      info "Starting #{job_name.humanize} job"
       perform
-      info  "#{job_name.humanize} job finished successfuly"
       tracker.set_success!
     rescue => err
       log_error(err)
