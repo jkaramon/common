@@ -20,6 +20,6 @@ describe "MongoMapper::Plugins::ConcurrencyCheck" do
     first.name = "1 subject"
     second.name = "2 subject"
     first.save!
-    expect{second.save}.to raise_error("Document has been modified")
+    expect{second.save}.to raise_error(ConcurrencyError)
   end
 end
