@@ -1,6 +1,4 @@
-class ConcurrencyError < StandardError
 
-end
 
 module MongoMapper
   module Plugins
@@ -10,7 +8,7 @@ module MongoMapper
       def self.configure(model)
         model.class_eval do
           key :_timestamp, String
-          before_save :_check_concurrency
+          before_validation :_check_concurrency, :on => :update
         end
       end
 
@@ -32,12 +30,18 @@ module MongoMapper
       end
 
       module InstanceMethods
+        def trigger_concurrency_check_error
+          self.errors.add(:id, "#{self.class.human_name} has been modified by someone else! Try reopen it and save again.")
+        end
+
         def _check_concurrency
           return if self.class.disable_concurrency_check?
           actual_version = self.class.find(self.id)
           
           unless actual_version.try(:_timestamp).nil?
-            raise ConcurrencyError unless self._timestamp == actual_version._timestamp
+            unless self._timestamp == actual_version._timestamp
+              self.trigger_concurrency_check_error
+            end
           end
           self._timestamp = self.class.generate_timestamp
         end
