@@ -59,7 +59,7 @@ module CustomFormBuilder
     def summary_options(options)
       options[:input_html] ||= {}
       options[:input_html][:class] ||= ""
-      options[:input_html][:class] += " summary " if options.include?(:summary)
+      options[:input_html][:class] += " summary " if options.include?(:summary) && options[:summary]
       if(options.include?(:summary_length))
       options[:input_html]["data-summary_length"] = options[:summary_length] else
       options[:input_html]["data-summary_length"] = "20"
