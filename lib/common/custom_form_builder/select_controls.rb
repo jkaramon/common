@@ -458,16 +458,34 @@ module CustomFormBuilder
     def ticket_status_select_input(method, options)
       input_name = generate_association_input_name(method)
       selected = object.send(method)
-      klass = Class.const_get( options[:class] )
-      values = ""#"<option value=''>#{::I18n.t(:all)}</option>"
-      klass.state_machine.states.each do |s|
-        values += "<option value='#{s.name}'"
-        values += " selected='selected'" if selected == s.name
-        values += " >#{::I18n.t(s.name)}</option>"
+      states = []
+      [Incident, Problem, Request, Call].each do |klass|
+        klass.state_machine.states.each { |s| states << s.name if s.name.class == Symbol }
+      end
+      values = ""
+      states.uniq.each do |s|
+        values += "<option value='#{s}'"
+        values += " selected='selected'" if selected == s
+        values += " >#{::I18n.t(s)}</option>"
       end
       self.label(method,options_for_label(options)) <<
       template.select_tag("#{@object_name}[#{input_name}]", template.raw(values), options)
     end
+
+    def ticket_type_select_input(method, options)
+      input_name = generate_association_input_name(method)
+      selected = object.send(method)
+      values = ""
+      [Incident, Problem, Request, Call].each do |klass|
+        s = klass.new._type
+        values += "<option value='#{s}'"
+        values += " selected='selected'" if selected == s
+        values += " >#{s}</option>"
+      end
+      self.label(method,options_for_label(options)) <<
+      template.select_tag("#{@object_name}[#{input_name}]", template.raw(values), options)
+    end
+
 
     def priority_report_select_input(method, options)
       input_name = generate_association_input_name(method)
@@ -505,7 +523,29 @@ module CustomFormBuilder
       self.label(method,options_for_label(options)) <<
       template.select_tag("#{@object_name}[#{input_name}]", template.raw(values))
     end
- 
+
+    def time_interval_select_input(method, options)
+      input_name = generate_association_input_name(method)
+      selected = object.send(method)
+      select_options = [
+        [ ::I18n.translate('today'), :today ],
+        [ ::I18n.translate('this_week'), :this_week ], 
+        [ ::I18n.translate('last_week'), :last_week ], 
+        [ ::I18n.translate('this_month'), :this_month ], 
+        [ ::I18n.translate('last_month'), :last_month ], 
+        [ ::I18n.translate('last_30_days'), :last_30_days ], 
+        [ ::I18n.translate('this_quarter'), :this_quarter ],
+        [ ::I18n.translate('last_quarter'), :last_quarter ], 
+        [ ::I18n.translate('this_year'), :this_year ],
+        [ ::I18n.translate('last_year'), :last_year ], 
+        [ ::I18n.translate('custom'), :custom ] 
+      ]
+      sel_options = template.options_for_select(select_options, selected)
+
+      self.label(method, options_for_label(options)) <<
+      template.select_tag("#{@object_name}[#{input_name}]", sel_options)
+    end
+  
     private 
     
     def select_default(method, options)
