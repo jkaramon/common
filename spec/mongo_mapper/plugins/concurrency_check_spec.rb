@@ -4,7 +4,7 @@ class ConcurrencyCheckModel
   include MongoMapper::Document
   key :name, String
   plugin MongoMapper::Plugins::ConcurrencyCheck
-  
+
 end
 
 describe "MongoMapper::Plugins::ConcurrencyCheck" do
@@ -14,12 +14,27 @@ describe "MongoMapper::Plugins::ConcurrencyCheck" do
     @entity.save!
   end
 
+  it "unsaved entity should skip concurrency check" do
+    unsaved = ConcurrencyCheckModel.new(:name => "Name1")
+    unsaved.should be_valid
+    unsaved.save.should be_true
+  end
+
+  it "unsaved entity should skip concurrency check even if update_attributes called" do
+    unsaved = ConcurrencyCheckModel.new(:name => "Name1")
+    unsaved.update_attributes(:name => 'Name2')
+    unsaved.should be_valid
+    unsaved.save.should be_true
+  end
+
+
   it "should check concurrency update" do
     first = ConcurrencyCheckModel.find(@entity.id)
     second = ConcurrencyCheckModel.find(@entity.id)
     first.name = "1 subject"
     second.name = "2 subject"
     first.save!
-    expect{second.save}.to raise_error("Document has been modified")
+    second.should_not be_valid
+    second.errors.full_messages.first.should include("has been modified by someone else!") 
   end
 end

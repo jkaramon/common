@@ -1,11 +1,17 @@
+
 require 'spec_helper'
 require 'test_logger'
 
-describe Jobs::Base do
+describe Jobs::QueueProcessor do
   
-  class TestJob < Jobs::Base
-    def perform
-      "I am working ..."
+  class TestQueueJob < Jobs::QueueProcessor
+    
+    def queue_name
+      "__test"
+    end
+
+    def process_message(data)
+      info "Processing data '#{data}'"
     end
   end
 
@@ -13,12 +19,22 @@ describe Jobs::Base do
     @logger = TestLogger.new
   end
   
-  it "should execute TestJob" do
-    TestJob.execute(:logger => @logger)
-    @logger.infos.should include("Starting Testjob job")
-    @logger.infos.should include("Testjob job finished successfuly")
+  it "should execute empty queue job" do
+    TestQueueJob.execute(:logger => @logger)
+    @logger.infos.should be_empty
     @logger.errors.should be_empty
   end
+
+
+  it "should process message" do
+    job = TestQueueJob.new(:logger => @logger)
+    queue = Messaging::Queue.new job.queue_name 
+    queue.enqueue "hello !!!"
+    job.execute    
+    @logger.infos.first.should include("Processing message")
+    @logger.errors.should be_empty
+  end
+
 
 
 end

@@ -26,10 +26,7 @@ module Jobs
 
     def execute
       @tracker = Tracking::BaseTracker.new(self.class.to_s.demodulize.underscore)
-      tracker.track!
-      info "Starting #{job_name.humanize} job"
       perform
-      info  "#{job_name.humanize} job finished successfuly"
       tracker.set_success!
     rescue => err
       log_error(err)
@@ -42,7 +39,7 @@ module Jobs
       error_message = "#{error_note} #{format_exception(exc)}"
       error error_message
       tracker.set_error!(error_message)
-      notify_error(exc, :note => error_note )
+      notify_error(exc, :note => error_note, :current_site => MongoMapper.database.try(:name))
     end
 
     

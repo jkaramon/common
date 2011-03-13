@@ -8,8 +8,8 @@ module MongoMapper
           raise "Not Implemented. Implement in inheritor"
         end
 
-        def actives_or_self(entity)
-          ret = self.actives.all
+        def actives_or_self(entity, options ={})
+          ret = self.actives.all(options)
           ret << entity unless entity.nil? || entity.active?
           ret
         end

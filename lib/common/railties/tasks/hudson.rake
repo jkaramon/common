@@ -11,8 +11,17 @@ namespace :hudson do
     "hudson/screenshots"
   end
 
-  def cucumber_report_path
-    "#{report_path}/cucumber"
+  def cucumber_stable_report_path
+    "#{report_path}/cucumber/stable"
+  end
+
+  def cucumber_all_report_path
+    "#{report_path}/cucumber/all"
+  end
+
+  
+  def cucumber_unstable_report_path
+    "#{report_path}/cucumber/unstable"
   end
 
   def rspec_report_path
@@ -24,10 +33,21 @@ namespace :hudson do
     mkdir_p path
   end
   
-  desc 'Recreates cucumber report output folder'
-  task :cucumber_report_setup do
-    recreate_folder cucumber_report_path
+  desc 'Recreates cucumber all report output folder'
+  task :cucumber_all_report_setup do
+    recreate_folder cucumber_all_report_path
   end
+
+  desc 'Recreates cucumber stable report output folder'
+  task :cucumber_stable_report_setup do
+    recreate_folder cucumber_stable_report_path
+  end
+  
+  desc 'Recreates cucumber unstable report output folder'
+  task :cucumber_unstable_report_setup do
+    recreate_folder cucumber_unstable_report_path
+  end
+
 
   desc 'Recreates rspec report output folder'
   task :rspec_report_setup do
@@ -41,9 +61,22 @@ namespace :hudson do
 
 
   desc "Runs all cucumber features"
-  Cucumber::Rake::Task.new({'cucumber'  => [:screenshot_setup, :cucumber_report_setup]}) do |t|
-    t.cucumber_opts = %{--profile default  --format junit --out #{cucumber_report_path}}
+  Cucumber::Rake::Task.new({'cucumber'  => [:screenshot_setup, :cucumber_all_report_setup]}) do |t|
+    t.cucumber_opts = %{--profile default  --format junit --out #{cucumber_all_report_path}}
   end
+
+  desc "Runs all stable cucumber features"
+  Cucumber::Rake::Task.new({'cucumber_stable'  => [:screenshot_setup, :cucumber_stable_report_setup]}) do |t|
+    t.cucumber_opts = %{--profile stable  --format junit --out #{cucumber_stable_report_path}}
+  end
+
+
+  desc "Runs unstable cucumber features"
+  Cucumber::Rake::Task.new({'cucumber_unstable'  => [:screenshot_setup, :cucumber_unstable_report_setup]}) do |t|
+    t.cucumber_opts = %{--profile unstable  --format junit --out #{cucumber_unstable_report_path}}
+  end
+
+
 
  
 

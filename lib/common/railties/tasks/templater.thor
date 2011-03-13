@@ -7,7 +7,8 @@ class Templater < Thor
   desc "export", "export all mail templates from files"
   def export
     @basedir = Dir.pwd
-    @destinationdir = File.join(@basedir, "translations", "mails")
+
+    @destinationdir = File.join(@basedir,"translations", "mails")
     FileUtils.mkdir_p @destinationdir
 
     @list_file = File.join(@destinationdir, "list.txt")
@@ -23,7 +24,9 @@ class Templater < Thor
     Dir[@basedir].each do |source|
       destination = File.join(@destinationdir, File.basename(source))
       FileUtils.rm destination  if File.exists?(destination)
-      list.write "#{File.basename(source)}\n"
+      s = source.split('/')
+      l = s.length()
+      list.write "#{s[l-3]}-#{File.basename(source)}\n"
       s_list.write "#{source}\n"
       FileUtils.cp(source, destination)
     end

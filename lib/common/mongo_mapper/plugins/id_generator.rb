@@ -7,7 +7,7 @@ module MongoMapper
         model.class_eval do
           key :human_id, Integer
           key :human_id_formatted, String
-          before_create :_set_before_create
+          before_save :_set_human_id_before_save
         end
       end
 
@@ -47,8 +47,10 @@ module MongoMapper
 
       module InstanceMethods
 
-        def _set_before_create
-          set_human_id unless self.respond_to?(:state)
+        def _set_human_id_before_save
+          if self.human_id.nil? and self.respond_to?(:state) && self.state != "draft"
+            set_human_id
+          end
         end
 
         def set_human_id

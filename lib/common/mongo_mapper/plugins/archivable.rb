@@ -11,6 +11,23 @@ module MongoMapper
         end
       end
 
+      module ClassMethods
+
+        def archived_count
+          old_db_name = MongoMapper.database.name
+          db_name = "#{old_db_name}-archive"
+          count = 0
+          begin
+            MongoMapper.database = db_name
+            count = self.count
+          ensure
+            MongoMapper.database = old_db_name
+          end
+          count
+        end
+
+      end
+
       module InstanceMethods
 
         def save_to_archive

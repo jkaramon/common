@@ -45,7 +45,15 @@ module MongoMigrations
         mr = run_migration_step
         return false if mr.nil? || mr.status.to_s == 'error'
       end
+      clear_cache_db
       true
+    end
+
+    def clear_cache_db
+      return unless defined?(RAILS_CACHE)
+      return if  Rails.cache.nil? or not Rails.cache.respond_to?(:clear)
+      Rails.cache.clear
+      info "Rails cache content cleared successfully!"
     end
 
     def last_version

@@ -31,7 +31,7 @@ module CustomFormBuilder
         text_input = text_field(attr_id, options.merge(:value => text, :class => summary,"data-summary_length"=>summary_length)).gsub(/_id/, '_text')
       end
       result = self.label(method, options_for_label(options)).gsub(/_id/, '_text') << text_input
-      template.content_tag :span, template.raw(result), :class => "suggest_container #{wrapper_class} s_#{method.to_s}", "data-id_value" => id
+      template.content_tag :span, template.raw(result), :class => "suggest_container #{wrapper_class} s_#{method.to_s}", "data-id" => id
     end
     
     def suggest_title(klass)
@@ -56,6 +56,7 @@ module CustomFormBuilder
       suggest_input(method, options)
     end
 
+ 
     def customer_input(method, options)
       options[:input_html] ||= {}
       options[:input_html][:class] = 'suggest_customer'
