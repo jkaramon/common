@@ -27,9 +27,15 @@ module Rack
         end
 
         # Get yaml
-        loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/#{locale}.yml"))[locale]['js']
+        loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/en.yml"))['en']['js']
+        formats_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/formats-en.yml"))['en']['js']
 
-        formats_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/formats-#{locale}.yml"))[locale]['js']
+        unless locale == 'en'
+          selected_loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/#{locale}.yml"))[locale]['js']
+          deep_merge!(loc_data, selected_loc_data)
+          selected_formats_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/formats-#{locale}.yml"))[locale]['js']
+          deep_merge!(formats_data, selected_formats_data)
+        end
 
         if formats_data.nil?
           json = loc_data.to_json
@@ -45,6 +51,16 @@ module Rack
         [200, {'Content-Type' => content_type}, [response]]
       else
         @app.call env
+      end
+    end
+
+    def deep_merge!(first, second)
+      second.each_pair do |k,v|
+        if first[k].is_a?(Hash) and second[k].is_a?(Hash)
+          deep_merge!(first[k], second[k])
+        else
+          first[k] = second[k]
+        end
       end
     end
 
