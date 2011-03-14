@@ -1,18 +1,23 @@
 
 module MongoMapper
   module Plugins
+
+    # Provides integer based human_id and custom formattable id for given collection
     module IdGenerator
+      DEFAULT_ID_FORMAT = "%05d"
+
 
       def self.configure(model)
         model.class_eval do
           key :human_id, Integer
           key :human_id_formatted, String
-          before_save :_set_human_id_before_save
+          after_save :_set_human_id_callback
         end
       end
 
       module ClassMethods
         # Allows defining id structure (prefix, number length, suffix)
+        # uses sprintf format 
         def id_format(id_format)
           @id_format = id_format
         end
@@ -21,10 +26,18 @@ module MongoMapper
           @id_format
         end
 
-        def current_id
+         def _format_human_id(human_id)
+          format = DEFAULT_ID_FORMAT
+          format = self._id_format unless self._id_format.blank?
+          sprintf( format, human_id) 
+        end
+
+
+
+        # generates and return a new human_id
+        def generate_current_id
           db = MongoMapper.database
           coll = db["entity_counters"]
-
           items = coll.find("id" => self.to_s()).count()
           if items == 0
             doc = {"id" => self.to_s(), "count" => 1}
@@ -37,7 +50,7 @@ module MongoMapper
           return item["count"]
         end
 
-        # method for rspec tests
+        # resets counter for current class
         def reset_counter
           db = MongoMapper.database
           coll = db["entity_counters"]
@@ -46,18 +59,23 @@ module MongoMapper
       end
 
       module InstanceMethods
-
-        def _set_human_id_before_save
-          if self.human_id.nil? and self.respond_to?(:state) && self.state != "draft"
-            set_human_id
-          end
+        # after save callback
+        def _set_human_id_callback
+          # do not assign id in draft state
+          return if self.respond_to?(:draft?) and self.draft? 
+          set_human_id if self.human_id.nil? 
         end
-
+        
+        # assigns new human id 
         def set_human_id
-          self.human_id = self.class.current_id
-          self.human_id_formatted = sprintf(self.class._id_format, self.human_id) unless self.class._id_format.blank?
+          new_id = self.class.generate_current_id
+          new_id_formatted = self.class._format_human_id(new_id)
+          self.set( :human_id => new_id, :human_id_formatted => new_id_formatted )
+          self.human_id = new_id        
+          self.human_id_formatted = new_id_formatted
         end
 
+       
       end
 
     end
