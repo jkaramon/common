@@ -11,7 +11,7 @@ module MongoMapper
         model.class_eval do
           key :human_id, Integer
           key :human_id_formatted, String
-          after_save :_set_human_id_callback
+          before_save :_set_human_id_callback
         end
       end
 
@@ -70,7 +70,6 @@ module MongoMapper
         def set_human_id
           new_id = self.class.generate_current_id
           new_id_formatted = self.class._format_human_id(new_id)
-          self.set( :human_id => new_id, :human_id_formatted => new_id_formatted )
           self.human_id = new_id        
           self.human_id_formatted = new_id_formatted
         end
