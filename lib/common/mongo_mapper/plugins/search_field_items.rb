@@ -1,3 +1,5 @@
+# should update search fields (sf_****) with related attributes
+# example: changing category attribute on ticket entity should reflect in sf_category attribute
 
 module MongoMapper
   module Plugins
@@ -40,17 +42,19 @@ module MongoMapper
           self.sf_assigned_name = self.solver.try(:display_name) if self.respond_to?(:solver)
         end
 
+        # after save callback because sources for these attributes are last activities
         def update_activity_search_fields
-          return if self.class == Task
           doc = {}
           doc[:sf_last_update_user] = self.last_update_user if self.respond_to?(:last_update_user)
           doc[:sf_last_update_created] = self.last_update_created.utc if self.respond_to?(:last_update_created) && self.last_update_created != ""
           doc[:sf_last_update_description] = self.last_update_description if self.respond_to?(:last_update_description)
+          return if doc == {}
           db = MongoMapper.database
           coll = db["tickets"]
           coll.update({:_id => self.id}, {"$set" => doc})
         end
 
+        # used for update with ruby mongo driver (done especially for migration process)
         def sf_direct_update(collection)
           doc = {}
           doc[:sf_customer] = self.customer.try(:display_name) if self.respond_to?(:customer)

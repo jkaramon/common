@@ -1,4 +1,5 @@
-
+# hidden input for _timestamp should be included in forms and should be sent to the server
+# this value should be assigned to an entity and then the concurrency check comparison on update action can be done
 
 module MongoMapper
   module Plugins
