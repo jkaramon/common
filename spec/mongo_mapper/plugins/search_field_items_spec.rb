@@ -36,9 +36,17 @@ describe "MongoMapper::Plugins::SearchFieldItems" do
 
   it "should update sf_category if car's category has been changed" do
     @my_car.category = @limousine_category
+    @my_car.update_search_fields
     @my_car.save!
     @my_car.reload
     @my_car.sf_category.should == "Limousine"
+  end
+
+  it "should update sf_category using dirent_update" do
+    @my_car.category = @hatchback_category
+    @my_car.sf_direct_update('cars')
+    @my_car.reload
+    @my_car.sf_category.should == "Hatchback"
   end
 
 end

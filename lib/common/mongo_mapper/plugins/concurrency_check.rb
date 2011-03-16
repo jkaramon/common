@@ -32,6 +32,11 @@ module MongoMapper
 
       module InstanceMethods
 
+        def update_attributes(params)
+          raise "_timestamp parameter is required" if (!params[:_timestamp].present? || params[:_timestamp].nil?) && !self.new?
+          super
+        end
+
         def _check_concurrency
           return if self.new? || self.class.disable_concurrency_check?
           actual_version = self.class.find(self.id)

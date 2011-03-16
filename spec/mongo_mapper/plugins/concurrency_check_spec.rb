@@ -37,4 +37,9 @@ describe "MongoMapper::Plugins::ConcurrencyCheck" do
     second.should_not be_valid
     second.errors.full_messages.first.should include("has been modified by someone else!") 
   end
+
+  it "should raise exception if update_attributes is called without _timestamp parameter" do
+    expect{@entity.update_attributes(:name => 'Name2')}.to raise_error("_timestamp parameter is required")
+  end
+
 end
