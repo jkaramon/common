@@ -33,13 +33,13 @@ describe "MongoMapper::Plugins::SfSynchronizer" do
 
   it "should update sf_category on related Car entities" do
     @category.name = "Limousine"
-    @category.save!
+    @category.base_synchronize
     my_car = Car.first(:name => "Fabia").sf_category.should == "Limousine"
   end
 
   it "should not update sf_category on not related Car entities" do
     @category.name = "Pick up"
-    @category.save!
+    @category.base_synchronize
     my_car = Car.first(:name => "Octavia").sf_category.should == nil
   end
   
