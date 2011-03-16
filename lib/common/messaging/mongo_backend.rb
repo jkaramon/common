@@ -48,9 +48,7 @@ module Messaging
 
     def env_suffix
       return "-gem-development" unless defined?(Rails)
-      env_suffix = ""
-      env_suffix = "-#{Rails.env}" unless Rails.env.production?
-      env_suffix
+      return DbManager.db_suffix  
     end
     
     def collection
