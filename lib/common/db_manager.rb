@@ -74,6 +74,14 @@ class DbManager
     "-vd#{db_suffix}"
   end
 
+
+  def self.db_suffix
+    return "-development" if %w{ development devcached }.include?(env)
+    return "" if env=="production" || env=="preprod"
+    "-#{env}" 
+  end
+
+
   private
 
   def self.each_db(&block)
