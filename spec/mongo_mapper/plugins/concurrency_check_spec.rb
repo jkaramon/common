@@ -42,4 +42,14 @@ describe "MongoMapper::Plugins::ConcurrencyCheck" do
     expect{@entity.update_attributes(:name => 'Name2')}.to raise_error("_timestamp parameter is required")
   end
 
+  it "should raise exception if update_attributes is called with blank _timestamp parameter" do
+    expect{@entity.update_attributes(:name => 'Name2', :_timestamp => "")}.to raise_error("_timestamp parameter is present but is blank.")
+  end
+
+  it "should not raise exception if _timestamp attribute value is not set " do
+    @entity._timestamp = nil
+    @entity.update_attributes(:name => 'Name2')
+  end
+
+
 end
