@@ -14,6 +14,11 @@ describe "MongoMapper::Plugins::ConcurrencyCheck" do
     @entity.save!
   end
 
+  it "should be set _timestamp after create" do
+    @entity.reload
+    @entity._timestamp.should_not be_nil
+  end
+
   it "unsaved entity should skip concurrency check" do
     unsaved = ConcurrencyCheckModel.new(:name => "Name1")
     unsaved.should be_valid
@@ -24,6 +29,7 @@ describe "MongoMapper::Plugins::ConcurrencyCheck" do
     unsaved = ConcurrencyCheckModel.new(:name => "Name1")
     unsaved.update_attributes(:name => 'Name2')
     unsaved.should be_valid
+    unsaved.reload
     unsaved.save.should be_true
   end
 
@@ -37,4 +43,19 @@ describe "MongoMapper::Plugins::ConcurrencyCheck" do
     second.should_not be_valid
     second.errors.full_messages.first.should include("has been modified by someone else!") 
   end
+
+  it "should raise exception if update_attributes is called without _timestamp parameter" do
+    expect{@entity.update_attributes(:name => 'Name2')}.to raise_error("_timestamp parameter is required")
+  end
+
+  it "should raise exception if update_attributes is called with blank _timestamp parameter" do
+    expect{@entity.update_attributes(:name => 'Name2', :_timestamp => "")}.to raise_error("_timestamp parameter is present but is blank.")
+  end
+
+  it "should not raise exception if _timestamp attribute value is not set " do
+    @entity._timestamp = nil
+    @entity.update_attributes(:name => 'Name2')
+  end
+
+
 end
