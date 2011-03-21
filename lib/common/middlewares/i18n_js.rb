@@ -30,6 +30,8 @@ module Rack
         loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/en.yml"))['en']['js']
         formats_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/formats-en.yml"))['en']['js']
 
+        # if locale is not default (not 'en') - load proper file and merge it with default file
+        # this should prevent from missing translations in js (not defined in non-default files)
         unless locale == 'en'
           selected_loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/#{locale}.yml"))[locale]['js']
           deep_merge!(loc_data, selected_loc_data)
