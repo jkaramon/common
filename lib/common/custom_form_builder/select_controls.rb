@@ -476,10 +476,18 @@ module CustomFormBuilder
     end
    
     def ticket_status_select_input(method, options)
+      reporting_status_select_input(method, options, [Incident, Problem, Request, Call])
+    end
+
+    def sla_status_select_input(method, options)
+      reporting_status_select_input(method, options, [Sla])
+    end
+
+    def reporting_status_select_input(method, options, klasses)
       input_name = generate_association_input_name(method)
       selected = object.send(method)
       states = []
-      [Incident, Problem, Request, Call].each do |klass|
+      klasses.each do |klass|
         klass.state_machine.states.each { |s| states << s.name if s.name.class == Symbol }
       end
       values = ""
