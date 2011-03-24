@@ -1,8 +1,7 @@
 require 'spec_helper'
+require 'timecop'
 
 describe DbManager do
-  
-   
   
   it "should return correct site database_name when site is defined" do
     DbManager.env = "test_env"
@@ -37,6 +36,11 @@ describe DbManager do
     DbManager.vd_site_db?("rspec-vd-test").should be_true
   end
   
-  
+  it "should generate correct backup name" do
+    DbManager.env = "production"
+    Timecop.freeze(Time.utc(2010,11,10,14,8,3)) do
+      DbManager.backup_vd_db_name("emission--s-r-o").should == "backup-emission--s-r-o-vd-2010-11-10-14-08-03"
+    end
+  end
   
 end
