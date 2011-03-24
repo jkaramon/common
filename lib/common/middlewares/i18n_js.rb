@@ -46,10 +46,15 @@ module Rack
           json = loc_data.merge(selected_time_format).to_json
         end
 
+        #load correct jq-grid localization (if "locale" localization not found, load default - en)
+        jq_grid_locale = "#{Rails.root}/public/javascripts/lib/jq-grid/i18n/grid.locale-#{locale}.js"
+        jq_grid_locale = "#{Rails.root}/public/javascripts/lib/jq-grid/i18n/grid.locale-en.js" unless ::File.exist?(jq_grid_locale)
+        jqgrid_loc_data = ::File.read(jq_grid_locale)
+
         return @app.call env if json == 'null' # Branch not found
 
         content_type = 'application/javascript'
-        response =  "var i18n = #{json};"
+        response =  "var i18n = #{json};\n #{jqgrid_loc_data}"
         [200, {'Content-Type' => content_type}, [response]]
       else
         @app.call env
