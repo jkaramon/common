@@ -61,6 +61,11 @@ module Rack
       end
     end
 
+    # method deep_merge! should merge 'second' hash into the first one recursively
+    # final result: first hash contains
+    #   - all its original keys with values taken from second hash (if second hash contains the key)
+    #   - additional keys form second hash (not included in first) with their values
+    # test: common/spec/middlewares/i18n_js_spec.rb
     def deep_merge!(first, second)
       second.each_pair do |k,v|
         if first[k].is_a?(Hash) and second[k].is_a?(Hash)
