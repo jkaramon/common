@@ -23,10 +23,10 @@ class DbManager
     MongoMapper.connection.drop_database(db_name)
   end
 
-  #terminate database - create backup
-  # retrieve actual and backup name for databases
-  # first copy / backup actual database, then drop actual database
-  def self.backup_database(site_id)
+  # terminate database - create backup
+  # @param [String] - id (subdomain) for site
+  # @note retrieve actual and backup name for databases, first copy / backup actual database, then drop actual database
+  def self.rename_database(site_id)
     backup_name = backup_vd_db_name(site_id)
     actual_name = vd_db_name(site_id)
     MongoMapper.connection.copy_database(actual_name, backup_name)

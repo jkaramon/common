@@ -42,5 +42,36 @@ describe DbManager do
       DbManager.backup_vd_db_name("emission--s-r-o").should == "backup-emission--s-r-o-vd-2010-11-10-14-08-03"
     end
   end
+
+  describe "rename_database method" do
+    before(:all) do
+      DbManager.env = "production"
+      MongoMapper.connection.drop_database("backup-big-visicom-vd-2010-11-10-14-08-03")
+      insert_test_data("big-visicom")
+      Timecop.freeze(Time.utc(2010,11,10,14,8,3)) do
+        DbManager.rename_database("big-visicom")
+      end
+    end
+
+    it "should rename database for big-visicom site" do
+      MongoMapper.connection.database_names.include?("big-visicom-vd").should be_false
+    end
+
+    it "should set correct name for database for big-visicom site" do
+      MongoMapper.connection.database_names.include?("backup-big-visicom-vd-2010-11-10-14-08-03").should be_true
+    end
+
+    it "should not corrupt data" do
+      db = Mongo::Connection.new.db("backup-big-visicom-vd-2010-11-10-14-08-03")
+      db["testCollection"].find({"name" => "TestEntry", "type" => "test type", "count" => 1}).count.should == 1
+    end
+
+    def insert_test_data(site_id)
+      db = Mongo::Connection.new.db(DbManager.vd_db_name(site_id))
+      coll = db["testCollection"]
+      document = {"name" => "TestEntry", "type" => "test type", "count" => 1}
+      coll.insert(document)
+    end
+  end
   
 end
