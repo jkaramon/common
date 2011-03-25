@@ -1,3 +1,4 @@
+require 'digest/md5'
 # Hi! I'am rack middleware!
 # I was born for return to you valid js on json i18n objects
 
@@ -55,7 +56,11 @@ module Rack
 
         content_type = 'application/javascript'
         response =  "var i18n = #{json};\n #{jqgrid_loc_data}"
-        [200, {'Content-Type' => content_type}, [response]]
+        headers = {}
+        headers['Content-Type'] = content_type
+        headers['Cache-Control'] = "max-age=31536000, public"
+        headers['Etag'] = Digest::MD5.hexdigest(response)
+        [200, headers, [response]]
       else
         @app.call env
       end
