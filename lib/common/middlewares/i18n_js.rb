@@ -30,6 +30,8 @@ module Rack
         loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/en.yml"))['en']['js']
         formats_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/formats-en.yml"))['en']['js']
 
+        # if locale is not default (not 'en') - load proper file and merge it with default file
+        # this should prevent from missing translations in js (not defined in non-default files)
         unless locale == 'en'
           selected_loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/#{locale}.yml"))[locale]['js']
           deep_merge!(loc_data, selected_loc_data)
@@ -44,16 +46,26 @@ module Rack
           json = loc_data.merge(selected_time_format).to_json
         end
 
+        #load correct jq-grid localization (if "locale" localization not found, load default - en)
+        jq_grid_locale = "#{Rails.root}/public/javascripts/lib/jq-grid/i18n/grid.locale-#{locale}.js"
+        jq_grid_locale = "#{Rails.root}/public/javascripts/lib/jq-grid/i18n/grid.locale-en.js" unless ::File.exist?(jq_grid_locale)
+        jqgrid_loc_data = ::File.read(jq_grid_locale)
+
         return @app.call env if json == 'null' # Branch not found
 
         content_type = 'application/javascript'
-        response =  "var i18n = #{json};"
+        response =  "var i18n = #{json};\n #{jqgrid_loc_data}"
         [200, {'Content-Type' => content_type}, [response]]
       else
         @app.call env
       end
     end
 
+    # method deep_merge! should merge 'second' hash into the first one recursively
+    # final result: first hash contains
+    #   - all its original keys with values taken from second hash (if second hash contains the key)
+    #   - additional keys form second hash (not included in first) with their values
+    # test: common/spec/middlewares/i18n_js_spec.rb
     def deep_merge!(first, second)
       second.each_pair do |k,v|
         if first[k].is_a?(Hash) and second[k].is_a?(Hash)

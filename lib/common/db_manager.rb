@@ -23,6 +23,16 @@ class DbManager
     MongoMapper.connection.drop_database(db_name)
   end
 
+  #terminate database - create backup
+  # retrieve actual and backup name for databases
+  # first copy / backup actual database, then drop actual database
+  def self.backup_database(site_id)
+    backup_name = backup_vd_db_name(site_id)
+    actual_name = vd_db_name(site_id)
+    MongoMapper.connection.copy_database(actual_name, backup_name)
+    drop_database(actual_name)
+  end
+
   # Prints all databases on current connection to standard output.
   def self.show_dbs
     each_db {|db_name| puts db_name }
@@ -37,6 +47,11 @@ class DbManager
   # returns database name from site_id
   def self.vd_db_name(site_id)
     return "#{site_id}#{vd_db_suffix}"
+  end
+
+  # returns terminated database name from site_id
+  def self.backup_vd_db_name(site_id)
+    return "backup-#{site_id}#{vd_db_suffix}-#{Time.now.utc.strftime("%Y-%m-%d-%H-%M-%S")}"
   end
 
   # returns site_id from database name. 

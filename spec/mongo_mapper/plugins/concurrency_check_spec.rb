@@ -14,6 +14,11 @@ describe "MongoMapper::Plugins::ConcurrencyCheck" do
     @entity.save!
   end
 
+  it "should be set _timestamp after create" do
+    @entity.reload
+    @entity._timestamp.should_not be_nil
+  end
+
   it "unsaved entity should skip concurrency check" do
     unsaved = ConcurrencyCheckModel.new(:name => "Name1")
     unsaved.should be_valid
@@ -24,6 +29,7 @@ describe "MongoMapper::Plugins::ConcurrencyCheck" do
     unsaved = ConcurrencyCheckModel.new(:name => "Name1")
     unsaved.update_attributes(:name => 'Name2')
     unsaved.should be_valid
+    unsaved.reload
     unsaved.save.should be_true
   end
 

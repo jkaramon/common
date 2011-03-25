@@ -10,9 +10,11 @@ module MongoMapper
         model.class_eval do
           key :_timestamp, String
           validate :_check_concurrency, :on => :update
+
           before_save do
             self._timestamp = self.class.generate_timestamp
           end
+
         end
       end
 
@@ -35,6 +37,10 @@ module MongoMapper
 
       module InstanceMethods
 
+        def set_timestamp
+          self._timestamp = self.class.generate_timestamp
+        end
+
         def update_attributes(params)
           _guard_timestamp_param(params)
           super
@@ -53,6 +59,7 @@ module MongoMapper
           if actual_version.try(:_timestamp).present? and self._timestamp != actual_version._timestamp
             self.trigger_concurrency_check_error
           end
+
         end
 
 
