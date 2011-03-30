@@ -26,11 +26,18 @@ class DbManager
   # terminate database - create backup
   # @param [String] - id (subdomain) for site
   # @note retrieve actual and backup name for databases, first copy / backup actual database, then drop actual database
-  def self.rename_database(site_id)
-    backup_name = backup_vd_db_name(site_id)
-    actual_name = vd_db_name(site_id)
-    MongoMapper.connection.copy_database(actual_name, backup_name)
-    drop_database(actual_name)
+  def self.rename_for_backup(site_id)
+    original_name = vd_db_name(site_id)
+    new_name = backup_vd_db_name(site_id)
+    rename_database(original_name, new_name)
+  end
+
+  # Renames DB because MongoDb does not support that operation
+  # @original_name [String] - database original name
+  # @new_name [String] - database new name
+  def self.rename_database(original_name, new_name)
+    MongoMapper.connection.copy_database(original_name, new_name)
+    drop_database(original_name)
   end
 
   # Prints all databases on current connection to standard output.

@@ -43,13 +43,13 @@ describe DbManager do
     end
   end
 
-  describe "rename_database method" do
+  describe "backup_vd_db_name method" do
     before(:all) do
       DbManager.env = "production"
       MongoMapper.connection.drop_database("backup-big-visicom-vd-2010-11-10-14-08-03")
       insert_test_data("big-visicom")
       Timecop.freeze(Time.utc(2010,11,10,14,8,3)) do
-        DbManager.rename_database("big-visicom")
+        DbManager.rename_for_backup("big-visicom")
       end
     end
 
