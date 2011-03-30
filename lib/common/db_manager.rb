@@ -48,6 +48,11 @@ class DbManager
   def self.site_db_exists?(site_id)
     return false if site_id.blank?
     db_name = vd_db_name(site_id)
+    db_exists?(db_name)
+  end
+
+  # Checks db existence for given MM connection
+  def self.db_exists?(db_name)
     MongoMapper.connection.database_names.include?(db_name)
   end
 
