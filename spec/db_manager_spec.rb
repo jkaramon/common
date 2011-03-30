@@ -27,7 +27,7 @@ describe DbManager do
   
   it "should compose correct preprod vd_db_suffix" do
     DbManager.env = "preprod"
-    DbManager.vd_db_suffix.should == "-vd"
+    DbManager.vd_db_suffix.should == "-vd-preprod"
   end
 
 
