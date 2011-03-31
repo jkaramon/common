@@ -4,8 +4,10 @@ module Messaging
   class Queue 
     include MongoBackend  
     attr_reader :name
-    def initialize(queue_name)
+    attr_reader :options
+    def initialize(queue_name, options = {})
       @name = queue_name
+      @options = options || {}
     end
 
   end

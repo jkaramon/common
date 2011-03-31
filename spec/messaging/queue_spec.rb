@@ -22,5 +22,55 @@ describe Messaging::Queue do
     @queue.dequeue.should be_nil
   end
 
+  describe "Routing" do
+    
+   
+    describe "Routre to stable version" do
+      before(:each) do
+        @queue = Messaging::Queue.new 'rspec-test', :route_to => :stable
+      end
+
+      it "should route to stable messaging db in preprod" do
+        @queue.test_env = "preprod"
+        @queue.database.name.should == "messaging"
+      end
+      
+      it "should route to stable messaging db in production" do
+        @queue.test_env = "production"
+        @queue.database.name.should == "messaging"
+      end
+
+      it "should route to ci messaging db in ci" do
+        @queue.test_env = "ci"
+        @queue.database.name.should == "messaging-ci"
+      end
+    
+    end
+
+    describe "Routre to beta version" do
+      before(:each) do
+        @queue = Messaging::Queue.new 'rspec-test', :route_to => :beta
+      end
+
+      it "should route to beta messaging db in preprod" do
+        @queue.test_env = "preprod"
+        @queue.database.name.should == "messaging-preprod"
+      end
+      
+      it "should route to beta messaging db in production" do
+        @queue.test_env = "production"
+        @queue.database.name.should == "messaging-preprod"
+      end
+
+      it "should route to ci messaging db in ci" do
+        @queue.test_env = "ci"
+        @queue.database.name.should == "messaging-ci"
+      end
+    
+    end
+
+
+  end
+
  
 end

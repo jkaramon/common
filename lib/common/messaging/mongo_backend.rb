@@ -1,7 +1,7 @@
 module Messaging
   
   module MongoBackend
-    
+    attr_accessor :test_env 
     def enqueue(data)
       message = Message.create(data)
       message[:queue_name] = name
@@ -41,15 +41,26 @@ module Messaging
 
 
     def database
-      @database ||= MongoMapper.connection.db("messaging#{env_suffix}")
+      @database = MongoMapper.connection.db("messaging#{env_suffix}")
     end
     
     private
 
     def env_suffix
       return "-gem-development" unless defined?(Rails)
-      return DbManager.db_suffix  
+      if env=="production" || env=="preprod"
+        return "-preprod" if options[:route_to] == :beta
+        return ""
+      end
+      return "-development" if %w{ development devcached }.include?(env)
+      "-#{env}"  
     end
+
+    def env
+      @test_env || Rails.env
+    end
+
+    
     
     def collection
       @collection ||= database.collection("queue_#{name}")
