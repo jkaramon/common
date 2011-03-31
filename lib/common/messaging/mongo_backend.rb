@@ -50,8 +50,9 @@ module Messaging
       return "-gem-development" unless defined?(Rails)
       if env=="production" || env=="preprod"
         return "-preprod" if options[:route_to] == :beta
-        return ""
+        return "" if options[:route_to] == :stable
       end
+      return "" if env=="production"
       return "-development" if %w{ development devcached }.include?(env)
       "-#{env}"  
     end
