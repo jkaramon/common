@@ -162,12 +162,14 @@ module CustomFormBuilder
 
     def render_watch_buttons(options, is_watched, ticket_id)
       result = ""
+      prefix_caption = ""
+      prefix_caption = "group_" if options['data-gid']
       options[:class] = "wi_button button"
       options[:show_watch] = true unless options.include?(:show_watch)
       options['style'] = "display: none" if is_watched
       options['data-ticket'] = ticket_id
       options['data-action'] = "watch"
-      result += template.content_tag(:span, options['data-action'].capitalize, options) if options[:show_watch]
+      result += template.content_tag(:span, ::I18n.t("#{prefix_caption + options['data-action']}"), options) if options[:show_watch]
 
       if is_watched
         options['style'] = "display: inline-block"
@@ -175,7 +177,7 @@ module CustomFormBuilder
         options['style'] = "display: none"
       end
       options['data-action'] = "unwatch"
-      result += template.content_tag(:span, options['data-action'].capitalize, options)
+      result += template.content_tag(:span, ::I18n.t("#{prefix_caption + options['data-action']}"), options)
     end
 
     # Renders form tag. Used if form should wrap areas outside partial, where form is declared. 
