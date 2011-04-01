@@ -341,6 +341,20 @@ module CustomFormBuilder
       template.select_tag("#{@object_name}[#{input_name}]", template.raw(values), options)
     end
 
+    # Defines Encoding (Codepage) select input
+    # See CustomFormBuilder::SelectControls#select_input select_input for available options 
+    # and source code for the defaults.
+    # @see CustomFormBuilder::SelectControls#select_input 
+    # @see Encoding
+    def encoding_input(method, options)
+      options[:model] ||= Encoding
+      options[:collection] ||= Encoding.list
+      options[:label_method] ||= :name
+      options[:value_method] ||= :to_s
+      select_input(method, options)
+    end
+
+
     def priority_select_input(method, options)
       values = ""
       num = 1

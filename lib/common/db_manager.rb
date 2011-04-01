@@ -26,11 +26,18 @@ class DbManager
   # terminate database - create backup
   # @param [String] - id (subdomain) for site
   # @note retrieve actual and backup name for databases, first copy / backup actual database, then drop actual database
-  def self.rename_database(site_id)
-    backup_name = backup_vd_db_name(site_id)
-    actual_name = vd_db_name(site_id)
-    MongoMapper.connection.copy_database(actual_name, backup_name)
-    drop_database(actual_name)
+  def self.rename_for_backup(site_id)
+    original_name = vd_db_name(site_id)
+    new_name = backup_vd_db_name(site_id)
+    rename_database(original_name, new_name)
+  end
+
+  # Renames DB because MongoDb does not support that operation
+  # @original_name [String] - database original name
+  # @new_name [String] - database new name
+  def self.rename_database(original_name, new_name)
+    MongoMapper.connection.copy_database(original_name, new_name)
+    drop_database(original_name)
   end
 
   # Prints all databases on current connection to standard output.
@@ -41,6 +48,11 @@ class DbManager
   def self.site_db_exists?(site_id)
     return false if site_id.blank?
     db_name = vd_db_name(site_id)
+    db_exists?(db_name)
+  end
+
+  # Checks db existence for given MM connection
+  def self.db_exists?(db_name)
     MongoMapper.connection.database_names.include?(db_name)
   end
 
@@ -92,7 +104,7 @@ class DbManager
 
   def self.db_suffix
     return "-development" if %w{ development devcached }.include?(env)
-    return "" if env=="production" || env=="preprod"
+    return "" if env=="production"
     "-#{env}" 
   end
 
@@ -109,12 +121,7 @@ class DbManager
 
 
   
-  def self.db_suffix
-    return "-development" if %w{ development devcached }.include?(env)
-    return "" if env=="production" || env=="preprod"
-    "-#{env}" 
-  end
-
+  
   def self.env
     @env
   end

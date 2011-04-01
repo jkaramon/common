@@ -86,7 +86,13 @@ module Jobs
 
       def env_suffix
         return "-gem-development" unless defined?(Rails)
-        return DbManager.db_suffix
+        return "-development" if %w{ development devcached }.include?(env)
+        return "" if env=="production" || env =="preprod"
+        "-#{env}" 
+      end
+
+      def env
+        Rails.env
       end
 
      
