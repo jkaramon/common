@@ -18,7 +18,7 @@ module CustomFormBuilder
       span_options["data-summary_length"] = options[:input_html]["data-summary_length"] if options[:input_html].include?("data-summary_length")
       label = ""
       label = self.label(method, options_for_label(options)) if options[:label]
-      template.content_tag(:li, template.raw(label << template.content_tag(:span, value.to_s, span_options )) )
+      template.content_tag(:li, template.raw(label << template.content_tag(:span,  template.simple_format(value.to_s), span_options )) )
     end
 
     def state_input(method, options = {})
