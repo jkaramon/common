@@ -5,6 +5,7 @@ module MongoMapper
     # Provides integer based human_id and custom formattable id for given collection
     module IdGenerator
       DEFAULT_ID_FORMAT = "%05d"
+      DEFAULT_ID_PARSE_FORMAT = "\d{5}"
 
 
       def self.configure(model)
@@ -26,7 +27,18 @@ module MongoMapper
           @id_format
         end
 
-         def _format_human_id(human_id)
+
+        # Defines, how human_id_formatted can be parsed
+        # @id_parse_format [String] - reqular expression pattern to parse human_id_formatted
+        def id_parse_format(id_parse_format)
+          @id_parse_format = id_parse_format
+        end
+
+        def id_parse_format
+          @id_parse_format || DEFAULT_ID_PARSE_FORMAT
+        end
+        
+        def _format_human_id(human_id)
           format = DEFAULT_ID_FORMAT
           format = self._id_format unless self._id_format.blank?
           sprintf( format, human_id) 
@@ -65,7 +77,7 @@ module MongoMapper
           return if self.respond_to?(:draft?) and self.draft? 
           set_human_id if self.human_id.nil? 
         end
-        
+
         # assigns new human id 
         def set_human_id
           new_id = self.class.generate_current_id
@@ -74,7 +86,7 @@ module MongoMapper
           self.human_id_formatted = new_id_formatted
         end
 
-       
+
       end
 
     end
