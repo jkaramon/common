@@ -75,7 +75,7 @@ module MongoMigrations
     end
 
     def log_exception(message, exception)
-      track(:error, "#{message} #{exception}")
+      track(:error, "#{message} \n#{exception.message}\nBacktrace:\n#{exception.backtrace.join("\n")}")
     end
 
     def info(message)
