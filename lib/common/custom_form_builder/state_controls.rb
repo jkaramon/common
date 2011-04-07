@@ -14,6 +14,7 @@ module CustomFormBuilder
       
       root_controller = root.class.to_s.tableize
       
+
       fields = @object.state_events.inject("") do |memo, event_name|
         if hidden_events.include?(event_name)
           memo += ""

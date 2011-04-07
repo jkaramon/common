@@ -30,6 +30,11 @@ module MongoMapper
               transition [:draft] => :active
             end
 
+            event :do_terminate do
+              transition [:active, :inactive] => :terminated
+            end
+
+            
           end
 
         end

@@ -6,6 +6,8 @@ module MongoMapper
       #Object go to terminated state instead of remove from database
 
       def self.configure(model)
+
+        
       end
 
       module ClassMethods
