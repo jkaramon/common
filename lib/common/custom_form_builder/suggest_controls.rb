@@ -75,7 +75,7 @@ module CustomFormBuilder
     def ticket_input(method, options)
       options[:input_html] ||= {}
       options[:input_html][:class] = 'suggest_ticket'
-      options[:input_html][:title] = suggest_title(Ticket)
+      options[:input_html][:title] = suggest_title(Tickets::Ticket)
       suggest_input(method, options)
     end
 

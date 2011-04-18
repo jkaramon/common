@@ -83,15 +83,15 @@ module Rules
     
     def parse_dsl
       RuleSet.instance = self
-      dsl_context_dir = File.join(self.class.dsl_dir, context.class.to_s.underscore)
+      dsl_context_dir = File.join(self.class.dsl_dir, context_class_key(@context.class))
       defaults_dsl_file = File.join(dsl_context_dir, "_defaults.rules")
       dsl_file = File.join(dsl_context_dir, "#{@context.state_name}.rules")
       load(defaults_dsl_file) if File.exists?(defaults_dsl_file)
       load(dsl_file)
     end
     
-    def context_class_symbol
-      @context.class.to_s.underscore.to_sym
+    def context_class_key(klass)
+      klass.to_s.gsub("::", "_").underscore
     end
     # Reads and parses actor definition file. Parsed actors are then available in rule definition 
     def define
@@ -110,7 +110,7 @@ module Rules
     end
     
     def init_rule(name, state)
-      key = "#{context_class_symbol}_#{name}".to_sym
+      key = "#{context_class_key(@context.class)}_#{name}".to_sym
       @rules[key] = Rule.new unless @rules.include?(key)
       @rules[key]
     end

@@ -34,12 +34,16 @@ module Rules
       ConditionSet.instance = self
       context_class = context.class
       begin
-        dsl_file = File.join(self.class.dsl_dir, "#{context_class.to_s.underscore}.conditions")
+        dsl_file = File.join(self.class.dsl_dir, "#{context_class_key(context_class)}.conditions")
         context_class = context_class.superclass 
       end while not (File.exists?(dsl_file) || context_class.nil? )
-      
       load(dsl_file)
     end
+
+    def context_class_key(klass)
+      klass.to_s.demodulize.underscore
+    end
+
     
     # Reads and parses actor definition file. Parsed actors are then available in rule definition 
     def define

@@ -358,7 +358,7 @@ module CustomFormBuilder
     def priority_select_input(method, options)
       values = ""
       num = 1
-      while num <= Priority.priorities
+      while num <= Tickets::Priority.priorities
         values += "<option value='#{num}' >#{num}</option>" if num != options[:current]
         num += 1
       end      
@@ -408,7 +408,7 @@ module CustomFormBuilder
         when :enabled
           values = ""
           num = 1
-          while num <= Priority.priorities
+          while num <= Tickets::Priority.priorities
             if num != options[:current]
               values += "<option value='#{num}' >#{num}</option>"
             else
