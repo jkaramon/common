@@ -19,7 +19,7 @@ module MongoMapper
 
         #Override paginate method - paginating apply only non-terminated objects
         def paginate(options = {})
-          options.merge!(:state => {'$nin' => [:terminated]})
+          options.merge!(:state => {'$nin' => [:terminated]}) unless options.has_key? :state
           super(options)
         end
         
