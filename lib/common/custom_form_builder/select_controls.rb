@@ -334,7 +334,7 @@ module CustomFormBuilder
       input_name = generate_association_input_name(method)
       default_text = template.t('activemodel.attributes.worklog_type.select_caption')
       values = "<option value=''>#{default_text}</option>"
-      w = WorklogType.all(:ticket_type=>@object.class.to_s)
+      w = WorklogType.all(:ticket_type=>@object.class.to_s.demodulize)
       w.each { |item|
         values += "<option value='#{item.id}'>#{item.name}</option>"
       }
@@ -518,7 +518,7 @@ module CustomFormBuilder
       input_name = generate_association_input_name(method)
       selected = object.send(method)
       values = ""
-      [Incident, Problem, Request, Call].each do |klass|
+      Tickets::TicketBase.ticket_types.each do |klass|
         s = klass.new._type
         values += "<option value='#{s}'"
         values += " selected='selected'" if selected == s
@@ -537,7 +537,7 @@ module CustomFormBuilder
         when :enabled
           values = ""#"<option value=''>#{::I18n.t(:all)}</option>"
           num = 1
-          while num <= Priority.priorities
+          while num <= Tickets::Priority.priorities
             if num != selected.to_i
               values += "<option value='#{num}' >#{num}</option>"
             else
