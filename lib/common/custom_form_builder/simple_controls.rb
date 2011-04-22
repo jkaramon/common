@@ -297,7 +297,11 @@ module CustomFormBuilder
       case get_rule(method).visibility
       when :enabled 
         return date_enabled(method, options)
-      when :disabled 
+      when :disabled
+        options[:input_html] ||= {}
+        val = object.send(method)
+        val = val.to_s(:date_short) if val.present?
+        options[:input_html][:value] = val
         return disabled_field(method, options)
       end
     end
