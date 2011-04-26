@@ -75,6 +75,7 @@ module CustomFormBuilder
     def ticket_input(method, options)
       options[:input_html] ||= {}
       options[:input_html][:class] = 'suggest_ticket'
+      options[:input_html]['data-exclude_calls'] = options[:exclude_calls] if options.include?(:exclude_calls)
       options[:input_html][:title] = suggest_title(Tickets::Ticket)
       suggest_input(method, options)
     end
