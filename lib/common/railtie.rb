@@ -64,7 +64,7 @@ module Common
 
     initializer "common.configure_rails_initialization" do |app|
       app.paths.app.views.push RailtieHelper.resolve_railtie('app/views')
-      RailtieHelper.copy_static_files_to_web_server_document_root
+      # RailtieHelper.copy_static_files_to_web_server_document_root
     end
 
 
