@@ -32,7 +32,7 @@ module CustomFormBuilder
       root_controller = root.class.to_s.tableize
       klass = @object.class
       class_name = klass.to_s.underscore.gsub("/", ".")
-      parent_class_name = klass.parent.underscore.gsub("/", ".")
+      parent_class_name = klass.parent.to_s.underscore.gsub("/", ".")
 
 
       fields = @object.state_events.inject("") do |memo, event_name|
