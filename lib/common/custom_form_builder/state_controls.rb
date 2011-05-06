@@ -2,40 +2,59 @@ module CustomFormBuilder
   ##
   # State aware controls - buttonizer, state_select ... 
   module StateControls
-    
-    
-    
+
+    def portal_state_buttonizer
+      state_buttonizer_filter(options)  do |entity, event_name|  
+        allowed_event = event_name == :do_save 
+        allowed_event ||= event_name == :do_close && (entity.state == :resolved || entity.state == :completed)
+        allowed_event ||= event_name == :do_close && (entity.is_a?(Tickets::Call))
+        allowed_event ||= event_name == :do_reopen
+        allowed_event ||= event_name == :do_customer_feedback
+        allowed_event
+      end
+    end
+
+
     def state_buttonizer(options = {})
       hidden_events = options[:hide_events] || []
+      state_buttonizer_filter(options) { |entity, event_name| !hidden_events.include?(event_name) }
+    end
+
+
+    def state_buttonizer_filter(options = {}, &predicate)
+      hidden_events = options[:hide_events] || []
       css_class = options[:class] || 'state_buttonizer'
+      css_class << ' button'
       generate_hidden_field = options[:generate_hidden_field] || !options.has_key?(:class)
       root = object
       root = object._root_document if object.respond_to?(:_root_document) && object._root_document.present?      
-      
+
       root_controller = root.class.to_s.tableize
-      
+
 
       fields = @object.state_events.inject("") do |memo, event_name|
-        if hidden_events.include?(event_name)
-          memo += ""
-        else
-          memo += template.tag(:input, { 
+        if predicate.call(@object, event_name)
+          localized_event_name = ::I18n.t("activemodel.state_events.#{event_name}");
+          memo += template.content_tag(:button, localized_event_name), { 
             :type => :button, 
-            'data-event_name' => event_name, 
+            'data-event_name' => event_name,
             'data-root' => root_controller, 
+            'data-event_header' => ::I18n.t("activemodel.state_events.headers.#{event_name}", :default => localized_event_name),
+            'data-event_description' => ::I18n.t("activemodel.state_events.descriptions.#{event_name}", :default => localized_event_name),
             'data-root_id' => root.id,
             'data-entity_id' => object.id,
-            :value => ::I18n.t("activemodel.state_events.#{event_name}"),
             :class => css_class
           }) 
+        else
+          memo += ""
         end
       end
       hidden = template.tag(:input, { :type => :hidden, :name => :state_event, :id => :state_event_field })
       return fields unless generate_hidden_field
       template.raw(fields + hidden)
     end
-    
-    
+
+
     def implicit_state_events_select(options = {})
       hidden_events = options[:hide_events] || []
       options[:selected_event] ||= ""
@@ -58,19 +77,19 @@ module CustomFormBuilder
       template.tag(:input, { :type => :hidden, :name => :state_event, :id => :state_event_field })
       template.content_tag :li, content
     end
-    
+
     def state_events_select(options = {})
       hidden_events = options[:hide_events] || []
-    
+
       option_list = @object.state_transitions.inject("") do |memo, transition|
         if hidden_events.include?(transition.event)
           memo += ""
         else
           memo += template.content_tag(:option, ::I18n.t("activemodel.state_events.#{transition.event}"), { 
             :value => transition.event, 
-            "data-type" => ActivityTypeMapper.get(transition, object),
-            "data-from_state" => transition.from_name,
-            "data-to_state" => transition.to_name
+              "data-type" => ActivityTypeMapper.get(transition, object),
+              "data-from_state" => transition.from_name,
+              "data-to_state" => transition.to_name
           })
         end 
       end
