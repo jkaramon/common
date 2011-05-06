@@ -44,10 +44,10 @@ module CustomFormBuilder
             'data-root' => root_controller, 
             'data-event_header' => 
               ::I18n.t("activemodel.state_events.#{class_name}.headers.#{event_name}", 
-                :default => [ ::I18n.t("activemodel.state_events.#{parent_class_name}.headers.#{event_name}", :default => localized_event_name ]),
+                :default => [ ::I18n.t("activemodel.state_events.#{parent_class_name}.headers.#{event_name}", :default => localized_event_name) ]),
             'data-event_description' => 
               ::I18n.t("activemodel.state_events.#{class_name}.descriptions.#{event_name}", 
-                :default => [ ::I18n.t("activemodel.state_events.#{parent_class_name}.descriptions.#{event_name}", :default => localized_event_name ]),
+                :default => [ ::I18n.t("activemodel.state_events.#{parent_class_name}.descriptions.#{event_name}", :default => localized_event_name) ]),
             'data-root_id' => root.id,
             'data-entity_id' => object.id,
             :class => css_class
