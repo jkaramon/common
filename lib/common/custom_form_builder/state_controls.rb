@@ -34,8 +34,8 @@ module CustomFormBuilder
 
       fields = @object.state_events.inject("") do |memo, event_name|
         if predicate.call(@object, event_name)
-          localized_event_name = ::I18n.t("activemodel.state_events.#{event_name}");
-          memo += template.content_tag(:button, localized_event_name), { 
+          localized_event_name = ::I18n.t("activemodel.state_events.#{event_name}")
+          memo += template.content_tag(:button, localized_event_name, { 
             :type => :button, 
             'data-event_name' => event_name,
             'data-root' => root_controller, 
