@@ -30,7 +30,9 @@ module CustomFormBuilder
       root = object._root_document if object.respond_to?(:_root_document) && object._root_document.present?      
 
       root_controller = root.class.to_s.tableize
-      class_name = @object.class.to_s.gsub("/", "_").underscore
+      klass = @object.class
+      class_name = klass.to_s.underscore.gsub("/", ".")
+      parent_class_name = klass.parent.underscore.gsub("/", ".")
 
 
       fields = @object.state_events.inject("") do |memo, event_name|
@@ -40,8 +42,12 @@ module CustomFormBuilder
             :type => :button, 
             'data-event_name' => event_name,
             'data-root' => root_controller, 
-            'data-event_header' => ::I18n.t("activemodel.state_events.#{class_name}.headers..#{event_name}", :default => localized_event_name),
-            'data-event_description' => ::I18n.t("activemodel.state_events.#{class_name}.descriptions.#{event_name}", :default => localized_event_name),
+            'data-event_header' => 
+              ::I18n.t("activemodel.state_events.#{class_name}.headers.#{event_name}", 
+                :default => [ "activemodel.state_events.#{parent_class_name}.headers.#{event_name}", localized_event_name ]),
+            'data-event_description' => 
+              ::I18n.t("activemodel.state_events.#{class_name}.descriptions.#{event_name}", 
+                :default => [ "activemodel.state_events.#{parent_class_name}.descriptions.#{event_name}", localized_event_name ]),
             'data-root_id' => root.id,
             'data-entity_id' => object.id,
             :class => css_class
