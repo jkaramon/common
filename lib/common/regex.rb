@@ -11,6 +11,6 @@ module Regex
   SUBDOMAIN = /^([a-zA-Z])[a-zA-Z_-]*[\w_-]*[\S]$|^([a-zA-Z])[0-9_-]*[\S]$|^[a-zA-Z]*[\S]$/i
   
   # Matches valid hexadecimal colors, 3 or 6 hexdigits only. Matches both lower and upper case.
-  HEX_COLOR = /^#([0-9a-f]{3}){1,2}$/
+  HEX_COLOR = /^#([0-9a-fA-F]{3}){1,2}$/
 
 end
