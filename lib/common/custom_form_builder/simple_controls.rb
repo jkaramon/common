@@ -276,6 +276,7 @@ module CustomFormBuilder
 
     # Generates datetime picker control 
     def datetime_input(method, options)
+      options[:date_format] = :short_datetime
       case get_rule(method).visibility
       when :enabled 
         return datetime_enabled(method, options)
@@ -285,6 +286,7 @@ module CustomFormBuilder
     end
 
     def basic_time_input(method, options)
+      options[:date_format] = :time
       case get_rule(method).visibility
       when :enabled 
         return time_enabled(method, options)
@@ -294,6 +296,7 @@ module CustomFormBuilder
     end
 
     def basic_date_input(method, options)
+      options[:date_format] = :short
       case get_rule(method).visibility
       when :enabled 
         return date_enabled(method, options)
@@ -335,6 +338,9 @@ module CustomFormBuilder
           value = inst.send(options[:label_method]) if inst.present? if options[:label_method].present?
         end
       end
+      if value.present? && options[:time_format].present?
+        value = value.to_s(options[:time_format])
+      end
       options[:input_html][:value]=""
       template.content_tag :span, value, options[:input_html]
     end
@@ -351,13 +357,11 @@ module CustomFormBuilder
     end
     
  def datetime_enabled(method, options)
-      Time::DATE_FORMATS[:datepicker] = I18n.t('time.formats.datepicker')
-
       object_name = object.class.to_s.underscore.to_sym
       value = ActionView::Helpers::InstanceTag.value(object, method)
       time_value = value.nil? ? "" : value.to_s(:time)
 
-      date_value = value.nil? ? "" : value.to_s(:datepicker)
+      date_value = value.nil? ? "" : value.to_s(:short)
 
       options[:input_html] ||= {}
       time_field_options = options.merge(:value => time_value, :class => 'time_picker')
@@ -374,11 +378,9 @@ module CustomFormBuilder
     end
 
     def date_enabled(method, options)
-      Time::DATE_FORMATS[:datepicker] = I18n.t('time.formats.datepicker')
-
       object_name = object.class.to_s.underscore.to_sym
       value = ActionView::Helpers::InstanceTag.value(object, method)
-      date_value = value.nil? ? "" : value.to_s(:datepicker)
+      date_value = value.nil? ? "" : value.to_s(:short)
       summary_options(options)
       options[:input_html] ||= {}
       options[:class] ||= 'date_picker ' + options[:input_html][:class]

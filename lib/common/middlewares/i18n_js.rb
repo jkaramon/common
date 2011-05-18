@@ -20,12 +20,12 @@ module Rack
         selected = "default"
         user_id = env['rack.session']['warden.user.user.key']
         
-        unless user_id.nil?
-          user = User.find(user_id[1].to_s)
-          unless user.user_settings.nil?
-            selected = user.user_settings.time_format
-          end
-        end
+        # unless user_id.nil?
+        #   user = User.find(user_id[1].to_s)
+        #   # unless user.settings.nil?
+        #   #   selected = user.settings.time_format
+        #   # end
+        # end
 
         # Get yaml
         loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/en.yml"))['en']['js']
