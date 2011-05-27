@@ -47,7 +47,6 @@ module CustomFormBuilder
           end
           localized_event_name = ::I18n.t("activemodel.state_events.#{class_name}.#{event_caption_key}",
                                           :default => [ 
-                                            ::I18n.t("activemodel.state_events.#{parent_class_name}.#{event_caption_key}"),
                                             ::I18n.t("activemodel.state_events.#{event_caption_key}")
                                           ])
           memo += template.content_tag(:button, localized_event_name, { 
