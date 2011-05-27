@@ -4,6 +4,8 @@ module CustomFormBuilder
   module StateControls
 
     def portal_state_buttonizer
+      options = {}
+      options[:custom_caption_mapper] = { :do_save => :do_add_comment }
       state_buttonizer_filter(options)  do |entity, event_name|  
         allowed_event = event_name == :do_save 
         allowed_event ||= event_name == :do_close && (entity.state == :resolved || entity.state == :completed)
@@ -27,8 +29,9 @@ module CustomFormBuilder
       css_class << ' button'
       generate_hidden_field = options[:generate_hidden_field] || !options.has_key?(:class)
       root = object
-      root = object._root_document if object.respond_to?(:_root_document) && object._root_document.present?      
+      root = object._root_document if object.respond_to?(:_root_document) && object._root_document.present?    
 
+     
       root_controller = root.class.to_s.tableize
       klass = @object.class
       class_name = klass.to_s.underscore.gsub("/", ".")
@@ -37,21 +40,26 @@ module CustomFormBuilder
 
       fields = @object.state_events.inject("") do |memo, event_name|
         if predicate.call(@object, event_name)
-          localized_event_name = ::I18n.t("activemodel.state_events.#{class_name}.#{event_name}",
+          event_caption_key = event_name
+          if options.include?(:custom_caption_mapper) 
+            mapper = options[:custom_caption_mapper]
+            event_caption_key = mapper[event_name] if mapper.include?(event_name)
+          end
+          localized_event_name = ::I18n.t("activemodel.state_events.#{class_name}.#{event_caption_key}",
                                           :default => [ 
-                                            ::I18n.t("activemodel.state_events.#{parent_class_name}.#{event_name}"),
-                                            ::I18n.t("activemodel.state_events.#{event_name}")
+                                            ::I18n.t("activemodel.state_events.#{parent_class_name}.#{event_caption_key}"),
+                                            ::I18n.t("activemodel.state_events.#{event_caption_key}")
                                           ])
           memo += template.content_tag(:button, localized_event_name, { 
             :type => :button, 
             'data-event_name' => event_name,
             'data-root' => root_controller, 
             'data-event_header' => 
-              ::I18n.t("activemodel.state_events.#{class_name}.headers.#{event_name}", 
-                :default => [ ::I18n.t("activemodel.state_events.#{parent_class_name}.headers.#{event_name}", :default => localized_event_name) ]),
+              ::I18n.t("activemodel.state_events.#{class_name}.headers.#{event_caption_key}", 
+                :default => [ ::I18n.t("activemodel.state_events.#{parent_class_name}.headers.#{event_caption_key}", :default => localized_event_name) ]),
             'data-event_description' => 
-              ::I18n.t("activemodel.state_events.#{class_name}.descriptions.#{event_name}", 
-                :default => [ ::I18n.t("activemodel.state_events.#{parent_class_name}.descriptions.#{event_name}", :default => localized_event_name) ]),
+              ::I18n.t("activemodel.state_events.#{class_name}.descriptions.#{event_caption_key}", 
+                :default => [ ::I18n.t("activemodel.state_events.#{parent_class_name}.descriptions.#{event_caption_key}", :default => localized_event_name) ]),
             'data-root_id' => root.id,
             'data-entity_id' => object.id,
             :class => css_class
