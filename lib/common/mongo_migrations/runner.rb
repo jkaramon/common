@@ -92,9 +92,9 @@ module MongoMigrations
         end
 
       rescue Exception => err
-        notify_error(err)
         @failed_run = mr
         mr.fail!(err)
+        notify_error(err, mr.to_hash)
       end
       mr
     end
