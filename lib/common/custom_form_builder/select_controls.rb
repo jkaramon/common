@@ -491,7 +491,7 @@ module CustomFormBuilder
     end
    
     def ticket_status_select_input(method, options)
-      reporting_status_select_input(method, options, [Incident, Problem, Request, Call])
+      reporting_status_select_input(method, options, Tickets::TicketBase.ticket_types)
     end
 
     def sla_status_select_input(method, options)
