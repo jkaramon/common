@@ -259,7 +259,8 @@ module CustomFormBuilder
     def resolution_group_input(method, options)
       options[:model] ||= ResolutionGroup
       select_default(method, options)
-      options[:collection] ||= ResolutionGroup.all
+      selected = ResolutionGroup.all(:id => options[:selected]).first
+      options[:collection] ||= ResolutionGroup.actives_or_self(selected).sort_by{ |rg| rg.name } 
       options[:label_method] ||= :display_name
       select_input(method, options)
     end
