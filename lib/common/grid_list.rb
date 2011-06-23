@@ -12,19 +12,20 @@ module GridList
     
     rows = super(options)
     rows.each do |entity|
-      time_attrs_to_local(entity) 
+      time_to_local(entity) 
     end
 
     "{ \"total\": \"#{settings[:total]}\", \"page\": \"#{settings[:page]}\", \"records\": \"#{settings[:records]}\",\"rows\": #{rows}}"
   end
 
   # Iterates all time attributes and converts them from UTC to local time
-  def time_attrs_to_local(entity)
+  def time_to_local(entity)
     entity.each do |key, value| 
       entity[key] = Time.zone.at(value).to_s if value.is_a?(Time) 
     end
   end
 
+  module_function :time_to_local
   
 
 end
