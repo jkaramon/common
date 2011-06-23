@@ -10,8 +10,7 @@ module GridList
     settings[:records] ||= 0
     settings[:total] = ( (settings[:records] - 1 ) / settings[:per_page] ) + 1
     
-    rows = super(options)
-    rows.each do |entity|
+    self.each do |entity|
       time_to_local(entity) 
     end
 
@@ -20,6 +19,7 @@ module GridList
 
   # Iterates all time attributes and converts them from UTC to local time
   def time_to_local(entity)
+    return unless entity.respond_to?(:each)
     entity.each do |key, value| 
       entity[key] = Time.zone.at(value).to_s if value.is_a?(Time) 
     end
