@@ -1,3 +1,2 @@
 module Common
-  VERSION = "1.1.44"
-end
+  VERSION = "1.1.45

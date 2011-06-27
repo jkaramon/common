@@ -14,7 +14,7 @@ module MongoMapper
 
         #Override .all class method - all method return only non-terminated objects
         def all(options = {})
-          self.where(:state => {'$nin' => [:terminated]}).all(options)
+          self.where(options).all
         end
 
         #Override paginate method - paginating apply only non-terminated objects
@@ -22,7 +22,13 @@ module MongoMapper
           options.merge!(:state => {'$nin' => [:terminated]}) unless options.has_key? :state
           super(options)
         end
-        
+
+        #Override .all class method - all method return only non-terminated objects
+        def where(options = {})
+          options.merge!(:state => {'$nin' => [:terminated]}) unless options.has_key? :state
+          super(options)
+        end
+       
       end
 
       module InstanceMethods
