@@ -30,7 +30,7 @@ module MongoMapper
         private
 
         def prepare_options(options)
-          options.merge!(:state => {'$nin' => [:terminated]}) unless options.has_key? :state
+          return options.merge(:state => {'$nin' => [:terminated]}) unless options.has_key? :state
           options
         end
        
