@@ -4,6 +4,8 @@ require 'state_machine'
 class StateTerminateModel
   include MongoMapper::Document
   plugin MongoMapper::Plugins::StateTerminated
+
+  key :name, String
   
   state_machine :initial => :draft do
     event :do_activate do
@@ -61,6 +63,11 @@ describe "MongoMapper::Plugins::StateTerminated" do
       :page      => 2
     }
     StateTerminateModel.paginate(options).count.should == 1
+  end
+
+  it "find all if regexp specified" do
+    entity = StateTerminateModel.create(:name => "ABC")
+    StateTerminateModel.all({:name=>/a/i, :sort=>:name}).count.should == 1
   end
 
 

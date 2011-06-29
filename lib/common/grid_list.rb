@@ -14,7 +14,7 @@ module GridList
       time_to_local(entity) 
     end
 
-    "{ \"total\": \"#{settings[:total]}\", \"page\": \"#{settings[:page]}\", \"records\": \"#{settings[:records]}\",\"rows\": #{rows}}"
+    "{ \"total\": \"#{settings[:total]}\", \"page\": \"#{settings[:page]}\", \"records\": \"#{settings[:records]}\",\"rows\": #{super(options)}}"
   end
 
   # Iterates all time attributes and converts them from UTC to local time
