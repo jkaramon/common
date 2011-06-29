@@ -221,12 +221,14 @@ module CustomFormBuilder
 
 
     def text_input(method, options) 
+      resizeable =  options[:resizable] || !options.include?(:resizeable) 
+      options[:input_html] ||= {}
+      options[:input_html][:class] = 'resizeable' if resizeable
       case get_rule(method).visibility
       when :enabled 
         return super(method, options) 
       when :disabled 
-        options[:input_html] ||= {}
-        options[:input_html][:value] = template.simple_format(object.send(method)) 
+        options[:input_html][:value] = template.simple_format(object.send(method))
         return disabled_field(method, options)
       end
     end

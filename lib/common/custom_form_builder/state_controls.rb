@@ -23,6 +23,68 @@ module CustomFormBuilder
     end
 
 
+
+    def state_buttons(options = {})
+      hidden_events = options[:hide_events] || []
+      css_class = options[:class] || 'state_buttonizer'
+      root = object
+      root = object._root_document if object.respond_to?(:_root_document) && object._root_document.present?    
+
+     
+      root_controller = root.class.to_s.tableize
+      klass = @object.class
+      class_name = klass.to_s.underscore.gsub("/", ".")
+      parent_class_name = klass.parent.to_s.underscore.gsub("/", ".")
+
+      items = 1
+      first_item = nil
+      fields = @object.event_types.inject("") do |memo, event_type|
+        event_name = event_type.name
+        if !hidden_events.include?(event_name)
+          event_caption_key = event_name
+          if options.include?(:custom_caption_mapper) 
+            mapper = options[:custom_caption_mapper]
+            event_caption_key = mapper[event_name] if mapper.include?(event_name)
+          end
+          localized_event_name = ::I18n.t("activemodel.state_events.#{class_name}.#{event_caption_key}",
+                                          :default => [ event_type.caption ])
+          link = template.content_tag(:a, localized_event_name, { 
+            'data-name' => event_type.name, 
+            'data-caption' => event_type.caption, 
+            'data-actions' => event_type.actions.join('|'),
+            'data-event_name' => event_name,
+            'data-root' => root_controller, 
+            'data-event_header' => 
+              ::I18n.t("activemodel.state_events.#{class_name}.headers.#{event_caption_key}", 
+                :default => [ ::I18n.t("activemodel.state_events.#{parent_class_name}.headers.#{event_caption_key}", :default => localized_event_name) ]),
+            'data-event_description' => 
+              ::I18n.t("activemodel.state_events.#{class_name}.descriptions.#{event_caption_key}", 
+                :default => [ ::I18n.t("activemodel.state_events.#{parent_class_name}.descriptions.#{event_caption_key}", :default => localized_event_name) ]),
+            'data-root_id' => root.id,
+            'data-entity_id' => object.id,
+            :class => css_class
+          }) 
+          li = template.content_tag(:li, link)
+          if items == 1
+            first_item = link
+          end
+          memo += li
+          items += 1
+        else
+          memo += ""
+        end
+        memo
+      end
+      
+      second_ul = template.content_tag(:ul, template.raw(fields))
+
+      hidden = template.tag(:input, { :type => :hidden, :name => :state_event, :id => :state_event_field })
+      result = template.content_tag(:ul, template.content_tag(:li, template.raw( first_item + second_ul ), :class => 'first'), :class => 'sf-menu action_menu')
+      template.raw(result + hidden)
+    end
+
+
+
     def state_buttonizer_filter(options = {}, &predicate)
       hidden_events = options[:hide_events] || []
       css_class = options[:class] || 'state_buttonizer'
