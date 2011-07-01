@@ -3,7 +3,7 @@ module Messaging
   module MongoBackend
     attr_accessor :test_env 
     def enqueue(data)
-      message = Message.create(data)
+      message = Message.create(data.force_encoding("UTF-8"))
       message[:queue_name] = name
       collection.insert(message)      
     end
