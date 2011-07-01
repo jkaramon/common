@@ -169,6 +169,8 @@ module CustomFormBuilder
       options['style'] = "display: none" if is_watched
       options['data-ticket'] = ticket_id
       options['data-action'] = "watch"
+      options['type'] = "button"
+
       options['title'] = ::I18n.t("#{prefix_caption + options['data-action']}")
       result += template.content_tag(:button, template.image_tag("/images/icons/#{ options['data-action'] }.png") , options) if options[:show_watch]
       if is_watched
