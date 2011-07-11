@@ -22,7 +22,7 @@ module CustomFormBuilder
       state = rule.panel_state
       state = :collapsed if options[:collapsed]
       
-      options[:class] = "inputs #{options[:name]} collapsible #{state} content_panel #{options[:class]}"
+      options[:class] = "inputs #{options[:name].to_s.underscore} collapsible #{state} content_panel #{options[:class]}"
       state_icon = options[:collapsed]==true ? 'ui-icon-triangle-1-n' : 'ui-icon-triangle-1-s';
       state_text = template.content_tag(:div, "", :class => "collapse-state-text")
       icon = template.content_tag(:div, "", :class => "ui-expandable-icon ui-icon #{state_icon}")

@@ -536,7 +536,7 @@ module CustomFormBuilder
         s = klass.new._type
         values += "<option value='#{s}'"
         values += " selected='selected'" if selected == s
-        values += " >#{s}</option>"
+        values += " >#{s.demodulize}</option>"
       end
       self.label(method,options_for_label(options)) <<
       template.select_tag("#{@object_name}[#{input_name}]", template.raw(values), options)
