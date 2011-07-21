@@ -334,13 +334,25 @@ module CustomFormBuilder
     # @see Import::WorklogType
     def worklog_type_input(method, options)
       input_name = generate_association_input_name(method)
-      default_text = template.t('activemodel.attributes.worklog_type.select_caption')
-      values = "<option value=''>#{default_text}</option>"
-      w = WorklogType.all(:ticket_type=>@object.class.to_s.demodulize)
-      w.each { |item|
-        values += "<option value='#{item.id}'>#{item.name}</option>"
-      }
-      template.select_tag("#{@object_name}[#{input_name}]", template.raw(values), options)
+
+      if @object.is_a? Tickets::TicketBase
+        default_text = template.t('activemodel.attributes.worklog_type.select_caption')
+        values = "<option value=''>#{default_text}</option>"
+
+        w = WorklogType.all(:ticket_type=>@object.class.to_s.demodulize)
+        w.each { |item|
+          values += "<option value='#{item.id}'>#{item.name}</option>"
+        }
+        label = ""
+      else
+        values = ""
+        w = WorklogType.all.sort { |x, y| x.ticket_type <=> y.ticket_type }
+        w.each { |item|
+          values += "<option value='#{item.id}'>#{item.ticket_type} - #{item.name}</option>"
+        }
+        label = self.label(method, options_for_label(options))
+      end
+      label << template.select_tag("#{@object_name}[#{input_name}]", template.raw(values), options)
     end
 
     # Defines Encoding (Codepage) select input
@@ -524,7 +536,7 @@ module CustomFormBuilder
         s = klass.new._type
         values += "<option value='#{s}'"
         values += " selected='selected'" if selected == s
-        values += " >#{s}</option>"
+        values += " >#{s.demodulize}</option>"
       end
       self.label(method,options_for_label(options)) <<
       template.select_tag("#{@object_name}[#{input_name}]", template.raw(values), options)

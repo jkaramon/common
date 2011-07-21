@@ -56,6 +56,16 @@ module CustomFormBuilder
       suggest_input(method, options)
     end
 
+    def operator_input(method, options)
+      options[:input_html] ||= {}
+      options[:input_html][:class] = 'suggest_person'      
+      options[:input_html][:title] = suggest_title(Person)
+      options[:input_html][:class] += ' can_view_detail' if template.can?(:read, Person)
+      options[:input_html][:class] += ' can_create' if template.can?(:create, Person)
+      options[:span_html] ||= {}
+      options[:span_html][:'data-operator_only'] = 1 
+      suggest_input(method, options)
+    end
  
     def customer_input(method, options)
       options[:input_html] ||= {}
