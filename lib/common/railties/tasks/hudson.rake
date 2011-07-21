@@ -81,7 +81,7 @@ namespace :hudson do
  
 
   desc "Runs all rspec tests"
-  task :spec => [:rspec_report_setup, "hudson:setup:rspec", :hudson_spec] 
+  task :spec => [:rspec_report_setup, :hudson_spec] 
 
 
   RSpec::Core::RakeTask.new(:hudson_spec) do |t|
