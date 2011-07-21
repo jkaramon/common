@@ -1,6 +1,7 @@
 require 'rspec/core/rake_task'
 require 'cucumber'
 require 'cucumber/rake/task'
+require 'ci/reporter/rake/rspec'
 
 namespace :hudson do
   def report_path
@@ -81,7 +82,7 @@ namespace :hudson do
  
 
   desc "Runs all rspec tests"
-  task :spec => [:rspec_report_setup, :hudson_spec] 
+  task :spec => [:rspec_report_setup, 'hudson:setup:rspec', :hudson_spec] 
 
 
   RSpec::Core::RakeTask.new(:hudson_spec) do |t|
@@ -90,13 +91,13 @@ namespace :hudson do
 
 
   namespace :setup do
+    
+    task :rspec => ['hudson:setup:pre_ci', "ci:setup:rspec"]
+    
     task :pre_ci do
       ENV["CI_REPORTS"] = rspec_report_path
-      gem 'ci_reporter'
-      require 'ci/reporter/rake/rspec'
     end
-
-    task :rspec => [:pre_ci, "ci:setup:rspec"]
+  
   end
   
 end

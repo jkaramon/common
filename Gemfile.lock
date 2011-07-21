@@ -17,7 +17,7 @@ GIT
 PATH
   remote: .
   specs:
-    common (1.1.46)
+    common (1.1.58)
       hoptoad_notifier
       servolux
 
@@ -68,7 +68,7 @@ GEM
       selenium-webdriver (>= 0.0.3)
     childprocess (0.1.6)
       ffi (~> 0.6.3)
-    ci_reporter (1.6.4)
+    ci_reporter (1.6.5)
       builder (>= 2.1.2)
     columnize (0.3.2)
     cucumber (0.10.0)
