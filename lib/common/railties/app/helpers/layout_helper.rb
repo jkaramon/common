@@ -41,7 +41,7 @@ module LayoutHelper
       :type => model_class.to_s,
       :count => model_class.all.count
     }
-    content_for(:page_entity_js) { "var Page = Page || {};Page.codelist = #{codelist.to_json};" }
+    content_for(:page_entity_js) { raw "var Page = Page || {};Page.codelist = #{codelist.to_json};" }
   end
 
   def collection_path
@@ -67,7 +67,7 @@ module LayoutHelper
       :id => item.id.to_s,
       :type => item.class.to_s
     }
-    content_for(:page_entity_js) { "var Page = Page || {};Page.entity = #{entity.to_json};" }
+    content_for(:page_entity_js) { raw "var Page = Page || {};Page.entity = #{entity.to_json};" }
   end
 
 

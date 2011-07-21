@@ -18,23 +18,8 @@ require_relative 'plugins/state_history'
 require_relative 'plugins/extended_pagination'
 
 # install common plugins
-module DocumentPluginAddition
-  def self.included(model)
-    
-    # Disable IdentityMap plugin because it is not thread safe
-    # and we have issues with job server
-    # model.plugin MongoMapper::Plugins::IdentityMap
-    model.plugin MongoMapper::Plugins::Localization
-    model.plugin MongoMapper::Plugins::ExtendedPagination
-  end
-end
-module EmbeddedDocumentPluginAddition
-  def self.included(model)
-    model.plugin MongoMapper::Plugins::Localization
-  end
-end
+MongoMapper::Document.plugin(MongoMapper::Plugins::Localization)
+MongoMapper::Document.plugin(MongoMapper::Plugins::ExtendedPagination)
 
-MongoMapper::Document.append_inclusions(DocumentPluginAddition)
-MongoMapper::EmbeddedDocument.append_inclusions(EmbeddedDocumentPluginAddition)
 
 

@@ -1,3 +1,4 @@
+# encoding: utf-8
 module Messaging
   
   module MongoBackend
@@ -17,7 +18,7 @@ module Messaging
       )
       
       if message
-        message = HashWithIndifferentAccess.new.merge(message)
+        message = HashWithIndifferentAccess.new.merge(message.deep_symbolize_keys)
       end
       collection.remove({ :status => "processed" })
       message

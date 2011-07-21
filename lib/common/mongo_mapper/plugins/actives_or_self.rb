@@ -1,8 +1,9 @@
 module MongoMapper
   module Plugins
     module ActivesOrSelf
+      extend ActiveSupport::Concern
 
-     module ClassMethods
+      module ClassMethods
 
         def self.actives
           raise "Not Implemented. Implement in inheritor"

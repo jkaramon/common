@@ -4,15 +4,14 @@
 module MongoMapper
   module Plugins
     module SfSynchronizer
+      extend ActiveSupport::Concern
+      included do
+        after_save :base_synchronize
 
-      def self.configure(model)
-        model.class_eval do
-          after_save :base_synchronize
-        end
       end
 
       module ClassMethods
-        
+
       end
 
       module InstanceMethods

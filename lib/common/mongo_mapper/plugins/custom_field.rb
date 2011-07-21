@@ -1,15 +1,13 @@
 module MongoMapper
   module Plugins
     module CustomField
+      extend ActiveSupport::Concern
 
-      def self.configure(model)
-        model.class_eval do
-          key :type_id, ObjectId
-          belongs_to :type, :class_name => model::CustomEntityClassName 
-          many :fields, :class_name => 'CustomFields::Field'
-          validates_associated :fields
-
-        end
+      included do
+        key :type_id, ObjectId
+        belongs_to :type, :class_name => self::CustomEntityClassName
+        many :fields, :class_name => 'CustomFields::Field'
+        validates_associated :fields
       end
 
       module InstanceMethods

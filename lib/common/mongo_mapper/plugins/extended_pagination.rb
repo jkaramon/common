@@ -1,12 +1,8 @@
 module MongoMapper
   module Plugins
     module ExtendedPagination
+      extend ActiveSupport::Concern
 
-      #Plugin extends state machine of included model
-      #Object go to terminated state instead of remove from database
-
-      def self.configure(model)
-      end
 
       module ClassMethods
 

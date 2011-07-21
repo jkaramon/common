@@ -4,71 +4,72 @@ module MongoMapper
 
     # Provides integer based human_id and custom formattable id for given collection
     module IdGenerator
+      extend ActiveSupport::Concern
+      included do
+        key :human_id, Integer
+        key :human_id_formatted, String
+        before_save :_set_human_id_callback
+      end
+
+
       DEFAULT_ID_FORMAT = "%05d"
       DEFAULT_ID_PARSE_FORMAT = /(?<human_id>\d{5})/
 
 
-      def self.configure(model)
-        model.class_eval do
-          key :human_id, Integer
-          key :human_id_formatted, String
-          before_save :_set_human_id_callback
-        end
-      end
 
-      module ClassMethods
-        # Allows defining id structure (prefix, number length, suffix)
-        # uses sprintf format 
-        def id_format(id_format)
-          @id_format = id_format
-        end
-
-        def _id_format
-          @id_format
-        end
-
-
-        # Defines, how human_id_formatted can be parsed
-        # @id_parse_format [RegExp] - reqular expression pattern to parse human_id_formatted
-        def id_parse_format(id_parse_format)
-          @id_parse_format = id_parse_format
-        end
-
-        def _id_parse_format
-          @id_parse_format || DEFAULT_ID_PARSE_FORMAT
-        end
-        
-        def _format_human_id(human_id)
-          format = DEFAULT_ID_FORMAT
-          format = self._id_format unless self._id_format.blank?
-          sprintf( format, human_id) 
-        end
-
-
-
-        # generates and return a new human_id
-        def generate_current_id
-          db = MongoMapper.database
-          coll = db["entity_counters"]
-          items = coll.find("id" => self.to_s()).count()
-          if items == 0
-            doc = {"id" => self.to_s(), "count" => 1}
-            coll.insert(doc)
-          else
-            coll.update( {"id" => self.to_s()}, {"$inc" => { "count" => 1 }} )
+        module ClassMethods
+          # Allows defining id structure (prefix, number length, suffix)
+          # uses sprintf format 
+          def id_format(id_format)
+            @id_format = id_format
           end
 
-          item = coll.find_one("id" => self.to_s())
-          return item["count"]
-        end
+          def _id_format
+            @id_format
+          end
 
-        # resets counter for current class
-        def reset_counter
-          db = MongoMapper.database
-          coll = db["entity_counters"]
-          coll.remove({"id" => self.to_s()})
+
+          # Defines, how human_id_formatted can be parsed
+          # @id_parse_format [RegExp] - reqular expression pattern to parse human_id_formatted
+          def id_parse_format(id_parse_format)
+            @id_parse_format = id_parse_format
+          end
+
+          def _id_parse_format
+            @id_parse_format || DEFAULT_ID_PARSE_FORMAT
+          end
+
+          def _format_human_id(human_id)
+            format = DEFAULT_ID_FORMAT
+            format = self._id_format unless self._id_format.blank?
+            sprintf( format, human_id) 
+          end
+
+
+
+          # generates and return a new human_id
+          def generate_current_id
+            db = MongoMapper.database
+            coll = db["entity_counters"]
+            items = coll.find("id" => self.to_s()).count()
+            if items == 0
+              doc = {"id" => self.to_s(), "count" => 1}
+              coll.insert(doc)
+            else
+              coll.update( {"id" => self.to_s()}, {"$inc" => { "count" => 1 }} )
+            end
+
+            item = coll.find_one("id" => self.to_s())
+            return item["count"]
+          end
+
+          # resets counter for current class
+          def reset_counter
+            db = MongoMapper.database
+            coll = db["entity_counters"]
+            coll.remove({"id" => self.to_s()})
+          end
         end
-      end
 
       module InstanceMethods
         # after save callback

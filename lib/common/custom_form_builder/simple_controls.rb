@@ -377,9 +377,10 @@ module CustomFormBuilder
         options["data-summary_length"] = options[:summary_length] else
         options["data-summary_length"] = "20"
       end
-      self.label(method, options_for_label(options)) <<
-      self.text_field(method, options) <<
-      self.text_field(method, time_field_options).gsub(/#{method}/, "#{method}_time")
+      lbl = self.label(method, options_for_label(options)) 
+      date_field =  self.text_field(method, options)
+      time_field = self.text_field(method, time_field_options).gsub(/#{method}/, "#{method}_time").html_safe
+      lbl + date_field + time_field 
     end
 
     def date_enabled(method, options)
@@ -390,8 +391,7 @@ module CustomFormBuilder
       options[:input_html] ||= {}
       options[:class] ||= 'date_picker ' + options[:input_html][:class]
       options[:value] ||= date_value
-      self.label(method, options_for_label(options)) <<
-      self.text_field(method, options)
+      self.label(method, options_for_label(options)) + self.text_field(method, options)
     end
 
     def time_enabled(method, options)
@@ -400,8 +400,7 @@ module CustomFormBuilder
       time_value = value.nil? ? "" : value.to_s(:time)
       options[:input_html] ||= {}
       time_field_options = options.merge(:value => time_value, :class => 'time_picker')
-      self.label(method, options_for_label(options)) <<
-      self.text_field(method, time_field_options)     
+      self.label(method, options_for_label(options)) + self.text_field(method, time_field_options)
     end
 
     def aligned_checkbox_input(method, options)

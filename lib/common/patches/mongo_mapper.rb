@@ -3,6 +3,8 @@ require 'mongo_mapper'
 module MongoMapper
   module Plugins
     module Patches
+      extend ActiveSupport::Concern
+
       # MongoMapper patches
       module ClassMethods
 
@@ -29,4 +31,4 @@ module MongoMapper
 end
 
 
-MongoMapper::Document.append_extensions(MongoMapper::Plugins::Patches)
+MongoMapper::Document.plugin(MongoMapper::Plugins::Patches)

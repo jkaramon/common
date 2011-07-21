@@ -4,18 +4,17 @@
 module MongoMapper
   module Plugins
     module ConcurrencyCheck
+      extend ActiveSupport::Concern
 
+      included do
+        key :_timestamp, String
+        validate :_check_concurrency, :on => :update
 
-      def self.configure(model)
-        model.class_eval do
-          key :_timestamp, String
-          validate :_check_concurrency, :on => :update
-
-          before_save do
-            self._timestamp = self.class.generate_timestamp
-          end
-
+        before_save do
+          self._timestamp = self.class.generate_timestamp
         end
+
+
       end
 
 

@@ -1,14 +1,9 @@
 module MongoMapper
   module Plugins
     module StateTerminated
-
+      extend ActiveSupport::Concern
       #Plugin extends state machine of included model
       #Object go to terminated state instead of remove from database
-
-      def self.configure(model)
-
-        
-      end
 
       module ClassMethods
 
@@ -33,7 +28,7 @@ module MongoMapper
           return options.merge(:state => {'$nin' => [:terminated]}) unless options.has_key? :state
           options
         end
-       
+
       end
 
       module InstanceMethods

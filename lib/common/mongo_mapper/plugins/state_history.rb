@@ -6,11 +6,10 @@ module MongoMapper
     # Plugin stores all state changes in array of MongoMapper::Models::StateHistoryRecord embedded document.
     # History is accessible via state_history_records attribute
     module StateHistory 
+      extend ActiveSupport::Concern
+      included do
+        many :state_history_records, :class_name => '::MongoMapper::Models::StateHistoryRecord'        
 
-      def self.configure(model)
-        model.class_eval do
-          many :state_history_records, :class_name => '::MongoMapper::Models::StateHistoryRecord'        
-        end
       end
 
       module ClassMethods

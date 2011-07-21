@@ -5,13 +5,12 @@ module MongoMapper
     # Included model should respond to #name method
     # Hierarchy info is stored in #parent_id key
     module HierarchicalEntity 
+      extend ActiveSupport::Concern
 
-      def self.configure(model)
-        raise "Model does not define #name method" unless model.respond_to?(:name)
-        model.class_eval do
-          key :parent_id, ObjectId
-          belongs_to :parent, :class_name => model.to_s
-        end
+      included do
+        key :parent_id, ObjectId
+        belongs_to :parent, :class_name => self.to_s
+
       end
 
       module ClassMethods
@@ -47,7 +46,7 @@ module MongoMapper
         def parent_name
           parent.name unless parent.nil?
         end
-        
+
         # returns serialized ascendants id string delimited by colon
         # Starts by root entity
         def id_path

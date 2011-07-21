@@ -4,29 +4,28 @@
 module MongoMapper
   module Plugins
     module SearchFieldItems
+      extend ActiveSupport::Concern
+      included do
+        before_save :update_search_fields
+        after_save :update_activity_search_fields
 
-      def self.configure(model)
-        model.class_eval do
-          before_save :update_search_fields
-          after_save :update_activity_search_fields
+        key :sf_customer, String
+        key :sf_person, String
+        key :sf_reported_by, String
+        key :sf_contact, String
+        key :sf_service, String
+        key :sf_category, String
+        key :sf_resolution_group, String
+        key :sf_assigned_name, String
 
-          key :sf_customer, String
-          key :sf_person, String
-          key :sf_reported_by, String
-          key :sf_contact, String
-          key :sf_service, String
-          key :sf_category, String
-          key :sf_resolution_group, String
-          key :sf_assigned_name, String
+        key :sf_last_update_user, String
+        key :sf_last_update_created, String
+        key :sf_last_update_description, String
 
-          key :sf_last_update_user, String
-          key :sf_last_update_created, String
-          key :sf_last_update_description, String
-        end
       end
 
       module ClassMethods
-        
+
       end
 
       module InstanceMethods

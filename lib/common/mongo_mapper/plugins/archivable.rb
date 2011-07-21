@@ -3,12 +3,11 @@ require 'bson'
 module MongoMapper
   module Plugins
     module Archivable
+      extend ActiveSupport::Concern
 
-      def self.configure(model)
-        model.class_eval do
-          key :entity_id
-          before_destroy :save_to_archive
-        end
+      included  do
+        key :entity_id
+        before_destroy :save_to_archive
       end
 
       module ClassMethods

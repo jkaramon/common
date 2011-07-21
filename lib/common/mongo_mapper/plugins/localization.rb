@@ -1,6 +1,8 @@
 module MongoMapper
   module Plugins
     module Localization
+      extend ActiveSupport::Concern
+
       module ClassMethods
         def self_and_descendants#nodoc:
           klass = self
@@ -13,7 +15,7 @@ module MongoMapper
         rescue
           [self]
         end
- 
+
         # Transforms attribute key names into a more humane format, such as "First name" instead of "first_name". Example:
         #   Person.human_attribute_name("first_name") # => "First name"
         # This used to be depricated in favor of humanize, but is now preferred, because it automatically uses the I18n
@@ -36,7 +38,7 @@ module MongoMapper
           raise "Locatization of the '#{defaults.inspect}' results in a hash '#{result.inspect}'. Use leaf localization keys only to return single string value." if result.is_a?(Hash)
           result
         end
- 
+
         # Transform the modelname into a more humane format, using I18n.
         # Defaults to the basic humanize method.
         # Default scope of the translation is active_model.models
