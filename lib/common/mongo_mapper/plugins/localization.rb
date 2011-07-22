@@ -49,9 +49,11 @@ module MongoMapper
           end 
           ::I18n.translate(defaults.shift, {:scope => [:activemodel, :models], :count => 1, :default => defaults}.merge(options))
         end
+
+        alias_method :human_name, :human
+
       end
 
-      alias_method :human_name, :human
     end
   end
 end
