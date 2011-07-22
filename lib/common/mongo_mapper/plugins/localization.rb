@@ -43,13 +43,15 @@ module MongoMapper
         # Defaults to the basic humanize method.
         # Default scope of the translation is active_model.models
         # Specify +options+ with additional translating options.
-        def human_name(options = {})
+        def human(options = {})
           defaults = self_and_descendants.map do |klass|
             "#{klass.name.underscore.gsub('/', '.')}".to_sym
           end 
           ::I18n.translate(defaults.shift, {:scope => [:activemodel, :models], :count => 1, :default => defaults}.merge(options))
         end
       end
+
+      alias_method :human_name, :human
     end
   end
 end
