@@ -77,6 +77,7 @@ module CustomFormBuilder
       end
       
       second_ul = template.content_tag(:ul, template.raw(fields))
+      first_item = "" if first_item.nil?
 
       hidden = template.tag(:input, { :type => :hidden, :name => :state_event, :id => :state_event_field })
       result = template.content_tag(:ul, template.content_tag(:li, template.raw( first_item + second_ul ), :class => 'first'), :class => 'sf-menu action_menu')

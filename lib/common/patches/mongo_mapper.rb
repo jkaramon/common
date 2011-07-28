@@ -1,5 +1,12 @@
 require 'mongo_mapper'
 
+class BSON::ObjectId
+  def encode_json(encoder) 
+    encoder.encode(self) 
+  end
+end
+
+
 module MongoMapper
   module Plugins
     module Patches

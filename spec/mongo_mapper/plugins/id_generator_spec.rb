@@ -33,11 +33,17 @@ describe "MongoMapper::Plugins::IdGenerator" do
     @model.human_id_formatted.should == "MODEL-00002"
   end
  
-   it "should return correct subsequent ids if model creation failed" do
+  it "should return correct subsequent ids if model creation failed" do
     Model.create.should be_new # invalid model
     @model = Model.create!(:name => 'My Model')
     @model.human_id_formatted.should == "MODEL-00001"
   end
  
+  it "should return model by parsing its id" do
+    Model.create.should be_new # invalid model
+    @model = Model.create!(:name => 'My Model')
+    @model.human_id_formatted.should == "MODEL-00001"
+  end
+
 
 end
