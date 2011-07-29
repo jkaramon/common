@@ -6,6 +6,21 @@ class BSON::ObjectId
   end
 end
 
+module MongoMapper
+  module Document
+    def encode_json(encoder) 
+      encoder.encode(self) 
+    end
+  end
+
+  module EmbeddedDocument
+    def encode_json(encoder) 
+      encoder.encode(self) 
+    end
+  end
+
+end
+
 
 module MongoMapper
   module Plugins
@@ -27,7 +42,7 @@ module MongoMapper
         end
 
 
-       
+
 
       end
 

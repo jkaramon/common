@@ -9,6 +9,24 @@ module MongoMapper
         key :human_id, Integer
         key :human_id_formatted, String
         before_save :_set_human_id_callback
+
+        def self.find!(id)
+          raise DocumentNotFound, "Couldn't find without an ID" if id.nil?
+          result = self.find(id) 
+          raise DocumentNotFound, "Couldn't find by human_id or id!" if result.nil?
+          result
+        end
+
+        # reimplement find method to enable find by human id
+        def self.find(id)
+          return nil if id.nil?
+          human_id = parse_human_id_formatted(id)
+          result = nil
+          result = first(:human_id => human_id) if human_id.present? 
+          result = first(:_id => id) if result.nil? 
+          result
+        end
+
       end
 
 
@@ -45,6 +63,22 @@ module MongoMapper
             sprintf( format, human_id) 
           end
 
+          # returns array of human ids parsedf from input text
+          def parse_human_ids_formatted(input)
+            return [] unless input.respond_to?(:scan)
+            pattern = self._id_parse_format
+            input.scan(pattern)
+              .map(&:first)  # Each capture is returned as array, get its first element
+              .map(&:to_i)   # Convert it to integer human_id 
+
+          end
+
+          #returns first human_id parsed from input text
+          def parse_human_id_formatted(input)
+            parse_human_ids_formatted(input).first
+          end
+
+
 
 
           # generates and return a new human_id
@@ -78,6 +112,15 @@ module MongoMapper
           return if self.respond_to?(:draft?) and self.draft? 
           set_human_id if self.human_id.nil? 
         end
+
+
+        def to_param
+          human_id_formatted
+        end
+
+
+
+
 
         # assigns new human id 
         def set_human_id

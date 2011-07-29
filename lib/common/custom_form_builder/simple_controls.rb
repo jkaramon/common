@@ -231,7 +231,7 @@ module CustomFormBuilder
       when :enabled 
         return super(method, options) 
       when :disabled 
-        options[:input_html][:value] = template.simple_format(object.send(method))
+        options[:input_html][:value] = template.fulltext_format(object.send(method))
         return disabled_field(method, options)
       end
     end
