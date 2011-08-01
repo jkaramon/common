@@ -226,7 +226,10 @@ module CustomFormBuilder
     def text_input(method, options) 
       resizeable =  options[:resizable] || !options.include?(:resizeable) 
       options[:input_html] ||= {}
-      options[:input_html][:class] = 'resizeable' if resizeable
+      options[:wrapper_html] ||= {}
+      options[:wrapper_html][:class] = "#{options[:wrapper_html][:class]} #{method}"  
+      options[:input_html][:class] = "#{options[:input_html][:class]} #{method}"
+      options[:input_html][:class] += ' resizeable' if resizeable
       case get_rule(method).visibility
       when :enabled 
         return super(method, options) 
