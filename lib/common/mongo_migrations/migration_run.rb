@@ -60,7 +60,7 @@ module MongoMigrations
 
     def to_hash
       output_hash = {
-        :created_at => self.created_at.time,
+        :created_at => self.created_at,
         :version => self.version,
         :db_name => self.db_name,
         :script => self.script,

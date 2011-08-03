@@ -9,12 +9,11 @@ module MongoMapper
           options = { :allow_destroy => false }
           options.update(attr_names.extract_options!)
           options.assert_valid_keys(:allow_destroy, :reject_if)
-
           for association_name in attr_names
 
             if (association = associations.select { |key, value| key == association_name }) && association.present?
               association = association[association_name]
-              type = association.class
+              type = association.is_a?(MongoMapper::Plugins::Associations::ManyAssociation) ? :many : :one
               custom_class ||= association.class_name.constantize if association.class_name.present?
             elsif (key = keys.select { |key, value| key == association_name.to_s }) && key.present? && key.last.last.embeddable?
               type = 'embedded_key'

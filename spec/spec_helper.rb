@@ -7,8 +7,6 @@ $:.unshift( File.dirname(__FILE__) + '/../lib' )
 require 'mongo_mapper'
 require "action_view/railtie"
 require "action_controller/railtie"
-
-
 require 'common'
 
 
