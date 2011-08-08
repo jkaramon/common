@@ -7,7 +7,6 @@ module MongoMapper
       extend ActiveSupport::Concern
       included do
         before_save :update_search_fields
-        after_save :update_activity_search_fields
 
         key :sf_customer, String
         key :sf_person, String
