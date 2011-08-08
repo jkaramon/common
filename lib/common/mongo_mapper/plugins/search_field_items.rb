@@ -48,9 +48,7 @@ module MongoMapper
           doc[:sf_last_update_created] = self.last_update_created.utc if self.respond_to?(:last_update_created) && self.last_update_created != ""
           doc[:sf_last_update_description] = self.last_update_description if self.respond_to?(:last_update_description)
           return if doc == {}
-          db = MongoMapper.database
-          coll = db["tickets"]
-          coll.update({:_id => self.id}, {"$set" => doc})
+          self.set(doc)
         end
 
         # used for update with ruby mongo driver (done especially for migration process)
