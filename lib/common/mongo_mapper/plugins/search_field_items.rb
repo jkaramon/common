@@ -7,7 +7,6 @@ module MongoMapper
       extend ActiveSupport::Concern
       included do
         before_save :update_search_fields
-        after_save :update_activity_search_fields
 
         key :sf_customer, String
         key :sf_person, String
@@ -48,9 +47,7 @@ module MongoMapper
           doc[:sf_last_update_created] = self.last_update_created.utc if self.respond_to?(:last_update_created) && self.last_update_created != ""
           doc[:sf_last_update_description] = self.last_update_description if self.respond_to?(:last_update_description)
           return if doc == {}
-          db = MongoMapper.database
-          coll = db["tickets"]
-          coll.update({:_id => self.id}, {"$set" => doc})
+          self.set(doc)
         end
 
         # used for update with ruby mongo driver (done especially for migration process)

@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: git://github.com/vanilladesk/mongomapper.git
-  revision: 97847f7183afbe1528635ae2df163a396daf6499
+  revision: 39d029cc5da323e02e1ccf15cdbf8dc0b9edb91f
   specs:
     mongo_mapper (0.9.0)
       activemodel (~> 3.0)
