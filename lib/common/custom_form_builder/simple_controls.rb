@@ -235,6 +235,7 @@ module CustomFormBuilder
         return super(method, options) 
       when :disabled 
         options[:input_html][:value] = template.fulltext_format(object.send(method))
+        options[:input_html][:class] += " markdown"
         return disabled_field(method, options)
       end
     end
