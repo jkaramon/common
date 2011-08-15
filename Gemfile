@@ -23,3 +23,5 @@ gem "cucumber"
 gem "capybara"
 gem 'simplecov', :require => false
 gem "timecop"
+
+gem 'representable'
