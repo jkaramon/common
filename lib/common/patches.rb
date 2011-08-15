@@ -6,4 +6,5 @@ require_relative 'patches/mail'
 require_relative 'patches/pop3'
 require_relative 'patches/capybara'
 require_relative 'patches/buffered_logger'
+require_relative 'patches/binding'
 
