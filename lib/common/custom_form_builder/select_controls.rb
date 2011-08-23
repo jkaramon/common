@@ -225,6 +225,15 @@ module CustomFormBuilder
       options[:collection] ||= IncidentResolutionCode.actives_or_self(selected).sort_by{ |ts| ts.sequence_id }
       select_input(method, options)
     end
+
+    def task_resolution_code_input(method, options)
+      options[:model] ||= TaskResolutionCode
+      select_default(method, options)
+      selected = TaskResolutionCode.all(:id => options[:selected]).first
+      options[:collection] ||= TaskResolutionCode.actives_or_self(selected).sort_by{ |ts| ts.sequence_id }
+      select_input(method, options)
+    end
+
     # Defines request_resolution_code select input
     # See CustomFormBuilder::SelectControls#select_input select_input for available options 
     # and source code for the defaults.
@@ -384,11 +393,6 @@ module CustomFormBuilder
     def priority_word_select_input(method, options)
       priority_options = ["high", "normal", "low"]
       select_with_array(method, options, priority_options)
-    end
-
-    def task_result_input(method, options)
-      result_options = ["", "successfull", "not_successfull"]
-      select_with_array(method, options, result_options)
     end
 
     def select_with_array(method, options, array)
