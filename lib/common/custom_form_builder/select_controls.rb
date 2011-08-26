@@ -38,6 +38,7 @@ module CustomFormBuilder
       template.select_tag("#{@object_name}[#{input_name}]", template.raw(values))
     end
 
+
     private 
     
     def select_default(method, options)

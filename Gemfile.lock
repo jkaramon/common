@@ -16,7 +16,7 @@ GIT
 PATH
   remote: .
   specs:
-    common (1.2.69)
+    common (1.2.72)
       hoptoad_notifier
       servolux
 
@@ -88,6 +88,7 @@ GEM
       i18n (>= 0.4.0)
     gherkin (2.4.5)
       json (>= 1.4.6)
+    hooks (0.1.4)
     hoptoad_notifier (2.4.11)
       activesupport
       builder
@@ -134,6 +135,12 @@ GEM
       thor (~> 0.14.4)
     rake (0.9.2)
     rdoc (3.9.1)
+    representable (0.0.2)
+      activesupport
+      hooks
+      i18n
+      json
+      nokogiri
     rspec (2.6.0)
       rspec-core (~> 2.6.0)
       rspec-expectations (~> 2.6.0)
@@ -192,6 +199,7 @@ DEPENDENCIES
   mongo
   mongo_mapper!
   rails (= 3.0.9)
+  representable
   rspec
   ruby-debug19
   simplecov
