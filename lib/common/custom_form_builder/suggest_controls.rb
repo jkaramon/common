@@ -23,12 +23,17 @@ module CustomFormBuilder
       summary_length = options[:input_html]["data-summary_length"]
 
       text_input = ""
-      if state==:disabled
-        text_input = disabled_content(method, :input_html => {:value => text,:class=>summary,"data-summary_length"=>summary_length })
-      else
-        options[:input_html] = {}
+      textbox_options = options[:textbox_html] || {}
+      textbox_options[:class] ||= ""
+      textbox_options[:class] += summary
+      textbox_options[:value] =  text
+      textbox_options['data-summary_length'] = summary_length
+      textbox_options['data-id'] = id
 
-        text_input = text_field(attr_id, options.merge(:value => text, :class => summary,"data-summary_length"=>summary_length)).gsub(/_id/, '_text')
+      if state==:disabled
+        text_input = disabled_content(method, :input_html => textbox_options)
+      else
+        text_input = text_field(attr_id, textbox_options).gsub(/_id/, '_text')
       end
       result = self.label(method, options_for_label(options)).gsub(/_id/, '_text') << text_input
       template.content_tag :span, template.raw(result), :class => "suggest_container #{wrapper_class} s_#{method.to_s}", "data-id" => id
@@ -38,14 +43,5 @@ module CustomFormBuilder
       template.suggest_title(klass)
     end
     
-    def suggest_detail_icon
-      template.content_tag :a, nil, :href => '#', :class => 'ui-icon ui-icon-info ui-state-disabled detail_button', :tabIndex => -1
-    end
-    
-    def suggest_add_icon(state)
-      return "" if state==:disabled
-      template.content_tag :a, nil, :href => '#', :class => 'ui-icon ui-icon-circle-plus ui-state-disabled add_button', :tabIndex => -1
-    end
-  
-  end
+     end
 end

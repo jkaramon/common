@@ -1,7 +1,6 @@
 require 'formtastic'
 require_relative 'helpers'
 require_relative 'container_controls'
-require_relative 'custom_field_controls'
 require_relative 'nested_forms'
 require_relative 'partials'
 require_relative 'select_controls'
@@ -26,7 +25,6 @@ module CustomFormBuilder
     include Partials
     include NestedForms
     include TabPanels
-    include CustomFieldControls
     
     
     # Returns rule object for the given metho name. 
