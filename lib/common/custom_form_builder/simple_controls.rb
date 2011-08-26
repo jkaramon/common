@@ -43,13 +43,7 @@ module CustomFormBuilder
       end
     end
 
-    def location_name_input(method,options = {})
-      summary_options(options)      
-      self.label(method,options_for_label(options)) <<
-      self.text_field(method,options.merge(:class=>"location_name"))
-    end
-
-    def phone_input(method, options = {})
+     def phone_input(method, options = {})
       return "" if control_hidden?(method)
       summary_options(options)
       summary = options[:input_html][:class]
@@ -115,74 +109,7 @@ module CustomFormBuilder
       end
     end
 
-    def mark_workaround_buttons(problem, workaround, options = {})
-      options['data-root'] = "problems"
-      options['data-root_id'] = problem.try(:id)
-      options['data-entity_id'] = workaround.try(:id)
-      accept = workaround_button('accept', 'do_accept', options)
-      reject = workaround_button('reject', 'do_reject', options)
-
-      result = accept+reject if workaround.open?
-      result = accept if workaround.rejected?
-      result = reject if workaround.accepted?
-
-      case get_rule("mark_workaround_buttons").visibility
-      when :enabled
-        return result
-      when :disabled
-        return ""
-      end
-    end
-
-    def workaround_button(text, action, options)
-      options = {
-        :type => :button,
-        :class => "mark_workaround",
-        :value => ::I18n.t(text),
-        "data-mark"=> action
-      }.merge(options) 
-      button(options)
-    end
-    
-    def group_watch_buttons(current_user, options = {})
-      result = ""
-      return "" if current_user.person.nil?
-      current_user.person.manager_resolution_groups.each {|g|
-        options['data-gid'] = g.id
-        is_watched = WatchItem.group_list_contains_ticket(g, object)
-        result = render_watch_buttons(options, is_watched, object.id)
-      }
-      template.raw(result)
-    end
- 
-    def user_watch_buttons(current_user, options = {})
-      is_watched = WatchItem.user_list_contains_ticket(current_user, object)
-      template.raw(render_watch_buttons(options, is_watched, object.id))
-    end
-
-    def render_watch_buttons(options, is_watched, ticket_id)
-      result = ""
-      prefix_caption = ""
-      prefix_caption = "group_" if options['data-gid']
-      options[:class] = "wi_button button"
-      options[:show_watch] = true unless options.include?(:show_watch)
-      options['style'] = "display: none" if is_watched
-      options['data-ticket'] = ticket_id
-      options['data-action'] = "watch"
-      options['type'] = "button"
-
-      options['title'] = ::I18n.t("#{prefix_caption + options['data-action']}")
-      result += template.content_tag(:button, template.image_tag("/images/icons/#{ options['data-action'] }.png") , options) if options[:show_watch]
-      if is_watched
-        options['style'] = "display: inline-block"
-      else
-        options['style'] = "display: none"
-      end
-      options['data-action'] = "unwatch"
-      options['title'] = ::I18n.t("#{prefix_caption + options['data-action']}")
-      result += template.content_tag(:button, template.image_tag("/images/icons/#{ options['data-action'] }.png"), options)
-    end
-
+  
     # Renders form tag. Used if form should wrap areas outside partial, where form is declared. 
     # Example:
     # <% semantic_fields_for @call do |form| %> 
@@ -450,24 +377,7 @@ module CustomFormBuilder
       end
     end
 
-    def priority_input(method, options)
-      return "" if control_hidden?(method)
-      summary_options(options)
-      if control_disabled?(method)
-        case get_rule('do_change_priority_button').visibility
-          when :enabled
-            return disabled_field(method, options) << action_button({:name => :do_change_priority })
-          when :disabled
-            return disabled_field(method, options)
-          when :hide
-            return disabled_field(method, options)
-        end
-      else
-        self.label(method,options_for_label(options)) <<
-        self.text_field(method,options)
-      end
-    end
-    
+      
     def time_hours_input(method, options)
       return "" if control_hidden?(method)
       summary_options(options)

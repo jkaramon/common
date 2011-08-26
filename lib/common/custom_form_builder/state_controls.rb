@@ -2,21 +2,6 @@ module CustomFormBuilder
   ##
   # State aware controls - buttonizer, state_select ... 
   module StateControls
-
-    def portal_state_buttonizer
-      options = {}
-      options[:custom_caption_mapper] = { :do_save => :do_add_comment }
-      state_buttonizer_filter(options)  do |entity, event_name|  
-        allowed_event = event_name == :do_save 
-        allowed_event ||= event_name == :do_close && (entity.state == :resolved || entity.state == :completed)
-        allowed_event ||= event_name == :do_close && (entity.is_a?(Tickets::Call))
-        allowed_event ||= event_name == :do_reopen
-        allowed_event ||= event_name == :do_customer_feedback
-        allowed_event
-      end
-    end
-
-
     def state_buttonizer(options = {})
       hidden_events = options[:hide_events] || []
       state_buttonizer_filter(options) { |entity, event_name| !hidden_events.include?(event_name) }
