@@ -1,3 +1,3 @@
 module Common
-  VERSION = "1.2.76"
+  VERSION = "1.2.77"
 end
