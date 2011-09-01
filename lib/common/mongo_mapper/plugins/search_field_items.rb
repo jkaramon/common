@@ -18,7 +18,7 @@ module MongoMapper
         key :sf_assigned_name, String
 
         key :sf_last_update_user, String
-        key :sf_last_update_created, String
+        key :sf_last_update_created, Time
         key :sf_last_update_description, String
 
       end
@@ -44,7 +44,7 @@ module MongoMapper
         def update_activity_search_fields
           doc = {}
           doc[:sf_last_update_user] = self.last_update_user if self.respond_to?(:last_update_user)
-          doc[:sf_last_update_created] = self.last_update_created.utc if self.respond_to?(:last_update_created) && self.last_update_created != ""
+          doc[:sf_last_update_created] = self.last_update_created.try(:utc) if self.respond_to?(:last_update_created)
           doc[:sf_last_update_description] = self.last_update_description if self.respond_to?(:last_update_description)
           return if doc == {}
           self.set(doc)
