@@ -7,6 +7,9 @@ namespace :less do
     `lessc public/stylesheets/less/screen.less public/stylesheets/screen.css`
     `lessc public/stylesheets/less/session.less public/stylesheets/session.css`
     `lessc public/stylesheets/less/base.less public/stylesheets/base.css`
+    `lessc public/stylesheets/less/ie-patch.less public/stylesheets/ie-patch.css`
+    `lessc public/stylesheets/less/ie7-patch.less public/stylesheets/ie7-patch.css`
+    `lessc public/stylesheets/less/ie8-patch.less public/stylesheets/ie8-patch.css`
     puts 'Stylesheet screen.css has been generated.'
   end
   
