@@ -2,10 +2,10 @@ module CustomFormBuilder
   ##
   # All simple input controls goes here. 
   module SimpleControls
-   
+
     # read only field rendered as label + span
     def readonly(method, options = {})
-      
+
       return "" unless object.respond_to?(method)
       value = object.send(method)
       return "" if (value.blank?)
@@ -27,23 +27,54 @@ module CustomFormBuilder
       options[:class] += options[:input_html][:class]
       summary_options(options)
       case get_rule(method).visibility
-        when :enabled
-          return self.label(method,options_for_label(options)) << self.text_field(:state_display_name, options)
-        when :disabled
-          return self.label(method, options_for_label(options)) << disabled_content(:state_display_name, options)
-      end
-    end
-    
-    def input(method, options = {})
-      return "" if control_hidden?(method)
-      summary_options(options)
-      # Silence Formtastic :selected deprecation warning 
-      ActiveSupport::Deprecation.silence do
-        super(method, options)
+      when :enabled
+        return self.label(method,options_for_label(options)) << self.text_field(:state_display_name, options)
+      when :disabled
+        return self.label(method, options_for_label(options)) << disabled_content(:state_display_name, options)
       end
     end
 
-     def phone_input(method, options = {})
+    def input(method, options = {})
+      return "" if control_hidden?(method)
+      wrap = !options.include?(:wrapper) || options[:wrapper]
+      wrapper_tag = :li
+      wrapper_tag = options[:wrapper] if options.include?(:wrapper)
+
+      summary_options(options)
+
+      options[:required] = method_required?(method) unless options.key?(:required)
+      options[:as]     ||= default_input_type(method, options)
+
+      html_class = [ options[:as], (options[:required] ? :required : :optional) ]
+      html_class << 'error' if @object && @object.respond_to?(:errors) && !@object.errors[method.to_sym].blank?
+
+      wrapper_html = options.delete(:wrapper_html) || {}
+      wrapper_html[:id]  ||= generate_html_id(method)
+      wrapper_html[:class] = (html_class << wrapper_html[:class]).flatten.compact.join(' ')
+
+      if options[:input_html] && options[:input_html][:id]
+        options[:label_html] ||= {}
+        options[:label_html][:for] ||= options[:input_html][:id]
+      end
+
+      input_parts = self.class.inline_order.dup
+      input_parts = input_parts - [:errors, :hints] if options[:as] == :hidden
+
+      list_item_content = input_parts.map do |type|
+        send(:"inline_#{type}_for", method, options)
+      end.compact.join("\n")
+      
+      content = Formtastic::Util.html_safe(list_item_content)
+      
+      if wrap 
+        return template.content_tag( wrapper_tag, content, wrapper_html)
+      else
+        return content
+      end
+
+    end
+
+    def phone_input(method, options = {})
       return "" if control_hidden?(method)
       summary_options(options)
       summary = options[:input_html][:class]
@@ -56,7 +87,7 @@ module CustomFormBuilder
       end <<
       template.tag("img",{:src=>"/images/skype_call.png", :alt=>"skype", :class=>"skype_call"})
     end
-    
+
     def back_button(options = {})
       options = {
         :type=> :button, 
@@ -87,14 +118,14 @@ module CustomFormBuilder
       }.merge(options) 
       button(options)
     end
-    
+
     def action_button(options = {})
       options['data-action'] = options[:name]
       options[:value] ||= ::I18n.t("activemodel.state_events.#{options[:name]}")
       options[:class] = "action"
       button(options)
     end
- 
+
     def button(options = {})
       options[:type] ||= :button
       options[:name] ||= :save
@@ -109,7 +140,7 @@ module CustomFormBuilder
       end
     end
 
-  
+
     # Renders form tag. Used if form should wrap areas outside partial, where form is declared. 
     # Example:
     # <% semantic_fields_for @call do |form| %> 
@@ -166,7 +197,7 @@ module CustomFormBuilder
         return disabled_field(method, options)
       end
     end
-    
+
     def minutes_input(method, options = {}) 
       options[:input_html] ||= {:class => :minutes }
       case get_rule(method).visibility
@@ -185,7 +216,7 @@ module CustomFormBuilder
         return disabled_field(method, options)
       end
     end
-    
+
     # Generates time input to write more than 24 hours period
     def absolute_time_input(method, options)
       case get_rule(method).visibility
@@ -259,7 +290,7 @@ module CustomFormBuilder
         return disabled_field(method, options)
       end
     end
-    
+
     def disabled_content(method, options)
       options[:input_html] ||= {}
       options[:input_html][:class] ||= "" 
@@ -280,19 +311,19 @@ module CustomFormBuilder
       options[:input_html][:value]=""
       template.content_tag :span, value, options[:input_html]
     end
-    
+
     def disabled_field(method, options = {})
       self.label(method, options_for_label(options)) << disabled_content(method, options)
     end
-     
+
     # Generates readonly control
     def readonly_input(method, options)
       value = ActionView::Helpers::InstanceTag.value(object, method)
       self.label(method, options_for_label(options)) <<
       template.text_field_tag(method, value.to_s, {:disabled => 'disabled', :class=>'disabled'})
     end
-    
- def datetime_enabled(method, options)
+
+    def datetime_enabled(method, options)
       object_name = object.class.to_s.underscore.to_sym
       value = ActionView::Helpers::InstanceTag.value(object, method)
       time_value = value.nil? ? "" : value.to_s(:time)
@@ -307,11 +338,11 @@ module CustomFormBuilder
       if(options.include?(:summary_length))
         options["data-summary_length"] = options[:summary_length] else
         options["data-summary_length"] = "20"
-      end
+        end
       lbl = self.label(method, options_for_label(options)) 
       date_field =  self.text_field(method, options)
       time_field = self.text_field(method, time_field_options).gsub(/#{method}/, "#{method}_time").html_safe
-      lbl + date_field + time_field 
+        lbl + date_field + time_field 
     end
 
     def date_enabled(method, options)
@@ -336,13 +367,13 @@ module CustomFormBuilder
 
     def aligned_checkbox_input(method, options)
       case get_rule(method).visibility
-        when :enabled 
-          return aligned_checkbox(method, options)
-        when :disabled 
-          return aligned_checkbox(method, add_disabled_option(options) )
+      when :enabled 
+        return aligned_checkbox(method, options)
+      when :disabled 
+        return aligned_checkbox(method, add_disabled_option(options) )
       end
     end
-    
+
     def aligned_checkbox(method, options)
       input_options =  options.delete(:input_html) || {}
       lbl = self.label(method, options_for_label(options)) 
@@ -359,17 +390,17 @@ module CustomFormBuilder
       checked_value = options.delete(:checked_value) || '1'
       unchecked_value = options.delete(:unchecked_value) || '0'
       checked = @object && ActionView::Helpers::InstanceTag.check_box_checked?(@object.send(:"#{method}"), checked_value)
-                           
+
       input_options[:id] = input_options[:id] || generate_html_id(method, "")
       chk = template.check_box_tag(
         "#{@object_name}[#{method}]",
         checked_value,
-        checked,
-        input_options
+          checked,
+          input_options
       )                                                                                                   
       options[:for] ||= input_options[:id]
       lbl = self.label(method, options_for_label(options)) 
-                                                                                                                     
+
       if options[:label_position]==:right
         "#{chk} #{lbl}"
       else
@@ -377,15 +408,15 @@ module CustomFormBuilder
       end
     end
 
-      
+
     def time_hours_input(method, options)
       return "" if control_hidden?(method)
       summary_options(options)
       case get_rule(method).visibility
-        when :enabled
-          return enabled_time_hours(method, options)
-        when :disabled
-          return disabled_time_hours(method, options)
+      when :enabled
+        return enabled_time_hours(method, options)
+      when :disabled
+        return disabled_time_hours(method, options)
       end
     end
 
@@ -395,11 +426,11 @@ module CustomFormBuilder
       value = ActionView::Helpers::InstanceTag.value(object, "#{method}_hours")
       label = self.label(method,options_for_label(options.merge({:class=> "time_hours"})))
       label << template.text_field(@object_name, "#{method}_hours", options.merge({:value=>value})) <<
-        template.content_tag(:span, template.t('hours') , options)
+      template.content_tag(:span, template.t('hours') , options)
       if minutes
         value = ActionView::Helpers::InstanceTag.value(object, "#{method}_minutes")
         label << template.text_field(@object_name, "#{method}_minutes", options.merge({:value=>value})) <<
-          template.content_tag(:span, template.t('minutes') , options)
+        template.content_tag(:span, template.t('minutes') , options)
       end
       return label
     end
@@ -409,13 +440,12 @@ module CustomFormBuilder
       options = options.except(:show_minutes)
       label = self.label(method,options_for_label(options))
       label << disabled_content("#{method}_hours", options) <<
-        template.content_tag(:span, template.t('hours') , options)
+      template.content_tag(:span, template.t('hours') , options)
       if minutes
         label << disabled_content("#{method}_minutes", options) <<
-          template.content_tag(:span, template.t('minutes') , options)
+        template.content_tag(:span, template.t('minutes') , options)
       end
     end
-
 
   end
 end

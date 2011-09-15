@@ -74,7 +74,8 @@ module CustomFormBuilder
     def field_set_and_list_wrapping_div_legend(*args, &block) #:nodoc:
       contents = args.last.is_a?(::Hash) ? '' : args.pop.flatten
       html_options = args.extract_options!
-
+      wrapper_tag = :ol
+      wrapper_tag = html_options[:wrapper] if html_options.include?(:wrapper)
       legend  = html_options.delete(:name).to_s
       legend %= parent_child_index(html_options[:parent]) if html_options[:parent]
       legend  = template.content_tag(:div, template.content_tag(:span, legend), :class=>'legend') unless legend.blank?
@@ -90,7 +91,7 @@ module CustomFormBuilder
       # Ruby 1.9: String#to_s behavior changed, need to make an explicit join.
       contents = contents.join if contents.respond_to?(:join)
       fieldset = template.content_tag(:fieldset,
-        legend << template.content_tag(:ol, contents),
+        legend << template.content_tag(wrapper_tag, contents),
         html_options.except(:builder, :parent)
       )
       fieldset
