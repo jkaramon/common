@@ -11,6 +11,10 @@ module CustomFormBuilder
 
     def suggest(method, options, state)
       options[:input_html] ||= {}
+    
+
+      container_options = options[:suggest_container_html] || {}
+      container_options[:class] ||= ""
       wrapper_class = options[:input_html].delete(:class);
       assoc_name = method.to_s.sub(/_id$/, '')
       text = object.send(assoc_name).try(:display_name)
@@ -20,7 +24,7 @@ module CustomFormBuilder
 
       summary_options(options)
       summary = options[:input_html][:class]
-      summary_length = options[:input_html]["data-summary_length"]
+      summary_length = options[:input_html].delete("data-summary_length")
 
       text_input = ""
       textbox_options = options[:textbox_html] || {}
@@ -35,8 +39,11 @@ module CustomFormBuilder
       else
         text_input = text_field(attr_id, textbox_options).gsub(/_id/, '_text')
       end
-      result = self.label(method, options_for_label(options)).gsub(/_id/, '_text') << text_input
-      template.content_tag :span, template.raw(result), :class => "suggest_container #{wrapper_class} s_#{method.to_s}", "data-id" => id
+      label = self.label(method, options_for_label(options)).gsub(/_id/, '_text') 
+      container_options[:class] += " suggest_container #{wrapper_class} s_#{method.to_s}"
+      container_options["data-id"] = id
+      container = template.content_tag :span, template.raw(text_input), container_options
+      template.raw(label + container)
     end
     
     def suggest_title(klass)
