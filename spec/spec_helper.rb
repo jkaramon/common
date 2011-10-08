@@ -9,9 +9,7 @@ require "action_view/railtie"
 require "action_controller/railtie"
 require 'common'
 
-
-# Disable Hoptoad
-module HoptoadNotifier
+module Airbrake
   def self.notify(thing)
     # do nothing.
   end
