@@ -15,22 +15,41 @@ module CustomFormBuilder
     # @param block - block to wrap
     def collapsible_fieldset(options = {}, &block)
       method = "section_#{options[:name]}"
+                   
       rule = get_rule(method)
       return if rule.visibility==:hidden 
       
       title = field_set_title_from_args(options)
       state = rule.panel_state
       state = :collapsed if options[:collapsed]
-      
+
       options[:class] = "inputs #{options[:name].to_s.underscore} collapsible #{state} content_panel #{options[:class]}"
       state_icon = options[:collapsed]==true ? 'ui-icon-triangle-1-n' : 'ui-icon-triangle-1-s';
       state_text = template.content_tag(:div, "", :class => "collapse-state-text")
       icon = template.content_tag(:div, "", :class => "ui-expandable-icon ui-icon #{state_icon}")
-      title = template.content_tag(:div, title, :class => "content")
+      header_options = context_help_attrs(method, options)
+      header_options[:class] += " content"
+      title = template.content_tag(:div, title, header_options)
       excerpt = template.content_tag("span","", :class=>"excerpt")
       options[:name] = icon + state_text + title + excerpt
       field_set_and_list_wrapping_div_legend(options, &block)
     end
+
+  
+    def context_help_attrs(method, options)
+      show_help = options[:context_help] != false
+      header_options = {}
+      help_doc = nil
+      if show_help
+        help_type_name = object.class.to_s.demodulize.underscore
+        help_type_name = "ticket" if object.is_a?(Tickets::TicketBase)
+        header_options['data-help_doc'] = "#{help_type_name}_#{method}"
+        header_options[:class] ||= ""
+        header_options[:class] += " help_source"
+      end
+      header_options  
+    end
+
     
     
     
@@ -46,7 +65,9 @@ module CustomFormBuilder
       
       title = field_set_title_from_args(options)
       options[:class] = "inputs #{options[:name]} content_panel"
-      options[:name] = template.content_tag(:div, title, :class => "content")
+      header_options = context_help_attrs(method, options)
+      header_options[:class] += " content"
+      options[:name] = template.content_tag(:div, title, header_options)
       if block_given?
         field_set_and_list_wrapping_div_legend(options, &block)
       end
