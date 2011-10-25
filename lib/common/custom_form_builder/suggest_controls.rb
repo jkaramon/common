@@ -17,8 +17,8 @@ module CustomFormBuilder
       container_options[:class] ||= ""
       wrapper_class = options[:input_html].delete(:class);
       assoc_name = method.to_s.sub(/_id$/, '')
-      text = object.send(assoc_name).try(:display_name)
-      id = object.send(method)
+      text = options[:text] || object.send(assoc_name).try(:display_name)
+      id = options[:id] || object.send(method)
       attr_id = "#{method}".to_sym
       options[:wrapper_html] ||= {}
 
