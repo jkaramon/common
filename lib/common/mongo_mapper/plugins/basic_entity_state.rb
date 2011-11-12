@@ -53,6 +53,21 @@ module MongoMapper
           self.state == 'active'
         end
 
+        def partial_action(action)
+          to_state = self.state_transitions.select{ |x| x.event == action }.first.try(:to)
+          if to_state.present?
+            self.state = to_state
+            doc = partial_action_data(action, to_state)
+            doc[:state] = to_state
+            self.set(doc)
+          end
+        end
+
+      protected
+        def partial_action_data(action = nil, new_state = nil)
+          {}
+        end
+
       end
 
     end
