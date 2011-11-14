@@ -1,0 +1,1 @@
+require_relative 'validations/client_annotation'

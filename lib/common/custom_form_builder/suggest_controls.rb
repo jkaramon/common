@@ -11,8 +11,7 @@ module CustomFormBuilder
 
     def suggest(method, options, state)
       options[:input_html] ||= {}
-    
-
+          
       container_options = options[:suggest_container_html] || {}
       container_options[:class] ||= ""
       wrapper_class = options[:input_html].delete(:class);
@@ -33,6 +32,9 @@ module CustomFormBuilder
       textbox_options[:value] =  text
       textbox_options['data-summary_length'] = summary_length
       textbox_options['data-id'] = id
+      
+      annotations = annotation_options(method, options)
+      textbox_options.merge!(annotations)
 
       if state==:disabled
         text_input = disabled_content(method, :input_html => textbox_options)

@@ -15,6 +15,9 @@ module CustomFormBuilder
     def select_input(method, options)
       options[:label_method] ||= :name
       options[:value_method] ||= :id 
+      annotations = annotation_options(method, options)
+      options.merge!(annotations)
+
       select_default(method, options)
       options[:collection] ||= []
       case get_rule(method).visibility
