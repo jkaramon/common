@@ -16,7 +16,7 @@ GIT
 PATH
   remote: .
   specs:
-    common (1.2.85)
+    common (1.2.89)
       airbrake
       servolux
 
@@ -50,7 +50,7 @@ GEM
       activemodel (= 3.0.9)
       activesupport (= 3.0.9)
     activesupport (3.0.9)
-    airbrake (3.0.4)
+    airbrake (3.0.5)
       activesupport
       builder
     archive-tar-minitar (0.5.2)

@@ -1,4 +1,6 @@
 require 'formtastic'
+
+require_relative 'annotations'
 require_relative 'helpers'
 require_relative 'container_controls'
 require_relative 'nested_forms'
@@ -17,6 +19,7 @@ module CustomFormBuilder
   # Rules are defined separately for each object in config/visibility_rules.
   class Base < ::Formtastic::SemanticFormBuilder 
     include Helpers
+    include Annotations
     include ContainerControls
     include SimpleControls
     include SelectControls
@@ -53,7 +56,7 @@ module CustomFormBuilder
     def control_hidden?(method)
       get_rule(method).hidden?
     end
-
+    
     def summary_options(options)
       options[:input_html] ||= {}
       options[:input_html][:class] ||= ""
@@ -65,6 +68,7 @@ module CustomFormBuilder
       options
     end
 
+   
     private 
     
     # @param [Symbol, String] method - method name of current object

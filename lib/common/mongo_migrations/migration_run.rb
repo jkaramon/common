@@ -5,7 +5,7 @@ module MongoMigrations
     key :version, Integer, :required => true
     key :db_name, String, :required => true
     key :script, Hash, :required => true
-    key :created_at, Time, :required => true, :default => Time.now
+    key :created_at, Time, :required => true, :default => Time.now.utc
     key :status, String, :required => true, :default => :not_started
     many :log_entries, :class_name => 'MongoMigrations::LogEntry' 
 

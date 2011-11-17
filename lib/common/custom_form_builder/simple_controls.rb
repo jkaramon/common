@@ -42,9 +42,10 @@ module CustomFormBuilder
 
       summary_options(options)
 
-      options[:required] = method_required?(method) unless options.key?(:required)
       options[:as]     ||= default_input_type(method, options)
 
+      annotations = annotation_options(method, options)
+      options[:input_html].merge!(annotations) if options[:input_html]
       html_class = [ options[:as], (options[:required] ? :required : :optional) ]
       html_class << 'error' if @object && @object.respond_to?(:errors) && !@object.errors[method.to_sym].blank?
 
@@ -77,9 +78,12 @@ module CustomFormBuilder
     def phone_input(method, options = {})
       return "" if control_hidden?(method)
       summary_options(options)
+       
       summary = options[:input_html][:class]
       summary_length = options[:input_html]["data-summary_length"]
+      options.merge!(annotation_options(method, options))
       options[:input_html] = {}
+
       if control_disabled?(method)
         disabled_field(method, options)
       else
@@ -126,6 +130,8 @@ module CustomFormBuilder
       button(options)
     end
 
+    
+
     def button(options = {})
       options[:type] ||= :button
       options[:name] ||= :save
@@ -165,6 +171,8 @@ module CustomFormBuilder
         template.apply_form_for_options!([object], options)
         args.unshift object
       end
+      options[:html] ||= {}
+      options[:html][:novalidate] = :novalidate
       begin_form = template.form_tag(options.delete(:url) || {}, options.delete(:html) || {})
       template.content_for(:begin_form) { begin_form  }
       template.content_for( :end_form) { template.raw('</form>') }
@@ -338,7 +346,9 @@ module CustomFormBuilder
       if(options.include?(:summary_length))
         options["data-summary_length"] = options[:summary_length] else
         options["data-summary_length"] = "20"
-        end
+      end
+      options.merge!(annotation_options(method, options))
+
       lbl = self.label(method, options_for_label(options)) 
       date_field =  self.text_field(method, options)
       time_field = self.text_field(method, time_field_options).gsub(/#{method}/, "#{method}_time").html_safe
@@ -350,6 +360,8 @@ module CustomFormBuilder
       value = ActionView::Helpers::InstanceTag.value(object, method)
       date_value = value.nil? ? "" : value.to_s(:short)
       summary_options(options)
+      options.merge!(annotation_options(method, options))
+
       options[:input_html] ||= {}
       options[:class] ||= 'date_picker ' + options[:input_html][:class]
       options[:value] ||= date_value
@@ -376,6 +388,8 @@ module CustomFormBuilder
 
     def aligned_checkbox(method, options)
       input_options =  options.delete(:input_html) || {}
+      input_options.merge!(annotation_options(method, options))
+
       lbl = self.label(method, options_for_label(options)) 
       chk = self.check_box method, input_options
       if options[:label_position]==:right
@@ -387,6 +401,7 @@ module CustomFormBuilder
 
     def simple_checkbox_input(method, options)
       input_options =  options.delete(:input_html) || {}
+      input_options.merge!(annotation_options(method, options))
       checked_value = options.delete(:checked_value) || '1'
       unchecked_value = options.delete(:unchecked_value) || '0'
       checked = @object && ActionView::Helpers::InstanceTag.check_box_checked?(@object.send(:"#{method}"), checked_value)
@@ -423,6 +438,8 @@ module CustomFormBuilder
     def enabled_time_hours(method, options)
       minutes = options[:show_minutes]
       options = options.except(:show_minutes)
+      options.merge!(annotation_options(method, options))
+
       value = ActionView::Helpers::InstanceTag.value(object, "#{method}_hours")
       label = self.label(method,options_for_label(options.merge({:class=> "time_hours"})))
       label << template.text_field(@object_name, "#{method}_hours", options.merge({:value=>value})) <<

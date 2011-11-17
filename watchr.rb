@@ -28,6 +28,12 @@ end
 def basename(md)
   File.basename(md[0], ".rb")
 end
+def spec_file(md)
+  filename = md[0].gsub(".rb", "_spec.rb")
+  filename.gsub("lib/common/", "spec/")
+end
 
 
-watch( '^(.*)' ) {|md| run_spec(all_specs) }
+watch( '^spec/.*\_spec.rb' )  {|md| run_spec(md[0]) }
+watch( '^lib/common(.*)\.rb' ) {|md| run_spec(spec_file(md)) }
+
