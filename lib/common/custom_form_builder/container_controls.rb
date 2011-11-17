@@ -42,7 +42,7 @@ module CustomFormBuilder
       help_doc = nil
       if show_help
         help_type_name = object.class.to_s.demodulize.underscore
-        help_type_name = "ticket" if object.is_a?(Tickets::TicketBase)
+        help_type_name = "ticket" if  ["Tickets::Call", "Tickets::Incident", "Tickets::Request", "Tickets::Problem", "Tickets::Task"].member?( object.class.to_s )
         header_options['data-help_doc'] = "#{help_type_name}_#{method}"
         header_options[:class] ||= ""
         header_options[:class] += " help_source"
