@@ -5,6 +5,7 @@ module ErrorNotifier
   def notify_error(exc, additional_data = {})
     additional_data[:backtrace] ||= exc.backtrace.join("\n")
     Airbrake.notify(
+      exc, 
       :error_class   => exc.class.to_s,
       :error_message => exc.message,
       :parameters    => additional_data
