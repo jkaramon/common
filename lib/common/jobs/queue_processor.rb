@@ -19,12 +19,15 @@ module Jobs
         processed_messages += 1
         @tracker = Tracking::QueueProcessorTracker.new(self.class.to_s.demodulize.underscore, message)
         begin
+          MongoMapper::Plugins::IdentityMap.clear
           info "Processing message #{message.to_s}"
           process_message(message[:data])
           info  "Processing finished successfuly"
           tracker.set_success!
         rescue => err
           log_error(err)
+        ensure
+          MongoMapper::Plugins::IdentityMap.clear
         end
       end
       if processed_messages > 0
