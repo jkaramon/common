@@ -10,7 +10,7 @@ require "action_controller/railtie"
 require 'common'
 
 module Airbrake
-  def self.notify(thing)
+  def self.notify(*args)
     # do nothing.
   end
 end
