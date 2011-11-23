@@ -1,0 +1,11 @@
+en:
+  common:
+    editions:
+      notification_feature:
+        constraints_info: '%{max_emails} emails/month'
+      import_email_feature:
+        constraints_info: '%{import_frequency} min'
+      reporting_feature:
+        constraints_info: 'no custom reports'
+      storage_size_feature:
+        constraints_info: '%{max_size_in_bytes}'

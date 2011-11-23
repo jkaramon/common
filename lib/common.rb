@@ -1,9 +1,12 @@
+::I18n.load_path += Dir.glob( File.dirname(__FILE__) + "/common/locales/*.{rb,yml}" ) 
+
 require 'common/ext'
 require 'common/error_notifier'
 require 'common/logging'
 require 'common/db_connection'
 require 'common/db_manager'
 require 'common/devise_authentication'
+require 'common/editions'
 require 'common/messaging' 
 require 'common/mongo_migrations' 
 require 'common/jobs'

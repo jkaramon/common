@@ -20,6 +20,8 @@ Gem::Specification.new do |s|
   
   s.add_dependency "airbrake"
   s.add_dependency "servolux"
+  s.add_dependency "money", "3.1.5"
+
 
 
 

@@ -8,6 +8,7 @@ require 'mongo_mapper'
 require "action_view/railtie"
 require "action_controller/railtie"
 require 'common'
+require 'money'
 
 module Airbrake
   def self.notify(*args)

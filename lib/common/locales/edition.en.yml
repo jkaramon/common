@@ -1,0 +1,14 @@
+en:
+  common:
+    editions:
+      edition: 
+        abbreviations:
+          free: 'Free'
+          lite: 'Lite'
+          pro:  'Pro'
+          ent:  'Ent'
+        names:
+          free: 'Free'
+          lite: 'Lite'
+          pro:  'Professional'
+          ent:  'Enterprise'
