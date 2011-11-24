@@ -38,7 +38,7 @@ class Edition
     if value.nil? || value == ''
       nil
     else
-      edition = value.is_a?(Edition) ? value : Edition.find[value.to_s]
+      edition = value.is_a?(Edition) ? value : Edition.find(value.to_s)
       edition.try(:id)
     end
   end

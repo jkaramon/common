@@ -1,4 +1,5 @@
 class Feature
+  extend ActiveModel::Translation
   include ActionView::Helpers::NumberHelper
   attr_accessor :enabled
   alias_method :enabled?, :enabled
@@ -54,10 +55,14 @@ class ImportEmailFeature < Feature
     super(hash)
   end
 
+  def import_frequency_in_minutes
+    import_frequency / 60
+  end
   
   def constraints_info
     return "" unless self.enabled?
-    loc_info(:import_frequency => import_frequency)
+    return "real-time"  if import_frequency_in_minutes < 2 
+    loc_info(:import_frequency => import_frequency_in_minutes)
   end
 
 end

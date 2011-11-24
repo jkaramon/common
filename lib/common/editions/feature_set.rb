@@ -1,10 +1,12 @@
 class FeatureSet
-  attr_writer :notification
-  attr_writer :import_email 
-  attr_writer :api
-  attr_writer :portal
-  attr_writer :reporting
-  attr_writer :storage_size
+  extend ActiveModel::Translation
+
+  attr_reader :notification
+  attr_reader :import_email 
+  attr_reader :api
+  attr_reader :portal
+  attr_reader :reporting
+  attr_reader :storage_size
 
 
   def self.definitions
@@ -30,15 +32,15 @@ class FeatureSet
         :import_email => { :enabled => true, :import_frequency => 1.minute },
         :api => { :enabled => true },
         :portal => { :enabled => true },
-        :reporting => { :enabled => true,  :custom_reports_enabled => false },
+        :reporting => { :enabled => true,  :custom_reports_enabled => true },
         :storage_size => { :enabled => true, :max_size_in_bytes => 10.gigabytes }
       },
       :ent => {
         :notification => { :enabled => true, :max_emails => 100_000 },
-        :import_email => { :enabled => true, :import_frequency => 10.minutes },
+        :import_email => { :enabled => true, :import_frequency => 1.minute },
         :api => { :enabled => true },
         :portal => { :enabled => true },
-        :reporting => { :enabled => true,  :custom_reports_enabled => false },
+        :reporting => { :enabled => true,  :custom_reports_enabled => true },
         :storage_size => { :enabled => true, :max_size_in_bytes => 100.gigabytes }
       },
       
