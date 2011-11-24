@@ -16,7 +16,7 @@ describe 'Feature' do
   end
 
   describe ImportEmailFeature do
-    subject { ImportEmailFeature.new(:enabled => true, :import_frequency => 10) }
+    subject { ImportEmailFeature.new(:enabled => true, :import_frequency => 10.minutes) }
     it { subject.constraints_info.should == "10 min" }
   end
 

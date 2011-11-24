@@ -16,7 +16,7 @@ GIT
 PATH
   remote: .
   specs:
-    common (1.2.96)
+    common (1.2.97)
       airbrake
       money (= 3.1.5)
       servolux
