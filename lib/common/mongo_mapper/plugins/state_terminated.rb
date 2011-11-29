@@ -17,8 +17,13 @@ module MongoMapper
           super(prepare_options(options))
         end
 
-        #Override .all class method - all method return only non-terminated objects
+        #Override .where class method - all method return only non-terminated objects
         def where(options = {})
+          super(prepare_options(options))
+        end
+
+        #Override .first class method - all method return only non-terminated objects
+        def first(options = {})
           super(prepare_options(options))
         end
 
