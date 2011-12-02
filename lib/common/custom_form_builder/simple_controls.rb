@@ -271,14 +271,14 @@ module CustomFormBuilder
     end
 
     def basic_date_input(method, options)
-      options[:date_format] = :short
+      options[:date_format] ||= "%F"
       case get_rule(method).visibility
       when :enabled 
         return date_enabled(method, options)
       when :disabled
         options[:input_html] ||= {}
         val = object.send(method)
-        val = val.to_s(:date_short) if val.present?
+        val = val.strftime(options[:date_format]) if val.present?
         options[:input_html][:value] = val
         return disabled_field(method, options)
       end
