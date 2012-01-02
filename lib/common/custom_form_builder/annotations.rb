@@ -4,7 +4,7 @@ module CustomFormBuilder
     def annotation_options(attribute, options = {})
       input_options = {}
       annotation = Validations::ClientAnnotation.new(object)
-      required =  ( options[:required] == true ) || annotation.required?(attribute) 
+      required = options[:required].present? ? options[:required] == true  : annotation.required?(attribute)
       if required
         input_options['required'] = 'required'      
       end
