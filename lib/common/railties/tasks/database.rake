@@ -22,18 +22,6 @@ namespace :db do
     seed_file = File.join(Rails.root, 'db', file)
     load(seed_file) if File.exist?(seed_file)
   end
-
-  desc 'Seeds demosite data'
-  task :demosite_seed => [:environment] do
-    file = 'demosite_seed.rb'
-    if production_env?
-      puts "ERROR - you cannot run demo seed for production environment! Run db:seed instead"
-      exit 1
-    end
-    seed_file = File.join(Rails.root, 'db', file)
-    load(seed_file) if File.exist?(seed_file)
-  end
-
   
   desc 'Drops all site databases'
   task :drop_env_databases => [:environment] do

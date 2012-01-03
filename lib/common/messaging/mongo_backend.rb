@@ -12,7 +12,7 @@ module Messaging
     def dequeue_message
       message = collection.find_and_modify(
         :query => {:status => "inserted" },
-        :sort => ["create_date", :desc], 
+        :sort => ["$natural", :asc], 
         :update => { '$set' => { :status => "processed" } },
         :check_response => false
       )
