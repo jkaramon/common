@@ -10,14 +10,11 @@ module Jobs
         @name = name
         @doc = tracker_doc_template
         @status = @doc[:status]
-        @collection_exists = false
+        ensure_collection_exists
       end
 
       def ensure_collection_exists
-        return if @collection_exists
         database.create_collection(collection_name, :capped => true, :size => 100.megabytes, :autoIndexId => true )
-
-        @collection_exists = true
       end
 
 
@@ -63,7 +60,6 @@ module Jobs
       end
 
       def set_success!
-        return unless @collection_exists
         @status = :ok
         insert unless @doc[:status].blank?
       end
@@ -75,7 +71,6 @@ module Jobs
       end
 
       def insert
-        ensure_collection_exists
          @doc[:status] = @status.to_s
          @doc[:status_description] = @status_description if @status_description.present?
         collection.insert(  @doc )
