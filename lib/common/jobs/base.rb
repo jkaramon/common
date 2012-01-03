@@ -28,7 +28,7 @@ module Jobs
       @tracker = Tracking::BaseTracker.new(self.class.to_s.demodulize.underscore)
       MongoMapper::Plugins::IdentityMap.clear
       perform
-      tracker.set_success!
+      self.tracker.set_success!
     rescue => err
       log_error(err)
     ensure 
@@ -40,7 +40,7 @@ module Jobs
       error_note = "Error while processing #{job_name.humanize} job."
       error_message = "#{error_note} #{format_exception(exc)}"
       error error_message
-      tracker.set_error!(error_message)
+      self.tracker.set_error!(error_message)
       notify_error(exc, :note => error_note, :current_site => MongoMapper.database.try(:name))
     end
 

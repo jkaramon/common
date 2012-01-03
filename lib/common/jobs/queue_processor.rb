@@ -23,7 +23,7 @@ module Jobs
           info "Processing message #{message.to_s}"
           process_message(message[:data])
           info  "Processing finished successfuly"
-          tracker.set_success!
+          self.tracker.set_success!
         rescue => err
           log_error(err)
         ensure
@@ -31,8 +31,10 @@ module Jobs
         end
       end
       if processed_messages > 0
+        @tracker = Tracking::QueueProcessorTracker.new(self.class.to_s.demodulize.underscore, message)
         info "#{processed_messages}  processed mesages from queue #{queue_name}"
         info  "#{job_name.humanize} finished successfuly"
+        self.tracker.set_success!
       end
       self
     end
