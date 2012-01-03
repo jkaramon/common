@@ -15,7 +15,8 @@ module Jobs
 
       def ensure_collection_exists
         return if @collection_exists
-        collection.save(@doc)
+        database.create_collection(collection_name, :capped => true, :size => 1.gigabyte, :autoIndexId => true )
+
         @collection_exists = true
       end
 
@@ -46,7 +47,7 @@ module Jobs
 
       def log(message, severity)
         
-        update( { "$push" => { "log" => log_entry(message, severity) } })
+         @doc[:log] << log_entry(message, severity) 
       end
 
       def me_selector
@@ -64,19 +65,18 @@ module Jobs
       def set_success!
         return unless @collection_exists
         @status = :ok
-        update( {"$set" => {"status" => @status.to_s} } )
       end
 
       def set_error!(err)
-        return unless @collection_exists
         @status = :error
         @status_description = err
-        update( {"$set" => {"status" => @status.to_s, "status_description" => err} } )
       end
 
-      def update(cmd)
+      def insert
         ensure_collection_exists
-        collection.update( me_selector, cmd )
+         @doc[:status] = @status.to_s
+         @doc[:status_description] = @status_description if @status_description.present?
+        collection.insert(  @doc )
       end
 
 
