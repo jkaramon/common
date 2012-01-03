@@ -15,7 +15,7 @@ module Jobs
 
       def ensure_collection_exists
         return if @collection_exists
-        database.create_collection(collection_name, :capped => true, :size => 1.gigabyte, :autoIndexId => true )
+        database.create_collection(collection_name, :capped => true, :size => 100.megabytes, :autoIndexId => true )
 
         @collection_exists = true
       end
@@ -65,11 +65,13 @@ module Jobs
       def set_success!
         return unless @collection_exists
         @status = :ok
+        insert unless @doc[:status].blank?
       end
 
       def set_error!(err)
         @status = :error
         @status_description = err
+        insert
       end
 
       def insert
