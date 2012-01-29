@@ -10,7 +10,7 @@ module MongoMapper
         state_machine :initial => :draft do
 
           before_transition :draft => any - [:draft] do |entity, transition|
-            entity.set_human_id if entity.respond_to?(:set_human_id)
+            entity.set_human_id if entity.respond_to?(:set_human_id) && entity.try(:human_id).nil?
           end
 
           event :do_activate do
