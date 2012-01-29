@@ -4,8 +4,8 @@ module Jobs
     class QueueProcessorTracker < BaseTracker
 
 
-      def initialize(name, message)
-        super(name)
+      def initialize(name, message, data = {})
+        super(name, data)
         @doc['message'] = message
         
       end

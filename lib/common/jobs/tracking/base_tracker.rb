@@ -4,19 +4,24 @@ module Jobs
     class BaseTracker
 
       attr_accessor :name
-      attr_reader :status, :status_description
+      attr_reader :status, :status_description, :data
 
-      def initialize(name)
+      def initialize(name, data = {})
         @name = name
         @doc = tracker_doc_template
         @status = @doc[:status]
+        @data = data
         ensure_collection_exists
       end
 
       def ensure_collection_exists
         database.create_collection(collection_name, :capped => true, :size => 100.megabytes, :autoIndexId => true )
       end
+      
 
+      def add_data(data_hash)
+        @data.merge!(data_hash)
+      end
 
 
       def tracker_doc_template
@@ -61,6 +66,7 @@ module Jobs
 
       def set_success!
         @status = :ok
+        return if @doc[:log].blank?
         insert unless @doc[:status].blank?
       end
 
@@ -71,8 +77,9 @@ module Jobs
       end
 
       def insert
-         @doc[:status] = @status.to_s
-         @doc[:status_description] = @status_description if @status_description.present?
+        @doc[:status] = @status.to_s
+        @doc[:data] = @data
+        @doc[:status_description] = @status_description if @status_description.present?
         collection.insert(  @doc )
       end
 
