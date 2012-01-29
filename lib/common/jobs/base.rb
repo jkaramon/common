@@ -12,7 +12,7 @@ module Jobs
     
     def initialize(options = {})
       @logger = options[:logger] 
-      @tracker = options[:tracker]
+      @tracker = options[:tracker] 
     end
 
     def self.execute(options = {})
@@ -21,6 +21,11 @@ module Jobs
 
     def perform      
       raise "Implement by inheritor"
+    end
+
+
+    def tracker
+      @tracker ||= Tracking::BaseTracker.new(self.class.to_s.demodulize.underscore)
     end
 
 
