@@ -30,12 +30,6 @@ module Jobs
           MongoMapper::Plugins::IdentityMap.clear
         end
       end
-      if processed_messages > 0
-        @tracker = Tracking::QueueProcessorTracker.new(self.class.to_s.demodulize.underscore, message)
-        info "#{processed_messages}  processed mesages from queue #{queue_name}"
-        info  "#{job_name.humanize} finished successfuly"
-        self.tracker.set_success!
-      end
       self
     end
 
