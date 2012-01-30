@@ -52,7 +52,6 @@ module MongoMapper
           if attributes_collection.is_a? Hash
             attributes_collection = attributes_collection.sort_by { |index, _| index.to_i }.map { |_, attributes| attributes }
           end
-
             attributes_collection.each do |attributes|
               attributes.stringify_keys!
               entity_id =  attributes['_id'] ||  attributes['id']

@@ -47,7 +47,8 @@ module CustomFormBuilder
     # @return renders add new child entity link
     def add_nested_child(association, options = {})
       options[:caption] ||= ::I18n.t('add')
-      template.link_to(options[:caption], "javascript:void(0)", :class => "add_nested_child button", :"data-association" => association, :"data-parent" => object.class.to_s.underscore.gsub("/", "_") )
+      options[:class] ||= 'button'
+      template.link_to(options[:caption], "javascript:void(0)", :class => "add_nested_child #{options[:class]}", :"data-association" => association, :"data-parent" => object.class.to_s.underscore.gsub("/", "_") )
     end
   end
 end
