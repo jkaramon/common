@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.name        = "common"
   s.version     = Common::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = []
+  s.authors     = ['VanillaDesk']
   s.email       = []
   s.homepage    = "http://rubygems.org/gems/common"
   s.summary     = "A private gem to support vd and acm applications."

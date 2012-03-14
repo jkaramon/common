@@ -1,3 +1,4 @@
+
 class Feature
   extend ActiveModel::Translation
   include ActionView::Helpers::NumberHelper
@@ -11,16 +12,36 @@ class Feature
   def constraints_info
     ""
   end
+
+  def exceed_info
+    ""
+  end
+
+  def disabled_info
+    loc(:disabled_info)
+  end
+
+  
   def loc_info(params = {})
     ::I18n.t(self.class.info_i18n_key, params)
   end
+
+  def loc(key, params = {})
+    ::I18n.t(self.class.i18n_key(key), params)
+  end
+
   
   def self.type_name
     self.to_s.underscore
   end
   def self.info_i18n_key
-    "common.editions.#{type_name}.constraints_info"
+    self.i18n_key :constraints_info
   end
+
+   def self.i18n_key(key)
+    "common.editions.#{type_name}.#{key}"
+  end
+
 
   def initialize(hash = {})
     @enabled = hash[:enabled]
@@ -39,6 +60,12 @@ class NotificationFeature < Feature
     return "" unless self.enabled?
     loc_info(:max_emails => max_emails_display_name)
   end
+
+  def exceed_info
+    loc(:exceed_info, :max_emails => max_emails_display_name)
+  end
+  
+  
     
 
   def initialize(hash = {})
@@ -93,14 +120,20 @@ class StorageSizeFeature < Feature
     super(hash)
   end
 
-  def import_frequency_display_name
+  def size_display_name
     number_to_human_size(max_size_in_bytes, :precision => 0)
   end
 
   def constraints_info
     return "" unless self.enabled?
-    loc_info(:max_size_in_bytes => import_frequency_display_name)
+    loc_info(:max_size => size_display_name)
   end
+
+  def exceed_info
+    loc(:exceed_info, :max_size => size_display_name)
+  end
+
+  
 
 
 end
