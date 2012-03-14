@@ -53,58 +53,61 @@ module MongoMapper
             attributes_collection = attributes_collection.sort_by { |index, _| index.to_i }.map { |_, attributes| attributes }
           end
 
-            attributes_collection.each do |attributes|
-              attributes.stringify_keys!
-              entity_id =  attributes['_id'] ||  attributes['id']
-              if entity_id.blank?
-                send(association_name) << klass.new(attributes)
-              elsif existing_record = send(association_name).detect { |record| record.id.to_s == entity_id.to_s }
+          attributes_collection.each do |attributes|
+            attributes.stringify_keys!
+            entity_id =  attributes['_id'] ||  attributes['id']
+            if existing_record = send(association_name).detect { |record| record.id.to_s == entity_id.to_s }
 
-                if has_destroy_flag?(attributes) && allow_destroy
-                  if klass.embeddable?
-                    send(association_name).delete(existing_record)
-                  else
-                    existing_record.destroy
-                  end
+              if has_destroy_flag?(attributes) && allow_destroy
+                if klass.embeddable?
+                  send(association_name).delete(existing_record)
                 else
-                  existing_record.attributes = attributes.except(*UNASSIGNABLE_KEYS)
+                  existing_record.destroy
                 end
+              else
+                existing_record.attributes = attributes.except(*UNASSIGNABLE_KEYS)
               end
+            else
+              attributes['id'] = nil
+              attributes['_id'] = nil
+              send(association_name) << klass.new(attributes)
             end
 
-      end
+          end
 
-      def assign_nested_attributes_for_one_association(association_name, klass, attributes, allow_destroy)
-        unless attributes.is_a?(Hash)
-          raise ArgumentError, "Hash expected, got #{attributes.class.name} (#{attributes.inspect})"
         end
 
-        attributes.stringify_keys!
+       def assign_nested_attributes_for_one_association(association_name, klass, attributes, allow_destroy)
+          unless attributes.is_a?(Hash)
+            raise ArgumentError, "Hash expected, got #{attributes.class.name} (#{attributes.inspect})"
+          end
 
-        if attributes['_id'].blank?
-          send("#{association_name}=", klass.new(attributes))
-        else 
-          existing_record = send(association_name)
-          if existing_record.has_destroy_flag?(attributes) && allow_destroy
-            if klass.embeddable?
-              send("#{association_name}=", nil)
+          attributes.stringify_keys!
+
+          if attributes['_id'].blank?
+            send("#{association_name}=", klass.new(attributes))
+          else 
+            existing_record = send(association_name)
+            if existing_record.has_destroy_flag?(attributes) && allow_destroy
+              if klass.embeddable?
+                send("#{association_name}=", nil)
+              else
+                existing_record.destroy
+              end
             else
-              existing_record.destroy
+              existing_record.attributes = attributes.except(*UNASSIGNABLE_KEYS)
             end
-          else
-            existing_record.attributes = attributes.except(*UNASSIGNABLE_KEYS)
           end
         end
+
+        alias_method :assign_nested_attributes_for_embedded_key_association, :assign_nested_attributes_for_one_association
+
+        def has_destroy_flag?(hash)
+          Boolean.to_mongo(hash['_delete'])
+        end
+
       end
-
-      alias_method :assign_nested_attributes_for_embedded_key_association, :assign_nested_attributes_for_one_association
-
-      def has_destroy_flag?(hash)
-        Boolean.to_mongo(hash['_delete'])
-      end
-
     end
-  end
 
-end
+  end
 end
