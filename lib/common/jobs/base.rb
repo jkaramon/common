@@ -46,7 +46,13 @@ module Jobs
       error_message = "#{error_note} #{format_exception(exc)}"
       error error_message
       self.tracker.set_error!(error_message)
-      notify_error(exc, :note => error_note, :current_site => MongoMapper.database.try(:name))
+      db_name = ""
+      begin 
+        db_name = MongoMapper.database.try(:name)
+      rescue NameError => e
+      end
+
+      notify_error(exc, :note => error_note, :current_site => db_name)
     end
 
     
