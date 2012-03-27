@@ -2,17 +2,17 @@ en:
   common:
     editions:
       feature:
-        disabled_info: 'This feature is not available in {active_edition}. Please consider upgrading to a higher edition.'
+        disabled_info: 'This feature is not available in %{active_edition}. Please consider upgrading to a higher edition.'
       notification_feature:
         constraints_info: '%{max_emails} emails/month'
-        exceed_info: 'Your site sent more than <em>%{max_emails}</em> emails/month (limit for {active_edition}). No more notifications will be sent this month. Please consider upgrading to a higher edition.'
-        disabled_info: 'Notifications are not available in {active_edition}.  Please consider upgrading to a higher edition.'
+        exceed_info: 'Your site sent more than <em>%{max_emails}</em> emails/month (limit for %{active_edition}). No more notifications will be sent this month. Please consider upgrading to a higher edition.'
+        disabled_info: 'Notifications are not available in %{active_edition}.  Please consider upgrading to a higher edition.'
       import_email_feature:
         constraints_info: '%{import_frequency} min'
-        disabled_info: 'Email import is not available in {active_edition}.  Please consider upgrading to a higher edition.'
+        disabled_info: 'Email import is not available in %{active_edition}.  Please consider upgrading to a higher edition.'
       reporting_feature:
         constraints_info: 'no custom reports'
-        disabled_info: 'Reporting is not available in {active_edition}.  Please consider upgrading to a higher edition.'
+        disabled_info: 'Reporting is not available in %{active_edition}.  Please consider upgrading to a higher edition.'
       storage_size_feature:
         constraints_info: '%{max_size}'
         exceed_info: 'Max storage size <em>%{max_size}</em> was exceeded. You cannot store more attachments. Please consider upgrading to a higher edition.'
