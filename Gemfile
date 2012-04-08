@@ -5,8 +5,8 @@ gemspec
 
 gem 'rails', '3.0.9'
 
-gem "bson"
-gem "bson_ext"
+gem "bson_ext", "1.3.1"
+gem "bson", "1.3.1"
 
 gem 'ci_reporter'
 gem "mongo"
