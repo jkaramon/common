@@ -12,5 +12,4 @@ vendor/bundler_gems/*
 nbproject/*
 rerun.txt
 DEADJOE
-Gemfile.lock
 hudson/*
