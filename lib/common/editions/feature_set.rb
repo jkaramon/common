@@ -7,6 +7,7 @@ class FeatureSet
   attr_reader :portal
   attr_reader :reporting
   attr_reader :storage_size
+  attr_accessor :edition
 
 
   def self.definitions
@@ -52,12 +53,12 @@ class FeatureSet
 
   def initialize(edition_id)
     hash = self.class.definitions[edition_id]
-    @notification = NotificationFeature.new(hash[:notification])
-    @import_email = ImportEmailFeature.new(hash[:import_email])
-    @api =          Feature.new(hash[:api])
-    @portal =       Feature.new(hash[:portal])
-    @reporting =    ReportingFeature.new(hash[:reporting]) 
-    @storage_size = StorageSizeFeature.new(hash[:storage_size]) 
+    @notification = NotificationFeature.new(edition_id, hash[:notification])
+    @import_email = ImportEmailFeature.new(edition_id, hash[:import_email])
+    @api =          Feature.new(edition_id, hash[:api])
+    @portal =       Feature.new(edition_id, hash[:portal])
+    @reporting =    ReportingFeature.new(edition_id, hash[:reporting]) 
+    @storage_size = StorageSizeFeature.new(edition_id, hash[:storage_size]) 
   end
 
   def self.init
