@@ -9,7 +9,7 @@ gem "bson_ext", "1.3.1"
 gem "bson", "1.3.1"
 
 gem 'ci_reporter'
-gem "mongo"
+gem "mongo", "1.3.1"
 gem "mongo_mapper", :git => "git://github.com/vanilladesk/mongomapper.git"
 gem "state_machine" , :git => "git://github.com/jkaramon/state_machine.git"
 gem "devise", "~> 1.1.5"
