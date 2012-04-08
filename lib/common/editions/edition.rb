@@ -23,7 +23,7 @@ class Edition
   end
 
   def self.names
-    ::I18n.t("common.editions.edition.names")
+    ::I18n.t("common.editions.edition.names") 
   end
 
   def initialize(hash = {})
