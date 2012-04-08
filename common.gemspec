@@ -15,8 +15,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project         = "common"
 
   s.add_development_dependency "bundler", ">= 1.0.0"
-  s.add_development_dependency "rspec"
-  
+   
   s.add_dependency "airbrake"
   s.add_dependency "servolux"
   s.add_dependency "money", "3.1.5"
