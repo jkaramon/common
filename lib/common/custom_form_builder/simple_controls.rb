@@ -336,7 +336,7 @@ module CustomFormBuilder
       value = ActionView::Helpers::InstanceTag.value(object, method)
       time_value = value.nil? ? "" : value.to_s(:time)
 
-      date_value = value.nil? ? "" : value.to_s(:short)
+      date_value = value.nil? ? "" : value.to_date.to_s(:db)
 
       options[:input_html] ||= {}
       time_field_options = options.merge(:value => time_value, :class => 'time_picker')
@@ -358,7 +358,7 @@ module CustomFormBuilder
     def date_enabled(method, options)
       object_name = object.class.to_s.underscore.to_sym
       value = ActionView::Helpers::InstanceTag.value(object, method)
-      date_value = value.nil? ? "" : value.to_s(:short)
+      date_value = value.nil? ? "" : value.to_date.to_s(:db)
       summary_options(options)
       options.merge!(annotation_options(method, options))
 
