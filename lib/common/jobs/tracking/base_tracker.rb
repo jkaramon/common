@@ -40,6 +40,7 @@ module Jobs
       end
 
       def error(message)
+        puts message
         log(message, :error)
       end
 

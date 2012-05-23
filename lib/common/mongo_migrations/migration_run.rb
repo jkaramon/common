@@ -2,35 +2,18 @@ module MongoMigrations
 
   class MigrationRun
     include MongoMapper::Document
-    key :version, Integer, :required => true
+    key :version, String, :required => true
+    key :sort_key, Integer, :required => true
     key :db_name, String, :required => true
     key :script, Hash, :required => true
     key :created_at, Time, :required => true, :default => Time.now.utc
     key :status, String, :required => true, :default => :not_started
     many :log_entries, :class_name => 'MongoMigrations::LogEntry' 
-
-    def self.last
-      sort(:version).last
-    end
     
-    def self.last_successful
-      where(:status => 'success').sort(:version).last
+    def self.last
+      sort(:sort_key).last
     end
-
-    def self.any_unresolved?
-      unresolved.count > 0
-    end
-
-    def self.unresolved
-      where(:status => 'error')
-    end
-
-
-
-    def self.resolve(db)
-      db.collection(self.collection_name).update({:status => 'error'}, { '$set' => { status: "error_resolved" } })
-    end
-
+   
     
     def start!
       self.status = :in_progress
@@ -41,20 +24,19 @@ module MongoMigrations
     def success!
       self.status = :success
       save!
+      db_version.update_version(self.version)
       info "Migration run processed sucessfuly" 
     end
 
-    def ignore!
-      self.status = :ignored
-      save!
-      info "Migration run was ignored" 
+    def db_version
+      ::MongoMigrations::DbVersion.get
     end
 
-
+ 
     def fail!(exception)
       self.status = :error
+      db_version.set_error!
       save!
-
       log_exception "Error while processing migration run", exception
     end
 

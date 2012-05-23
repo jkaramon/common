@@ -7,12 +7,21 @@ describe MongoMigrations::Runner do
     @base_dir = File.join( File.dirname(__FILE__), 'data')
     MongoMapper.database = @db_name
   end
+  
+  def init_runner(options = {})
+    if !options.include?(:version)
+      MongoMigrations::DbVersion.reset_to_latest_sprint(@script_dir)
+    else
+      MongoMigrations::DbVersion.set!(options[:version])
+    end
+    @runner = MongoMigrations::Runner.new(@script_dir)
+  end
 
   describe "Script Management" do
     context "Empty2" do
       before(:each) do
         @script_dir = File.join(@base_dir, 'empty')
-        @runner = MongoMigrations::Runner.new(@script_dir)
+        init_runner
       end
 
       it "should locate migration script" do
@@ -20,7 +29,7 @@ describe MongoMigrations::Runner do
       end
 
       it "should parse version" do
-        @runner.scripts.first[:version].should == 1
+        @runner.scripts.first[:version].should == '3.1'
       end
 
       it "should parse migration name" do
@@ -31,7 +40,7 @@ describe MongoMigrations::Runner do
     context "Invalid names" do
       before(:each) do
         @script_dir = File.join(@base_dir, 'invalid_names')
-        @runner = MongoMigrations::Runner.new(@script_dir)
+        init_runner
       end
 
       it "should ignore invalid migration filenames" do
@@ -51,7 +60,7 @@ describe MongoMigrations::Runner do
     before(:all) do
       drop_db
       @script_dir = File.join(@base_dir, 'happy')
-      @runner = MongoMigrations::Runner.new(@script_dir)
+      init_runner :version => '0.0'
     end
 
     it "should process migration scripts" do
@@ -64,7 +73,7 @@ describe MongoMigrations::Runner do
     before(:all) do
       drop_db
       @script_dir = File.join(@base_dir, 'error')
-      @runner = MongoMigrations::Runner.new(@script_dir)
+      init_runner :version => '0.0'
       @runner.migrate
     end
 
@@ -80,7 +89,10 @@ describe MongoMigrations::Runner do
     end
 
     it "run after unresolved migration should not process anything" do
-      @runner.migrate
+      expect {
+        @runner.migrate
+      }.to raise_error
+       
       MongoMigrations::MigrationRun.count.should==2
     end
 
@@ -90,34 +102,20 @@ describe MongoMigrations::Runner do
   end
 
 
-
-  describe "should process replay only mode" do
-    before(:all) do
-      drop_db
-      @script_dir = File.join(@base_dir, 'error')
-      @runner = MongoMigrations::Runner.new(@script_dir)
-    end
-
-    it "should process migration scripts in replay mode and set ignored status" do
-      @runner.migrate false
-      MongoMigrations::MigrationRun.where(:status => 'ignored').count.should==3
-    end
-
-  end
 
   describe "should be applied only one time" do
     before(:all) do
       drop_db
       @script_dir = File.join(@base_dir, 'happy')
-      @runner = MongoMigrations::Runner.new(@script_dir)
+      init_runner :version => '0.0'
     end
 
     it "should process each migration only one time" do
       @runner.migrate
-      MongoMigrations::MigrationRun.count.should==2
-      MongoMigrations::MigrationRun.last.version.should==2
+      MongoMigrations::MigrationRun.count.should==5
+      MongoMigrations::MigrationRun.last.version.should=='2.3'
       @runner.migrate
-      MongoMigrations::MigrationRun.count.should==2
+      MongoMigrations::MigrationRun.count.should==5
     end
 
   end
