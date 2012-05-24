@@ -113,7 +113,7 @@ describe MongoMigrations::Runner do
     it "should process each migration only one time" do
       @runner.migrate
       MongoMigrations::MigrationRun.count.should==5
-      MongoMigrations::MigrationRun.last.version.should=='2.3'
+      MongoMigrations::MigrationRun.last.version.should=='12.3'
       @runner.migrate
       MongoMigrations::MigrationRun.count.should==5
     end

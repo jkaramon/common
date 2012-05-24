@@ -9,8 +9,8 @@ module MongoMigrations
 
     VALID_FILES = "sprint_*/[0-9]*_*.rb"
 
-    def initialize(script_folder)
-      @script_folder = script_folder
+    def initialize(script_folder = nil)
+      @script_folder = script_folder || Rails.root.join('db', 'migrations')
       file_pattern = File.join(@script_folder, VALID_FILES)  
       @script_files = Dir.glob(file_pattern)
       parse_files
@@ -23,7 +23,7 @@ module MongoMigrations
         splitted_file = basename.split('_', 2)
         script_number = splitted_file.first.to_i
         name = splitted_file.last
-        sprint_match = f.match(/sprint_(\d)/i)
+        sprint_match = f.match(/sprint_(\d*)\//i)
         if sprint_match.nil?
           raise "Invalid file structure #{f}"
         end
@@ -40,6 +40,13 @@ module MongoMigrations
       end
     end
 
+    def latest_script
+      self.scripts.last
+    end
+
+    def latest_script_version
+      self.latest_script.present? ? self.latest_script.fetch(:version) : "0.0"
+    end
 
     def inspect
       result =  "\nDB: #{MongoMapper.database.name}"

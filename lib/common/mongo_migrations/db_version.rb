@@ -56,7 +56,7 @@ module MongoMigrations
       self.set(:version => version)
     end
 
-    def self.reset_to_latest_sprint(migration_dir)
+    def self.reset_to_latest_sprint(migration_dir = nil)
       version = self.new(:migration_dir => migration_dir)
       version.reset_to_latest_sprint
     end
@@ -68,17 +68,8 @@ module MongoMigrations
 
     def reset_to_latest_sprint
       self.class.delete_all
-      if self.migration_dir.nil?
-        self.migration_dir = Rails.root.join('db', 'migrations')
-      end
       runner = MongoMigrations::Runner.new(self.migration_dir)
-      latest_script = runner.scripts.last
-      if latest_script.present?
-        version = latest_script.fetch(:version)
-      else
-        version = "0.0"
-      end
-      self.class.create(:version => version)
+      self.class.create(:version => runner.latest_script_version)
     end
 
     
