@@ -56,7 +56,7 @@ module MongoMapper
         # returns serialized ascendants name string delimited by /
         # Starts by root entity
         def full_name
-          full_path.collect(&:name).join(" / ")
+          full_path.collect(&:name).join(" > ")
         end
 
         alias :display_name :full_name
