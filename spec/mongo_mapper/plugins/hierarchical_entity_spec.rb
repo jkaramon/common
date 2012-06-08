@@ -78,7 +78,7 @@ describe MongoMapper::Plugins::HierarchicalEntity do
     end
 
     it "should have correct full_name" do
-      @l2_ch1.full_name.should == "#{@root.name} / #{@l1_ch1.name} / #{@l2_ch1.name}"
+      @l2_ch1.full_name.should == "#{@root.name} > #{@l1_ch1.name} > #{@l2_ch1.name}"
     end
 
     it "should have correct descendants" do
