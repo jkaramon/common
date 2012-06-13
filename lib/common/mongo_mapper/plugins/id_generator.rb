@@ -22,88 +22,101 @@ module MongoMapper
           return nil if id.nil?
           human_id = parse_human_id_formatted(id)
           result = nil
-          result = first(:human_id => human_id) if human_id.present? 
+          if human_id.present? 
+            results = all(:human_id => human_id)           
+            case results.count
+            when 0
+            when 1
+              result = results.first
+            else
+              ids = results.map { |r| { id: r.id, human_id_formatted: r.human_id_formatted }}
+              raise "More than one result found for model '#{self.inspect}'. Raw id: #{id}, parsed id: #{human_id}.\nResults: #{ids.inspect}"
+            end
+          end
           result = first(:_id => id) if result.nil? 
           result
         end
+
 
       end
 
 
       DEFAULT_ID_FORMAT = "%05d"
-      DEFAULT_ID_PARSE_FORMAT = /(?<human_id>\d{5})/
 
 
 
-        module ClassMethods
-          # Allows defining id structure (prefix, number length, suffix)
-          # uses sprintf format 
-          def id_format(id_format)
-            @id_format = id_format
-          end
-
-          def _id_format
-            @id_format
-          end
-
-
-          # Defines, how human_id_formatted can be parsed
-          # @id_parse_format [RegExp] - reqular expression pattern to parse human_id_formatted
-          def id_parse_format(id_parse_format)
-            @id_parse_format = id_parse_format
-          end
-
-          def _id_parse_format
-            @id_parse_format || DEFAULT_ID_PARSE_FORMAT
-          end
-
-          def _format_human_id(human_id)
-            format = DEFAULT_ID_FORMAT
-            format = self._id_format unless self._id_format.blank?
-            sprintf( format, human_id) 
-          end
-
-          # returns array of human ids parsedf from input text
-          def parse_human_ids_formatted(input)
-            return [] unless input.respond_to?(:scan)
-            pattern = self._id_parse_format
-            input.scan(pattern)
-              .map(&:first)  # Each capture is returned as array, get its first element
-              .map(&:to_i)   # Convert it to integer human_id 
-
-          end
-
-          #returns first human_id parsed from input text
-          def parse_human_id_formatted(input)
-            parse_human_ids_formatted(input).first
-          end
-
-
-
-
-          # generates and return a new human_id
-          def generate_current_id
-            db = MongoMapper.database
-            coll = db["entity_counters"]
-            items = coll.find("id" => self.to_s()).count()
-            if items == 0
-              doc = {"id" => self.to_s(), "count" => 1}
-              coll.insert(doc)
-            else
-              coll.update( {"id" => self.to_s()}, {"$inc" => { "count" => 1 }} )
-            end
-
-            item = coll.find_one("id" => self.to_s())
-            return item["count"]
-          end
-
-          # resets counter for current class
-          def reset_counter
-            db = MongoMapper.database
-            coll = db["entity_counters"]
-            coll.remove({"id" => self.to_s()})
-          end
+      module ClassMethods
+        # Allows defining id structure (prefix, number length, suffix)
+        # uses sprintf format 
+        def id_format(id_format)
+          @id_format = id_format
         end
+
+        def _id_format
+          @id_format
+        end
+
+
+        # Defines, how human_id_formatted can be parsed
+        # @id_parse_format [RegExp] - reqular expression pattern to parse human_id_formatted
+        def id_parse_format(id_parse_format)
+          @id_parse_format = id_parse_format
+        end
+
+        def _id_parse_format
+          if @id_parse_format.nil?
+            raise "Model '#{self.inspect}' includes IdGenerator plugin, but does not define required 'id_parse_format' class method"
+          end
+          @id_parse_format
+        end
+
+        def _format_human_id(human_id)
+          format = DEFAULT_ID_FORMAT
+          format = self._id_format unless self._id_format.blank?
+          sprintf( format, human_id) 
+        end
+
+        # returns array of human ids parsedf from input text
+        def parse_human_ids_formatted(input)
+          return [] unless input.respond_to?(:scan)
+          pattern = self._id_parse_format
+          input.scan(pattern)
+          .map(&:first)  # Each capture is returned as array, get its first element
+          .map(&:to_i)   # Convert it to integer human_id 
+
+        end
+
+        #returns first human_id parsed from input text
+        def parse_human_id_formatted(input)
+          parse_human_ids_formatted(input).first
+        end
+
+
+
+
+        # generates and return a new human_id
+        def generate_current_id
+          db = MongoMapper.database
+          coll = db["entity_counters"]
+          items = coll.find("id" => self.to_s()).count()
+          if items == 0
+            doc = {"id" => self.to_s(), "count" => 1}
+            coll.insert(doc)
+          else
+            coll.update( {"id" => self.to_s()}, {"$inc" => { "count" => 1 }} )
+          end
+
+          item = coll.find_one("id" => self.to_s())
+          return item["count"]
+        end
+
+        # resets counter for current class
+        def reset_counter
+          db = MongoMapper.database
+          coll = db["entity_counters"]
+          coll.remove({"id" => self.to_s()})
+        end
+      end
 
       module InstanceMethods
         # after save callback
