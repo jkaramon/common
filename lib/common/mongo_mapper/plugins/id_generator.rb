@@ -79,6 +79,7 @@ module MongoMapper
         # returns array of human ids parsedf from input text
         def parse_human_ids_formatted(input)
           return [] unless input.respond_to?(:scan)
+          return [] if BSON::ObjectId.legal?(input) # do not parse if id is  BSON::ObjectId
           pattern = self._id_parse_format
           input.scan(pattern)
           .map(&:first)  # Each capture is returned as array, get its first element
