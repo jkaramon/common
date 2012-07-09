@@ -157,6 +157,42 @@ describe TimeIntervalArray do
     array.items.count.should == 1
     array.items[0].from.should == @time1
     array.items[0].to.should == @time6
- end
+  end
+
+  it "should return merged array" do
+    int1 = TimeInterval.new( @time1, @time2)
+    int2 = TimeInterval.new( @time2, @time3)
+    int3 = TimeInterval.new( @time3, @time4)
+    int4 = TimeInterval.new( @time5, @time6)
+
+    array1 = TimeIntervalArray.new
+
+    array1.add int1
+    array1.add int2
+
+    array2 = TimeIntervalArray.new
+
+    array2.add int3
+    array2.add int4
+
+    array1.merge(array2)
+
+    array1.items.count.should == 2
+    array1.items[0].from.should == @time1
+    array1.items[0].to.should == @time4
+    array1.items[1].should == int4
+
+    array3 = TimeIntervalArray.new
+
+    array3.add int2
+    array3.add TimeInterval.new( @time1, @time3)
+    array3.add TimeInterval.new( @time4, @time5)
+
+    array1.merge(array3)
+
+    array1.items.count.should == 1
+    array1.items[0].from.should == @time1
+    array1.items[0].to.should == @time6
+  end
 
 end 
