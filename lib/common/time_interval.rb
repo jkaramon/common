@@ -27,6 +27,7 @@ class TimeInterval
   def intersect(interval)
     @time_from = interval.from if @time_from < interval.from
     @time_to = interval.to if @time_to > interval.to
+    self
   end
 
 end
@@ -69,7 +70,8 @@ class TimeIntervalArray
         new_data << item.intersect(interval)
       end
     end
-    new_data
+    @data = new_data
+    self
   end
 
   def merge( interval_array )
