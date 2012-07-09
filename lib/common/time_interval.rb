@@ -24,6 +24,11 @@ class TimeInterval
     @time_to = interval.to if @time_to < interval.to
   end
 
+  def intersect(interval)
+    @time_from = interval.from if @time_from < interval.from
+    @time_to = interval.to if @time_to > interval.to
+  end
+
 end
 
 class TimeIntervalArray
@@ -55,6 +60,16 @@ class TimeIntervalArray
     end
     # append if the item is last
     @data << interval if !added
+  end
+
+  def intersect( interval )
+    new_data = []
+    @data.each do |item|
+      if item.overlaps? interval
+        new_data << item.intersect(interval)
+      end
+    end
+    new_data
   end
 
   def merge( interval_array )
