@@ -19,7 +19,7 @@ module Jobs
 
       def get_timestamp
         doc = get_doc(@name)
-        doc['timestamp'] || 0
+        (doc['timestamp'] if doc.present?) || 0
       end
 
     private
