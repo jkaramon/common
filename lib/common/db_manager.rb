@@ -104,7 +104,7 @@ class DbManager
 
   def self.db_suffix
     return "-development" if %w{ development devcached }.include?(env)
-    return "" if env=="production"
+    return "" if %w{ production preprod }.include?(env)
     "-#{env}" 
   end
 
