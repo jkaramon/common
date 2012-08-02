@@ -41,7 +41,16 @@ describe TimeInterval do
     int1.from.should == @time1
     int1.to.should == @time4
   end
- 
+
+  it "should merge two interval completely overlaps" do
+    int1 = TimeInterval.new( @time2, @time3)
+    int2 = TimeInterval.new( @time1, @time4)
+    
+    int2.merge int1
+    int2.from.should == @time1
+    int2.to.should == @time4
+  end
+  
   it "should merge two interval partly overlaps" do
     int1 = TimeInterval.new( @time1, @time3)
     int2 = TimeInterval.new( @time2, @time4)
@@ -50,7 +59,25 @@ describe TimeInterval do
     int1.from.should == @time1
     int1.to.should == @time4
   end
+
+  it "should intersect two interval completely overlaps" do
+    int1 = TimeInterval.new( @time2, @time3)
+    int2 = TimeInterval.new( @time1, @time4)
     
+    int1.intersect int2
+    int1.from.should == @time2
+    int1.to.should == @time3
+  end
+ 
+  it "should intersect two interval partly overlaps" do
+    int1 = TimeInterval.new( @time1, @time3)
+    int2 = TimeInterval.new( @time2, @time4)
+    
+    int1.intersect int2
+    int1.from.should == @time2
+    int1.to.should == @time3
+  end
+     
 end
 
 describe TimeIntervalArray do
@@ -62,7 +89,9 @@ describe TimeIntervalArray do
     @time4 = Time.parse '2010-01-01 4:00 UTC'
     @time5 = Time.parse '2010-01-01 5:00 UTC'
     @time6 = Time.parse '2010-01-01 6:00 UTC'
-  end 
+    @time7 = Time.parse '2010-01-01 7:00 UTC'
+    @time8 = Time.parse '2010-01-01 8:00 UTC'
+   end 
 
   it "should return valid array" do
     int1 = TimeInterval.new( @time1, @time2)
@@ -157,6 +186,70 @@ describe TimeIntervalArray do
     array.items.count.should == 1
     array.items[0].from.should == @time1
     array.items[0].to.should == @time6
- end
+  end
+
+  it "should return merged array" do
+    int1 = TimeInterval.new( @time1, @time2)
+    int2 = TimeInterval.new( @time2, @time3)
+    int3 = TimeInterval.new( @time3, @time4)
+    int4 = TimeInterval.new( @time5, @time6)
+
+    array1 = TimeIntervalArray.new
+
+    array1.add int1
+    array1.add int2
+
+    array2 = TimeIntervalArray.new
+
+    array2.add int3
+    array2.add int4
+
+    array1.merge(array2)
+
+    array1.items.count.should == 2
+    array1.items[0].from.should == @time1
+    array1.items[0].to.should == @time4
+    array1.items[1].should == int4
+
+    array3 = TimeIntervalArray.new
+
+    array3.add int2
+    array3.add TimeInterval.new( @time1, @time3)
+    array3.add TimeInterval.new( @time4, @time5)
+
+    array1.merge(array3)
+
+    array1.items.count.should == 1
+    array1.items[0].from.should == @time1
+    array1.items[0].to.should == @time6
+  end
+
+  it "should return intersect array" do
+    int1 = TimeInterval.new( @time1, @time3)
+    int2 = TimeInterval.new( @time4, @time5)
+    int3 = TimeInterval.new( @time6, @time8)
+
+    array = TimeIntervalArray.new
+
+    array.add int1
+    array.add int2
+    array.add int3
+
+    array.items.count.should == 3
+    array.items[0].should == int1
+    array.items[1].should == int2
+    array.items[2].should == int3
+
+    int4 = TimeInterval.new( @time2, @time7)
+
+    array.intersect int4
+
+    array.items.count.should == 3
+    array.items[0].from.should == @time2
+    array.items[0].to.should == @time3
+    array.items[1].should == int2
+    array.items[2].from.should == @time6
+    array.items[2].to.should == @time7
+  end
 
 end 

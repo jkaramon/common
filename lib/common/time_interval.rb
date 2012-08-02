@@ -24,6 +24,12 @@ class TimeInterval
     @time_to = interval.to if @time_to < interval.to
   end
 
+  def intersect(interval)
+    @time_from = interval.from if @time_from < interval.from
+    @time_to = interval.to if @time_to > interval.to
+    self
+  end
+
 end
 
 class TimeIntervalArray
@@ -57,8 +63,31 @@ class TimeIntervalArray
     @data << interval if !added
   end
 
+  def intersect( interval )
+    new_data = []
+    @data.each do |item|
+      if item.overlaps? interval
+        new_data << item.intersect(interval)
+      end
+    end
+    @data = new_data
+    self
+  end
+
+  def merge( interval_array )
+    return self if interval_array.blank?
+    interval_array.items.each do |interval|
+      self.add(interval)
+    end
+    self
+  end
+
   def items
     @data    
+  end
+
+  def blank?
+    @data.blank?
   end
 
 end
