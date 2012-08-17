@@ -128,17 +128,24 @@ class Translator < Thor
   
 
   def export_file(file)
-    file_key = file.gsub(/#{@basedir}|.yml|.#{@locale}/, "")
-    hash = {}
-    flatten_hash(hash, YAML.load_file( file )[@locale], "")
-    hash.each do |key, value|
-      line = "#{file_key}#{FILE_SPLIT_CHAR}#{key}#{KEY_VALUE_SPLIT_CHAR}\"#{value}\"\n"
-      File.open(@output_file, 'a') do |f|
+    if file.include?('/translations/') 
+      puts "Skipped translation file #{file}"
+      return
+    end
+    file_key = file.gsub(/#{@basedir}|.yml|.#{@locale}|.en|/, "")
+    loc_hash = {}
+    en_hash = {}
+    loc_file = file.gsub(/\.en/, ".#{@locale}")
+    flatten_hash(loc_hash, YAML.load_file( File.join(@basedir, "translations/#{@locale}.yml") )[@locale], "")
+    flatten_hash(en_hash,  YAML.load_file( file )['en'], "" )
+    File.open(@output_file, 'a') do |f|
+      en_hash.each do |key, en_value|
+        loc_value = loc_hash[key]
+        line = "#{file_key}#{FILE_SPLIT_CHAR}#{key}#{KEY_VALUE_SPLIT_CHAR}\"#{en_value}\"#{KEY_VALUE_SPLIT_CHAR}\"#{loc_value}\"\n"
         f.write line
         print line
       end
     end
-    
   end
 
   def flatten_hash(new_hash, hash, key_prefix)
