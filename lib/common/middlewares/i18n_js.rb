@@ -19,43 +19,52 @@ module Rack
         locale = data_array.first
         selected = "default"
         user_id = env['rack.session']['warden.user.user.key']
-        
-        # unless user_id.nil?
-        #   user = User.find(user_id[1].to_s)
-        #   # unless user.settings.nil?
-        #   #   selected = user.settings.time_format
-        #   # end
-        # end
 
-        # Get yaml
-        loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/en.yml"))['en']['js']
-        formats_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/formats-en.yml"))['en']['js']
+        translate_mode = true;
 
-        # if locale is not default (not 'en') - load proper file and merge it with default file
-        # this should prevent from missing translations in js (not defined in non-default files)
-        unless locale == 'en'
-          selected_loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/#{locale}.yml"))[locale]['js']
-          deep_merge!(loc_data, selected_loc_data)
-          selected_formats_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/formats-#{locale}.yml"))[locale]['js']
-          deep_merge!(formats_data, selected_formats_data)
-        end
-
-        if formats_data.nil?
-          json = loc_data.to_json
-        else
+        if translate_mode
+          loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/en.yml"))['en']['js']
+          formats_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/formats-en.yml"))['en']['js']
           selected_time_format = {"formats"=> {"time" => formats_data['formats']['time'][selected] }}
-          json = loc_data.merge(selected_time_format).to_json
+          en_json = loc_data.merge(selected_time_format).to_json
+          loc_json = '{}'
+          unless locale == 'en'
+            selected_loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/#{locale}.yml"))[locale]['js']
+            selected_formats_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/formats-#{locale}.yml"))[locale]['js']
+            selected_time_format = {"formats"=> {"time" => selected_formats_data['formats']['time'][selected] }}
+            loc_json = selected_loc_data.merge(selected_time_format).to_json
+          end
+          data = "\ni18n.en_data = #{en_json}";
+          data += "\ni18n.current_loc_data = #{loc_json}";
+        else
+          # Get yaml
+          loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/en.yml"))['en']['js']
+          formats_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/formats-en.yml"))['en']['js']
+
+          # if locale is not default (not 'en') - load proper file and merge it with default file
+          # this should prevent from missing translations in js (not defined in non-default files)
+          unless locale == 'en'
+            selected_loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/#{locale}.yml"))[locale]['js']
+            deep_merge!(loc_data, selected_loc_data)
+            selected_formats_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/formats-#{locale}.yml"))[locale]['js']
+            deep_merge!(formats_data, selected_formats_data)
+          end
+
+          if formats_data.nil?
+            json = loc_data.to_json
+          else
+            selected_time_format = {"formats"=> {"time" => formats_data['formats']['time'][selected] }}
+            json = loc_data.merge(selected_time_format).to_json
+          end
+          return @app.call env if json == 'null' # Branch not found
+          data = "i18n.data = #{json};";
         end
 
-        #load correct jq-grid localization (if "locale" localization not found, load default - en)
-        jq_grid_locale = "#{Rails.root}/public/javascripts/lib/jq-grid/i18n/grid.locale-#{locale}.js"
-        jq_grid_locale = "#{Rails.root}/public/javascripts/lib/jq-grid/i18n/grid.locale-en.js" unless ::File.exist?(jq_grid_locale)
-        jqgrid_loc_data = ::File.read(jq_grid_locale)
 
-        return @app.call env if json == 'null' # Branch not found
+
 
         content_type = 'application/javascript'
-        response =  "var i18n = #{json};\n #{jqgrid_loc_data}"
+        response =  "var i18n = i18n || {};\n#{data}"
         headers = {}
         headers['Content-Type'] = content_type
         headers['Cache-Control'] = "max-age=31536000, public"
