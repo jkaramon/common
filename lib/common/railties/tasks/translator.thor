@@ -91,9 +91,16 @@ class Translator < Thor
     require 'ruby-debug';debugger
   end
 
+
+
   def convert_csv_line(line)
     file, csv_hash_string = line.split(FILE_SPLIT_CHAR, 2)
     keys_string, value = csv_hash_string.split(KEY_VALUE_SPLIT_CHAR, 2)
+    keys_string.gsub!(/(^\"|\"$)/, '')
+    value.gsub!(/;$/, '')
+    value.gsub!(/(^\"|\"$)/, '')
+    value.gsub!(/(^\"|\"$)/, '')
+
     keys = keys_string.split('.')
     hash = {}
     value.chomp!
