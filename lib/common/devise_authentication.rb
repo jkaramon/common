@@ -10,11 +10,16 @@ module DeviseAuthentication
     ).first
   end
 
-  def send_reset_password_instructions(attributes={})
-    recoverable = find_for_database_authentication(attributes)
+  def self.send_reset_password_instructions(attributes={})
+    recoverable = find_or_initialize_with_error_by(:username, attributes[:username], :not_found)
     recoverable.send_reset_password_instructions if recoverable.persisted?
     recoverable
   end
-  
-end
+ 
+  def self.send_confirmation_instructions(attributes={})
+    confirmable = find_or_initialize_with_error_by(:username, attributes[:username], :not_found)
+    confirmable.resend_confirmation_token if confirmable.persisted?
+    confirmable
+  end
 
+end
