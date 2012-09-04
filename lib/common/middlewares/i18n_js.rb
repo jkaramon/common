@@ -19,10 +19,10 @@ module Rack
         locale = data_array.first
         selected = "default"
         user_id = env['rack.session']['warden.user.user.key']
+        req = Rack::Request.new(env)
+        translation_mode = req.params.include?("translation_mode");
 
-        translate_mode = true;
-
-        if translate_mode
+        if translation_mode
           loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/en.yml"))['en']['js']
           formats_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/formats-en.yml"))['en']['js']
           selected_time_format = {"formats"=> {"time" => formats_data['formats']['time'][selected] }}
