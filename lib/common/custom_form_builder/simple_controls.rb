@@ -390,7 +390,8 @@ module CustomFormBuilder
       input_options =  options.delete(:input_html) || {}
       input_options.merge!(annotation_options(method, options))
 
-      lbl = self.label(method, options_for_label(options)) 
+      lbl = self.label(method, options_for_label(options))
+      puts lbl
       chk = self.check_box method, input_options
       if options[:label_position]==:right
         "#{chk} #{lbl}"

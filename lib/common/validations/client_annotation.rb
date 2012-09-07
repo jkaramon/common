@@ -24,15 +24,18 @@ module Validations
         kind = validator.kind
         next if filter_kind.present? && filter_kind != kind
         items << validator.attributes.map do |attr|
-          attr_display_name = klass.human_attribute_name(attr)
+          attr_display_name = ''
+          error = ''
+          attr_display_name = klass.human_attribute_name(attr, :mode => :normal)
           error = object.errors.generate_message(attribute, error_by_kind(kind), validator.options.dup)
+
           validator.options.dup.merge({
             :attr               => attr,
             :attr_display_name  => escape(attr_display_name),
             :kind               => kind,
             :error              => escape(error)          
           })
-  
+
         end
         items
       end
@@ -41,7 +44,7 @@ module Validations
       result.delete_if {|v| v[:attr] != attribute }
     end
 
-  
+
     # True, if given attribute is required
     def required?(attribute)
       validations_on(attribute).any? { |validator| validator[:kind] == :presence }
@@ -52,7 +55,7 @@ module Validations
     def hint(attribute)
       hint_name(attribute)
     end
-  
+
 
 
     private
@@ -63,17 +66,17 @@ module Validations
       end
 
       defaults << :"hints.#{attribute}"
-      defaults << ''      
-      
+        defaults << ''      
+
       options = { :default => defaults }
       result = I18n.translate(defaults.shift, options)
       result.blank? ? nil : result
     end
-    
- 
 
 
-      def escape(val)
+
+
+    def escape(val)
       return nil if val.nil?
       val.gsub('"', "&quot;")
     end
