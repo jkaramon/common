@@ -10,7 +10,7 @@ module LayoutHelper
   def raw_title(page_title, additional_text = nil, show_title = true, key = '')
     page_title = "#{page_title} - #{additional_text}" if additional_text 
     app_title = t('app.name')
-    if ::I18n.translation_mode?
+    if  ::I18n.respond_to?(:"translation_mode?") && ::I18n.translation_mode?
       raw_page_title = ::I18n.t("views.titles.#{key.to_s}")
       raw_app_title = ::I18n.t('app.name')
       @content_for_title = "VD - TRANSLATION MODE: #{raw_page_title} - #{raw_app_title}"
