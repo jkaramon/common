@@ -92,7 +92,7 @@ module Jobs
       def env_suffix
         return "-gem-development" unless defined?(Rails)
         return "-development" if %w{ development devcached }.include?(env)
-        return "" if env=="production" || env =="preprod"
+        return "" if %w{ preprod production }.include?(env) 
         "-#{env}" 
       end
 

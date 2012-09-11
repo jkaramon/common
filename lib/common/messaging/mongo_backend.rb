@@ -49,12 +49,8 @@ module Messaging
 
     def env_suffix
       return "-gem-development" unless defined?(Rails)
-      if env=="production" || env=="preprod"
-        return "-preprod" if options[:route_to] == :beta
-        return "" if options[:route_to] == :stable
-      end
-      return "" if env=="production"
-      return "-development" if %w{ development devcached }.include?(env)
+      return ""                 if %w{ preprod production }.include?(env)
+      return "-development"     if %w{ development devcached }.include?(env)
       "-#{env}"  
     end
 
