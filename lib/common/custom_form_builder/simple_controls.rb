@@ -440,14 +440,15 @@ module CustomFormBuilder
       minutes = options[:show_minutes]
       options = options.except(:show_minutes)
       options.merge!(annotation_options(method, options))
+      options[:input_html] ||= {}
 
       value = ActionView::Helpers::InstanceTag.value(object, "#{method}_hours")
       label = self.label(method,options_for_label(options.merge({:class=> "time_hours"})))
-      label << template.text_field(@object_name, "#{method}_hours", options.merge({:value=>value})) <<
+      label << self.text_field("#{method}_hours", options[:input_html].merge({:value=>value, :class => "time_hours"})) <<
       template.content_tag(:span, template.t('hours') , options)
       if minutes
         value = ActionView::Helpers::InstanceTag.value(object, "#{method}_minutes")
-        label << template.text_field(@object_name, "#{method}_minutes", options.merge({:value=>value})) <<
+        label << self.text_field("#{method}_minutes", options[:input_html].merge({:value=>value, :class => "time_minutes"})) <<
         template.content_tag(:span, template.t('minutes') , options)
       end
       return label
