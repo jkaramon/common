@@ -26,7 +26,12 @@ module Validations
         items << validator.attributes.map do |attr|
           attr_display_name = ''
           error = ''
-          attr_display_name = klass.human_attribute_name(attr, :mode => :normal)
+          translation_mode = ::I18n.respond_to?(:"translation_mode?") && ::I18n.translation_mode?
+          if translation_mode
+            attr_display_name = klass.human_attribute_name(attr, :mode => :normal)
+          else
+            attr_display_name = klass.human_attribute_name(attr)
+          end
           error = object.errors.generate_message(attribute, error_by_kind(kind), validator.options.dup)
 
           validator.options.dup.merge({
