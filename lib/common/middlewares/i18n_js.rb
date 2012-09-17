@@ -67,8 +67,12 @@ module Rack
         response =  "var i18n = i18n || {};\n#{data}"
         headers = {}
         headers['Content-Type'] = content_type
-        headers['Cache-Control'] = "max-age=31536000, public"
-        headers['Etag'] = Digest::MD5.hexdigest(response)
+        if translation_mode 
+           headers['Cache-Control'] = "no-cache"
+        else
+          headers['Cache-Control'] = "max-age=31536000, public"
+          headers['Etag'] = Digest::MD5.hexdigest(response)
+        end
         [200, headers, [response]]
       else
         @app.call env
