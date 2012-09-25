@@ -20,6 +20,7 @@ module CustomFormBuilder
       return if rule.visibility==:hidden 
       
       title = field_set_title_from_args(options)
+
       state = rule.panel_state
       state = :collapsed if options[:collapsed]
 

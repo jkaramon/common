@@ -68,6 +68,19 @@ module CustomFormBuilder
       options
     end
 
+    def field_set_title_from_args(*args) #:nodoc:
+      options = args.extract_options!
+      options[:name] = options.delete(:title) if options[:title].present?
+      title = options[:name]
+
+      if title.blank?
+        valid_name_classes = [::String, ::Symbol]
+        valid_name_classes.delete(::Symbol) if !block_given? && (args.first.is_a?(::Symbol) && self.content_columns.include?(args.first))
+        title = args.shift if valid_name_classes.any? { |valid_name_class| args.first.is_a?(valid_name_class) }
+      end
+      title = localized_string(title, title, :title) if title.is_a?(::Symbol)
+      title
+    end
    
     private 
     
