@@ -52,5 +52,5 @@ module CustomFormBuilder
       template.suggest_title(klass)
     end
     
-     end
+  end
 end

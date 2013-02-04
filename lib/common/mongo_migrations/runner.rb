@@ -38,6 +38,7 @@ module MongoMigrations
           :script => IO.read(f) 
         }
       end
+      @scripts.sort! {|x,y| x[:sort_key] <=> y[:sort_key] }
     end
 
     def latest_script
@@ -51,7 +52,7 @@ module MongoMigrations
     def inspect
       result =  "\nDB: #{MongoMapper.database.name}"
       result << "\nVersion: #{db_version.to_mongo}"
-      result << "\nLast processed migration:\n#{MongoMigrations::MigrationRun.last.to_mongo}"
+      result << "\nLast processed migration:\n#{MongoMigrations::MigrationRun.last.try(:to_mongo)}"
     end
     
     def migrate
