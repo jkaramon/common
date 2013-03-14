@@ -28,7 +28,22 @@ module CustomFormBuilder
     include Partials
     include NestedForms
     include TabPanels
-    
+   
+    cattr_accessor :logger
+
+
+     
+    def debug(msg) 
+      self.class.logger.debug(msg) if self.class.logger
+    end
+
+       
+    def end_trace(msg, start_time)
+      debug '-------------------------------------------------------'
+      debug "#{msg} - #{ '%.3f' % ((Time.now - start_time)*1000) } ms."
+      debug '-------------------------------------------------------'
+    end
+ 
     
     # Returns rule object for the given metho name. 
     # @param [Symbol, String] method - method name of current object

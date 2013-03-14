@@ -13,6 +13,7 @@ module CustomFormBuilder
     # @option options :selected (nil) - selected value
     # @option options :include_blank (true) - True if blank item is rendered to allow select nothing.
     def select_input(method, options)
+      start_time = Time.now
       options[:label_method] ||= :name
       options[:value_method] ||= :id 
       annotations = annotation_options(method, options)
@@ -22,11 +23,16 @@ module CustomFormBuilder
       options[:collection] ||= []
       case get_rule(method).visibility
         when :enabled 
-          return super(method, options) 
+          result = super(method, options) 
         when :disabled
-          return disabled_field(method, options)
+          result = disabled_field(method, options)
       end
+      end_trace  "Rendering select :#{method} ", start_time
+      result
     end
+
+
+    
 
     def currency_input(method, options)
       input_name = generate_association_input_name(method)

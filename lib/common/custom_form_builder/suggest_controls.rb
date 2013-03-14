@@ -9,9 +9,10 @@ module CustomFormBuilder
       return suggest(method, options, get_rule(method).visibility)
     end
 
+  
     def suggest(method, options, state)
       options[:input_html] ||= {}
-          
+      start_time = Time.now    
       container_options = options[:suggest_container_html] || {}
       container_options[:class] ||= ""
       wrapper_class = options[:input_html].delete(:class);
@@ -45,7 +46,10 @@ module CustomFormBuilder
       container_options[:class] += " suggest_container #{wrapper_class} s_#{method.to_s}"
       container_options["data-id"] = id
       container = template.content_tag :span, template.raw(text_input), container_options
-      template.raw(label + container)
+      result = template.raw(label + container)
+      end_trace  "Rendering suggest2 :#{method} ", start_time
+      result
+
     end
     
     def suggest_title(klass)

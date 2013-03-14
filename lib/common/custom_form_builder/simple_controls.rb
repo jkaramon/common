@@ -35,6 +35,7 @@ module CustomFormBuilder
     end
 
     def input(method, options = {})
+      start_time = Time.now
       return "" if control_hidden?(method)
       wrap = !options.include?(:wrapper) || options[:wrapper]
       wrapper_tag = :li
@@ -66,7 +67,7 @@ module CustomFormBuilder
       end.compact.join("\n")
       
       content = Formtastic::Util.html_safe(list_item_content)
-      
+      end_trace  "Rendering input :#{method} ", start_time 
       if wrap 
         return template.content_tag( wrapper_tag, content, wrapper_html)
       else

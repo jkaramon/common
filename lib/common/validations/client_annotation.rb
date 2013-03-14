@@ -3,6 +3,23 @@ require "cgi"
 module Validations
   class ClientAnnotation
     attr_accessor :object
+
+    cattr_accessor :logger
+
+
+     
+    def debug(msg) 
+      self.class.logger.debug(msg) if self.class.logger
+    end
+
+       
+    def end_trace(msg, start_time)
+      debug '-------------------------------------------------------'
+      debug "#{msg} - #{ '%.3f' % ((Time.now - start_time)*1000) } ms."
+      debug '-------------------------------------------------------'
+    end
+
+
     def initialize(object)
       @object = object
     end
@@ -17,9 +34,11 @@ module Validations
     # }
     # Additional options specific to the given validator may be included in a hash
     def validations_on(attribute, filter_options = {})
+      start_time = Time.now
       klass = @object.class
       filter_kind = filter_options[:kind]
       validators = klass.validators_on(attribute).map do |validator|
+
         items = []
         kind = validator.kind
         next if filter_kind.present? && filter_kind != kind
@@ -32,15 +51,14 @@ module Validations
           else
             attr_display_name = klass.human_attribute_name(attr)
           end
-          error = object.errors.generate_message(attribute, error_by_kind(kind), validator.options.dup)
-
+          debug klass.i18n_scope
+          error = ::I18n.translate("errors.messages.#{error_by_kind(kind)}")
           validator.options.dup.merge({
             :attr               => attr,
             :attr_display_name  => escape(attr_display_name),
             :kind               => kind,
             :error              => escape(error)          
           })
-
         end
         items
       end
