@@ -28,10 +28,14 @@ module Jobs
       @tracker ||= Tracking::BaseTracker.new(self.class.to_s.demodulize.underscore)
     end
 
+    def before_execute
+      
+    end
 
     def execute
       @tracker = Tracking::BaseTracker.new(self.class.to_s.demodulize.underscore)
       MongoMapper::Plugins::IdentityMap.clear
+      before_execute
       perform
       self.tracker.set_success!
     rescue => err
