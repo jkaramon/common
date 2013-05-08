@@ -11,6 +11,14 @@ module Rack
       @options = options
     end
 
+    def loc_collection
+      conn = MongoMapper.connection
+      db_name = "i18n#{DbManager.db_suffix}"
+      db   = conn[db_name]
+      db['localizations']
+    end
+
+
     def call env
       # Valid url is /i18n-<locale>.js where
       # i18n key - yaml branch named "locale.key"
@@ -21,6 +29,7 @@ module Rack
         user_id = env['rack.session']['warden.user.user.key']
         req = Rack::Request.new(env)
         translation_mode = req.params.include?("translation_mode");
+        current_db_loc_data =  loc_collection.find({:locale => 'cz', :source => 'client'}, {:fields => [:key, :value]}).to_a
 
         if translation_mode
           loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/en.yml"))['en']['js']
@@ -30,11 +39,13 @@ module Rack
           loc_json = '{}'
           unless locale == 'en'
             selected_loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/#{locale}.yml"))[locale]['js']
+            update_from_db(selected_loc_data, current_db_loc_data)
             selected_formats_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/formats-#{locale}.yml"))[locale]['js']
             selected_time_format = {"formats"=> {"time" => selected_formats_data['formats']['time'][selected] }}
             loc_json = selected_loc_data.merge(selected_time_format).to_json
           end
           data = "\ni18n.en_data = #{en_json}";
+          
           data += "\ni18n.current_loc_data = #{loc_json}";
         else
           # Get yaml
@@ -45,6 +56,7 @@ module Rack
           # this should prevent from missing translations in js (not defined in non-default files)
           unless locale == 'en'
             selected_loc_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/#{locale}.yml"))[locale]['js']
+            update_from_db(selected_loc_data, current_db_loc_data)
             deep_merge!(loc_data, selected_loc_data)
             selected_formats_data = YAML::load(::File.open("#{Rails.root}/config/locales/js/formats-#{locale}.yml"))[locale]['js']
             deep_merge!(formats_data, selected_formats_data)
@@ -67,7 +79,7 @@ module Rack
         response =  "var i18n = i18n || {};\n#{data}"
         headers = {}
         headers['Content-Type'] = content_type
-        if translation_mode 
+        if translation_mode
            headers['Cache-Control'] = "no-cache"
         else
           headers['Cache-Control'] = "max-age=31536000, public"
@@ -76,6 +88,21 @@ module Rack
         [200, headers, [response]]
       else
         @app.call env
+      end
+    end
+
+    def update_from_db(hash, array_from_db)
+      return if hash.nil?
+           
+      array_from_db.each do |db_item| 
+        key_parts = db_item['key'].split('.')
+        h = hash
+        last_key = key_parts.pop
+        key_parts.each do |k|
+          h[k] = {} unless h.include?(k)
+          h = h[k]
+        end
+        h[last_key] = db_item['value']        
       end
     end
 
