@@ -77,7 +77,7 @@ class DbManager
   # Returns nil, if not valid
   def self.parse_db_suffix(db_name)
     return "" if db_name.match(/^.*-vd$/)
-    data = db_name.match(/^.*-vd-(.*(?!-vd).*)$/)
+    data = db_name.match(/^.*-vd(-.*(?!-vd).*)$/)
     data[1] if data.present?
   end
   
