@@ -10,6 +10,10 @@ module Messaging
       @options = options || {}
     end
 
+    def database
+      @database = MongoMapper.connection.db("messaging#{options[:env_suffix] || env_suffix}")
+    end
+ 
   end
 
 

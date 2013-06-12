@@ -73,9 +73,13 @@ class DbManager
     return db_name.sub(/#{vd_db_suffix}/, '')
   end
 
- 
-
-  
+  # returns env suffix from database name. 
+  # Returns nil, if not valid
+  def self.parse_db_suffix(db_name)
+    return "" if db_name.match(/^.*-vd$/)
+    data = db_name.match(/^.*-vd-(.*(?!-vd).*)$/)
+    data[1] if data.present?
+  end
   
   # iterates throught all vd databases.
   # Block has two arguments:
@@ -86,7 +90,6 @@ class DbManager
       block.call(db_name, vd_site_id(db_name)) if vd_site_db?(db_name)
     end
   end
-  
   
   
   def self.vd_db?(db_name)
@@ -118,9 +121,6 @@ class DbManager
   def self.db(db_name)
     MongoMapper.connection.db(db_name)
   end
-
-
-  
   
   def self.env
     @env
